@@ -86,7 +86,7 @@ namespace escout.DataAgents
 
         private NpgsqlConnection GetConnection()
         {
-            return new NpgsqlConnection(Configurations.getNpgsqlConnectionString());
+            return new NpgsqlConnection(Configurations.GetNpgsqlConnectionString());
         }
 
         public TransactionScope CreateTransactionScope()

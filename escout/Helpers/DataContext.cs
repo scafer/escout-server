@@ -154,7 +154,7 @@ namespace escout.Helpers
 
         protected string GetScriptFromResources(string queryPath)
         {
-            string databaseScriptsPath = Configurations.getDatabaseScriptsPath();
+            string databaseScriptsPath = Configurations.GetDatabaseScriptsPath();
 
             string sql = System.IO.File.ReadAllText(System.IO.Path.Combine(databaseScriptsPath, queryPath + ".sql"), Encoding.UTF8);
             return (sql);

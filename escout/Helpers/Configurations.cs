@@ -5,7 +5,7 @@ namespace escout.Helpers
 {
     public class Configurations
     {
-        public static string getNpgsqlConnectionString()
+        public static string GetNpgsqlConnectionString()
         {
             var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
             var databaseUri = new Uri(databaseUrl);
@@ -23,9 +23,10 @@ namespace escout.Helpers
             return builder.ToString();
         }
 
-        public static string getDatabaseScriptsPath()
+        public static string GetDatabaseScriptsPath()
         {
-            return Environment.GetEnvironmentVariable("DATABASE_SCRIPTS_PATH");
+            return Environment.GetEnvironmentVariable("./DatabaseScripts/");
+            //return Environment.GetEnvironmentVariable("DATABASE_SCRIPTS_PATH");
         }
     }
 }

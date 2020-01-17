@@ -3,7 +3,7 @@ using System;
 
 namespace escout.Helpers
 {
-    public class Configurations
+    public class GetConfigurations
     {
         public static string GetNpgsqlConnectionString()
         {
@@ -19,14 +19,7 @@ namespace escout.Helpers
                 Password = userInfo[1],
                 Database = databaseUri.LocalPath.TrimStart('/')
             };
-
             return builder.ToString();
-        }
-
-        public static string GetDatabaseScriptsPath()
-        {
-            return Environment.GetEnvironmentVariable("./DatabaseScripts/");
-            //return Environment.GetEnvironmentVariable("DATABASE_SCRIPTS_PATH");
         }
     }
 }

@@ -2,24 +2,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace escout.Services
 {
-    public class UserService
+    public class UserService : BaseService
     {
         DataContext db;
-        AuthenticationService auth;
 
         public UserService()
         {
             db = new DataContext();
-            auth = new AuthenticationService();
+        }
+
+        public void AddUser(User usr)
+        {
+            var user = new User { username = usr.username, password = usr.password, email = usr.email };
+            db.users.Add(user);
+            db.SaveChanges();
         }
 
         public User GetUser(string username)
         {
-            return db.users.Where(u => u.username == username).FirstOrDefault();
+            var user = db.users.FirstOrDefault(u => u.username == username);
+            Console.WriteLine(user.ToString());
+            return user;
         }
 
         public List<User> GetUsers()
@@ -29,7 +35,7 @@ namespace escout.Services
 
         public User GetUserById(int id)
         {
-            return db.users.Where(u => u.id == id).FirstOrDefault();
+            return db.users.FirstOrDefault(u => u.id == id);
         }
 
         public string ResetPassword(string username, string email)
@@ -44,17 +50,20 @@ namespace escout.Services
 
         public bool CheckEmailExist(string email)
         {
-            throw new NotImplementedException();
+            var check = db.users.FirstOrDefault(u => u.email == email);
+            return check != null ? true : false;
         }
 
         public bool CheckUsernameExist(string username)
         {
-            throw new NotImplementedException();
+            var check = db.users.FirstOrDefault(u => u.username == username);
+            return check != null ? true : false;
         }
 
         public bool CheckCredentials(string username, string email)
         {
-            throw new NotImplementedException();
+            var check = db.users.FirstOrDefault(u => u.username == username || u.email == email);
+            return check != null ? true : false;
         }
 
         public bool SendEmailToUser(string username, string email, string password)

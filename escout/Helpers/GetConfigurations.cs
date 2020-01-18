@@ -1,10 +1,19 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Configuration;
+using Npgsql;
 using System;
+using System.IO;
 
 namespace escout.Helpers
 {
     public class GetConfigurations
     {
+        public static IConfigurationBuilder GetAppSettings()
+        {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        }
+
         public static string GetNpgsqlConnectionString()
         {
             var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");

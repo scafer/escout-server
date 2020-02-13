@@ -9,7 +9,7 @@ namespace escout.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(GetConfigurations.GetNpgsqlConnectionString());
+            optionsBuilder.UseNpgsql(Configurations.GetNpgsqlConnectionString());
         }
     }
 
@@ -19,5 +19,6 @@ namespace escout.Models
         public string username { get; set; }
         public string password { get; set; }
         public string email { get; set; }
+        public int accessLevel { get; set; }
     }
 }

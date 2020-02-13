@@ -9,45 +9,42 @@ namespace escout.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        AuthService authService = new AuthService();
-
         [HttpPost]
-        [Route("signIn")]
         [AllowAnonymous]
+        [Route("signIn")]
         public ActionResult<AuthData> SignIn(User userData)
         {
-            var user = new User();
-            using (var service = new AuthService())
-            {
-                user = service.SignIn(userData);
-            }
+            using var service = new AuthService();
+            var user = service.SignIn(userData);
 
             if (user != null)
             {
-                var token = authService.GetAuthData(user.id);
+                var token = TokenService.GenerateToken(user);
                 return token;
             }
+
             return new NotFoundResult();
         }
 
         [HttpPost]
-        [Route("signUp")]
         [AllowAnonymous]
-        public ActionResult<string> SignUp(User user)
+        [Route("signUp")]
+        public ActionResult<SvcResult> SignUp(User user)
         {
-            var userService = new UserService();
-            var authService = new AuthService();
+            using var userService = new UserService();
+            using var authService = new AuthService();
 
-            var checkEmail = userService.CheckEmailExist(user.email);
-            if (checkEmail) return "Email already in use.";
+            if (userService.CheckEmailExist(user.email)) return SvcResult.Get(1, "Email in use");
+            if (userService.CheckUsernameExist(user.username)) return SvcResult.Get(1, "User in use");
+            return !authService.SignUp(user) ? SvcResult.Get(1, "Error while adding user") : SvcResult.Get(0, "Success");
+        }
 
-            var checkUsername = userService.CheckUsernameExist(user.username);
-            if (checkUsername) return "Username already in use.";
-
-            bool userAdded = authService.SignUp(user);
-            if (!userAdded) return "An error occurred while adding the user.";
-
-            return "User added successfully";
+        [HttpGet]
+        [Authorize]
+        [Route("authenticated")]
+        public ActionResult<SvcResult> Authenticated()
+        {
+            return SvcResult.Get(0, "Success");
         }
     }
 }

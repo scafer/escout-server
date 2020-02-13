@@ -1,7 +1,6 @@
 ﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
-using System.Threading.Tasks;
 
 namespace escout.Helpers
 {
@@ -14,7 +13,7 @@ namespace escout.Helpers
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress(sendKey, "eScout App");
             var to = new EmailAddress(emailTo, emailTo);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, content,content);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
             var response = await client.SendEmailAsync(msg);
         }
     }

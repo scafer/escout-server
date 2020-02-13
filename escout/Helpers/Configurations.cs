@@ -5,7 +5,7 @@ using System.IO;
 
 namespace escout.Helpers
 {
-    public class GetConfigurations
+    public class Configurations
     {
         public static IConfigurationBuilder GetAppSettings()
         {

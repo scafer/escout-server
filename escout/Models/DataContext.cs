@@ -6,6 +6,14 @@ namespace escout.Models
     public class DataContext : DbContext
     {
         public DbSet<User> users { get; set; }
+        public DbSet<Athlete> athletes { get; set; }
+        public DbSet<Club> clubs { get; set; }
+        public DbSet<Competition> competitions { get; set; }
+        public DbSet<CompetitionBoard> competitionBoards { get; set; }
+        public DbSet<Event> events { get; set; }
+        public DbSet<Game> games { get; set; }
+        public DbSet<Sport> sports { get; set; }
+        public DbSet<Image> images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,5 +28,118 @@ namespace escout.Models
         public string password { get; set; }
         public string email { get; set; }
         public int accessLevel { get; set; }
+        public int notifications { get; set; }
+        public int imageId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Athlete
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string fullname { get; set; }
+        public string birthDate { get; set; }
+        public string birthPlace { get; set; }
+        public string citizenship { get; set; }
+        public float height { get; set; }
+        public float weight { get; set; }
+        public string position { get; set; }
+        public string agent { get; set; }
+        public string currentInternational { get; set; }
+        public string status { get; set; }
+        public int currentClub { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Club
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string fullname { get; set; }
+        public string country { get; set; }
+        public string founded { get; set; }
+        public string colors { get; set; }
+        public string members { get; set; }
+        public string stadium { get; set; }
+        public string address { get; set; }
+        public string homepage { get; set; }
+        public int imageId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Competition
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string edition { get; set; }
+        public int sportId { get; set; }
+        public int imageId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class CompetitionBoard
+    {
+        public int id { get; set; }
+        public int position { get; set; }
+        public int played { get; set; }
+        public int won { get; set; }
+        public int drawn { get; set; }
+        public int lost { get; set; }
+        public int goalsFor { get; set; }
+        public int goalsAgainst { get; set; }
+        public int goalsDifference { get; set; }
+        public int points { get; set; }
+        public int clubId { get; set; }
+        public int competitionId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Event
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public int sportId { get; set; }
+        public int imageId { get; set; }
+        public int created { get; set; }
+        public int updated { get; set; }
+    }
+
+    public class Game
+    {
+        public int id { get; set; }
+        public string timeStart { get; set; }
+        public string timeEnd { get; set; }
+        public string homeColor { get; set; }
+        public string visitorColor { get; set; }
+        public int homeScore { get; set; }
+        public int visitorScore { get; set; }
+        public int homeId { get; set; }
+        public int visitorId { get; set; }
+        public int imageId { get; set; }
+        public int userId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Sport
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int imageId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Image
+    {
+        public int id { get; set; }
+        public string image { get; set; }
+        public string imageUrl { get; set; }
     }
 }

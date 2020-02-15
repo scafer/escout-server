@@ -1,8 +1,10 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using escout.Helpers;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace escout.Services
 {
@@ -44,7 +46,7 @@ namespace escout.Services
             if (user != null)
             {
                 var generatedPassword = PasswordGenerator();
-                user.password = new AuthService().HashPassword(generatedPassword);
+                user.password = new AuthService().HashPassword(GenerateSha256String(generatedPassword));
                 db.users.Update(user);
                 db.SaveChanges();
                 NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);
@@ -83,6 +85,21 @@ namespace escout.Services
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, 10)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        private static string GenerateSha256String(string inputString)
+        {
+            var sb = new StringBuilder();
+
+            using var hash = SHA256.Create();
+
+            var enc = Encoding.UTF8;
+            var result = hash.ComputeHash(enc.GetBytes(inputString));
+
+            foreach (var b in result)
+                sb.Append(b.ToString("x2"));
+
+            return sb.ToString();
         }
     }
 }

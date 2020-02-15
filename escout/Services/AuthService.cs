@@ -1,12 +1,6 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace escout.Services
 {
@@ -35,10 +29,17 @@ namespace escout.Services
         {
             try
             {
+                user.accessLevel = 0;
+                user.imageId = 1;
+                user.created = Configurations.GetDateTime();
+                user.updated = Configurations.GetDateTime();
                 user.password = HashPassword(user.password);
-                var userService = new UserService();
+
+                using var userService = new UserService();
                 userService.CreateUser(user);
-                NotificationHelper.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
+
+                if (user.notifications == 1)
+                    NotificationHelper.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
 
                 return true;
             }

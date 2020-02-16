@@ -9,7 +9,7 @@ namespace escout.Services
         public User SignIn(User user)
         {
             using var agent = new UserService();
-            var account = agent.GetUser(user.username);
+            var account = agent.GetUser(user.username.ToLower());
 
             if (account == null) return null;
             return VerifyPassword(user.password, account.password) ? account : null;
@@ -33,6 +33,8 @@ namespace escout.Services
                 user.imageId = 1;
                 user.created = Configurations.GetDateTime();
                 user.updated = Configurations.GetDateTime();
+                user.username = user.username.ToLower();
+                user.email = user.email.ToLower();
                 user.password = HashPassword(user.password);
 
                 using var userService = new UserService();

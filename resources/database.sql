@@ -5,7 +5,7 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL,
   "accessLevel" int DEFAULT 0,
   "notifications" int,
-  "status" varchar,
+  "status" int,
   "imageId" int,
   "created" varchar,
   "updated" varchar

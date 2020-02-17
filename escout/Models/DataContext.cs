@@ -29,7 +29,17 @@ namespace escout.Models
         public string email { get; set; }
         public int accessLevel { get; set; }
         public int notifications { get; set; }
-        public int imageId { get; set; }
+        public int status { get; set; }
+        public int? imageId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Sport
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
@@ -65,7 +75,7 @@ namespace escout.Models
         public string stadium { get; set; }
         public string address { get; set; }
         public string homepage { get; set; }
-        public int imageId { get; set; }
+        public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
@@ -76,7 +86,7 @@ namespace escout.Models
         public string name { get; set; }
         public string edition { get; set; }
         public int sportId { get; set; }
-        public int imageId { get; set; }
+        public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
@@ -105,7 +115,7 @@ namespace escout.Models
         public string name { get; set; }
         public string description { get; set; }
         public int sportId { get; set; }
-        public int imageId { get; set; }
+        public int? imageId { get; set; }
         public int created { get; set; }
         public int updated { get; set; }
     }
@@ -119,19 +129,29 @@ namespace escout.Models
         public string visitorColor { get; set; }
         public int homeScore { get; set; }
         public int visitorScore { get; set; }
+        public int homePenaltyScore { get; set; }
+        public int visitorPenaltyScore { get; set; }
+        public int status { get; set; }
         public int homeId { get; set; }
         public int visitorId { get; set; }
-        public int imageId { get; set; }
+        public int? competitionId { get; set; }
+        public int? imageId { get; set; }
         public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
 
-    public class Sport
+    public class GameEvent
     {
         public int id { get; set; }
-        public string name { get; set; }
-        public int imageId { get; set; }
+        public string key { get; set; }
+        public string time { get; set; }
+        public string gameTime { get; set; }
+        public string eventDescription { get; set; }
+        public int gameId { get; set; }
+        public int eventId { get; set; }
+        public int? athleteId { get; set; }
+        public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
@@ -141,5 +161,7 @@ namespace escout.Models
         public int id { get; set; }
         public string image { get; set; }
         public string imageUrl { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
     }
 }

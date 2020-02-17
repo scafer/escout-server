@@ -1,14 +1,17 @@
 ﻿using escout.Models;
 using escout.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace escout.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1")]
     public class AuthenticationController : ControllerBase
     {
+        /// <summary>
+        /// Generate authentication token.
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [Route("signIn")]
@@ -26,6 +29,9 @@ namespace escout.Controllers
             return new NotFoundResult();
         }
 
+        /// <summary>
+        /// Create user.
+        /// </summary>
         [HttpPost]
         [AllowAnonymous]
         [Route("signUp")]
@@ -34,17 +40,20 @@ namespace escout.Controllers
             using var userService = new UserService();
             using var authService = new AuthService();
 
-            if (userService.CheckEmailExist(user.email)) return SvcResult.Get(1, "Email in use");
-            if (userService.CheckUsernameExist(user.username)) return SvcResult.Get(1, "User in use");
-            return !authService.SignUp(user) ? SvcResult.Get(1, "Error while adding user") : SvcResult.Get(0, "Success");
+            if (userService.CheckEmailExist(user.email)) return SvcResult.Set(1, "Email in use");
+            if (userService.CheckUsernameExist(user.username)) return SvcResult.Set(1, "User in use");
+            return !authService.SignUp(user) ? SvcResult.Set(1, "Error while adding user") : SvcResult.Set(0, "Success");
         }
 
+        /// <summary>
+        /// Test authentication token.
+        /// </summary>
         [HttpGet]
         [Authorize]
         [Route("authenticated")]
         public ActionResult<SvcResult> Authenticated()
         {
-            return SvcResult.Get(0, "Success");
+            return SvcResult.Set(0, "Success");
         }
     }
 }

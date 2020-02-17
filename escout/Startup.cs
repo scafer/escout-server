@@ -49,7 +49,7 @@ namespace escout
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "eReferee - Server",
+                    Title = "eScout - Server",
                     Version = "v1",
                     Contact = new OpenApiContact
                     {

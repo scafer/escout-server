@@ -46,7 +46,7 @@ namespace escout.Services
             var claimsIdentity = claims.Identity as ClaimsIdentity;
             var userId = claimsIdentity.Name;
 
-            var user = agent.GetUserById(int.Parse(userId));
+            var user = agent.GetUser(int.Parse(userId));
 
             return user;
         }

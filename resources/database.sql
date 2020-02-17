@@ -5,6 +5,7 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL,
   "accessLevel" int DEFAULT 0,
   "notifications" int,
+  "status" varchar,
   "imageId" int,
   "created" varchar,
   "updated" varchar
@@ -82,6 +83,20 @@ CREATE TABLE "events" (
   "updated" varchar
 );
 
+CREATE TABLE "gameEvents" (
+  "id" SERIAL PRIMARY KEY,
+  "key" varchar UNIQUE,
+  "time" varchar,
+  "gameTime" varchar,
+  "eventDescription" varchar,
+  "gameId" int,
+  "eventId" int,
+  "athleteId" int,
+  "userId" int,
+  "created" varchar,
+  "updated" varchar
+);
+
 CREATE TABLE "games" (
   "id" SERIAL PRIMARY KEY,
   "timeStart" varchar,
@@ -90,8 +105,12 @@ CREATE TABLE "games" (
   "visitorColor" varchar,
   "homeScore" int,
   "visitorScore" int,
+  "homePenaltyScore" int,
+  "visitorPenaltyScore" int,
+  "status" int,
   "homeId" int,
   "visitorId" int,
+  "competitionId" int,
   "imageId" int,
   "userId" int,
   "created" varchar,
@@ -109,7 +128,9 @@ CREATE TABLE "sports" (
 CREATE TABLE "images" (
   "id" SERIAL PRIMARY KEY,
   "image" varchar,
-  "imageUrl" varchar
+  "imageUrl" varchar,
+  "created" varchar,
+  "updated" varchar
 );
 
 ALTER TABLE "users" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
@@ -132,12 +153,24 @@ ALTER TABLE "events" ADD FOREIGN KEY ("sportId") REFERENCES "sports" ("id");
 
 ALTER TABLE "events" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
+ALTER TABLE "gameEvents" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+
+ALTER TABLE "gameEvents" ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
+
+ALTER TABLE "gameEvents" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
+
+ALTER TABLE "gameEvents" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+
 ALTER TABLE "games" ADD FOREIGN KEY ("homeId") REFERENCES "clubs" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("visitorId") REFERENCES "clubs" ("id");
+
+ALTER TABLE "games" ADD FOREIGN KEY ("competitionId") REFERENCES "competitions" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
 
 ALTER TABLE "sports" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
+
+COMMENT ON COLUMN "gameEvents"."key" IS 'timestamp$userId';

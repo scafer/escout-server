@@ -11,7 +11,7 @@
             this.errorMessage = errorMessage;
         }
 
-        public static SvcResult Get(int error, string message)
+        public static SvcResult Set(int error, string message)
         {
             return new SvcResult(error, message);
         }

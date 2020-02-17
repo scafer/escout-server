@@ -1,10 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+using System.Collections.Generic;
 
 namespace escout.Services
 {
@@ -24,19 +21,26 @@ namespace escout.Services
             return user;
         }
 
-        public User GetUser(string username)
+        public bool UpdateUser(User user)
         {
-            return db.users.FirstOrDefault(u => u.username == username);
+            try
+            {
+                db.users.Update(user);
+                db.SaveChanges();
+                return true;
+            }
+            catch { return false; }
         }
 
-        public List<User> GetUsers()
+        public bool DeleteUser(User user)
         {
-            return db.users.ToList();
-        }
-
-        public User GetUserById(int id)
-        {
-            return db.users.FirstOrDefault(u => u.id == id);
+            try
+            {
+                db.users.Remove(user);
+                db.SaveChanges();
+                return true;
+            }
+            catch { return false; }
         }
 
         public bool ResetPassword(string username, string email)
@@ -45,8 +49,8 @@ namespace escout.Services
 
             if (user != null)
             {
-                var generatedPassword = PasswordGenerator();
-                user.password = new AuthService().HashPassword(GenerateSha256String(generatedPassword));
+                var generatedPassword = Utils.StringGenerator();
+                user.password = new AuthService().HashPassword(Utils.GenerateSha256String(generatedPassword));
                 db.users.Update(user);
                 db.SaveChanges();
                 NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);
@@ -56,9 +60,31 @@ namespace escout.Services
             return false;
         }
 
-        public bool ChangePassword(string oldPassword, string newPassword)
+        public bool ChangePassword(User user, string newPassword)
         {
-            return true;
+            try
+            {
+                user.password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                db.users.Update(user);
+                db.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+
+        public User GetUser(int id)
+        {
+            return db.users.FirstOrDefault(u => u.id == id);
+        }
+
+        public User GetUser(string username)
+        {
+            return db.users.FirstOrDefault(u => u.username == username);
+        }
+
+        public List<User> GetUsers()
+        {
+            return db.users.ToList();
         }
 
         public bool CheckEmailExist(string email)
@@ -77,29 +103,6 @@ namespace escout.Services
         {
             var check = db.users.FirstOrDefault(u => u.username == username || u.email == email);
             return check != null;
-        }
-
-        private string PasswordGenerator()
-        {
-            Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, 10)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-        private static string GenerateSha256String(string inputString)
-        {
-            var sb = new StringBuilder();
-
-            using var hash = SHA256.Create();
-
-            var enc = Encoding.UTF8;
-            var result = hash.ComputeHash(enc.GetBytes(inputString));
-
-            foreach (var b in result)
-                sb.Append(b.ToString("x2"));
-
-            return sb.ToString();
         }
     }
 }

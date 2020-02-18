@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using escout.Services;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("event")]
-        public ActionResult<SvcResult> AddEvent(Event e)
+        public ActionResult<Event> CreateEvent(Event e)
         {
-            return new NotFoundResult();
+            using var service = new EventService();
+            return service.CreateEvent(e);
         }
 
         /// <summary>
@@ -28,7 +30,8 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<SvcResult> UpdateEvent(Event e)
         {
-            return new NotFoundResult();
+            using var service = new EventService();
+            return service.UpdateEvent(e) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -39,7 +42,8 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<SvcResult> DeleteEvent(int id)
         {
-            return new NotFoundResult();
+            using var service = new EventService();
+            return service.RemoveEvent(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<Event> GetEvent(int id)
         {
-            return new NotFoundResult();
+            using var service = new EventService();
+            return service.GetEvent(id);
         }
 
         /// <summary>
@@ -61,7 +66,8 @@ namespace escout.Controllers
         [Route("events")]
         public ActionResult<List<Event>> GetEvents()
         {
-            return new NotFoundResult();
+            using var service = new EventService();
+            return service.GetEvents();
         }
     }
 }

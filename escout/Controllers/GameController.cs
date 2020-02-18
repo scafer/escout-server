@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using escout.Services;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("game")]
-        public ActionResult<SvcResult> AddGame(Game game)
+        public ActionResult<Game> CreateGame(Game game)
         {
-            return new NotFoundResult();
+            using var service = new GameService();
+            return service.CreateGame(game);
         }
 
         /// <summary>
@@ -28,7 +30,8 @@ namespace escout.Controllers
         [Route("game")]
         public ActionResult<SvcResult> UpdateGame(Game game)
         {
-            return new NotFoundResult();
+            using var service = new GameService();
+            return service.UpdateGame(game) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -39,7 +42,8 @@ namespace escout.Controllers
         [Route("game")]
         public ActionResult<SvcResult> DeleteGame(int id)
         {
-            return new NotFoundResult();
+            using var service = new GameService();
+            return service.DeleteGame(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace escout.Controllers
         [Route("game")]
         public ActionResult<Game> GetGame(int id)
         {
-            return new NotFoundResult();
+            using var service = new GameService();
+            return service.GetGame(id);
         }
 
         /// <summary>
@@ -61,7 +66,89 @@ namespace escout.Controllers
         [Route("games")]
         public ActionResult<List<Game>> GetGames()
         {
-            return new NotFoundResult();
+            using var service = new GameService();
+            return service.GetGames();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("gameEvent")]
+        public ActionResult<GameEvent> CreateGameEvent(GameEvent gameEvent)
+        {
+            using var service = new GameService();
+            return service.CreateGameEvent(gameEvent);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("gameEvent")]
+        public ActionResult<SvcResult> UpdateGameEvent(GameEvent gameEvent)
+        {
+            using var service = new GameService();
+            return service.UpdateGameEvent(gameEvent) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("gameEvent")]
+        public ActionResult<SvcResult> DeleteGameEvent(int id)
+        {
+            using var service = new GameService();
+            return service.DeleteGameEvent(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("gameEvent")]
+        public ActionResult<GameEvent> GetGameEvent(int id)
+        {
+            using var service = new GameService();
+            return service.GetGameEvent(id);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("gameEvents")]
+        public ActionResult<List<GameEvent>> GetGameEvents(int gameId)
+        {
+            using var service = new GameService();
+            return service.GetGameEvents(gameId);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("gameAthlete")]
+        public ActionResult<GameAthlete> CreateGameAthlete(GameAthlete gameAthlete)
+        {
+            using var service = new GameService();
+            return service.CreateGameAthlete(gameAthlete);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("gameAthlete")]
+        public ActionResult<SvcResult> UpdateGameAthlete(GameAthlete gameAthlete)
+        {
+            using var service = new GameService();
+            return service.UpdateGameAthlete(gameAthlete) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("gameAthlete")]
+        public ActionResult<SvcResult> DeleteGameAthlete(int id)
+        {
+            using var service = new GameService();
+            return service.DeleteGameAthlete(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("gameAthletes")]
+        public ActionResult<List<GameAthlete>> GetGameAthletes(int gameId)
+        {
+            using var service = new GameService();
+            return service.GetGamesAthletes(gameId);
         }
     }
 }

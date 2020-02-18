@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using escout.Services;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,11 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("club")]
-        public ActionResult<SvcResult> AddClub(Club club)
+        public ActionResult<Club> CreateClub(Club club)
         {
-            return new NotFoundResult();
+            using var service = new ClubService();
+            return service.CreateClub(club);
+
         }
 
         /// <summary>
@@ -28,7 +31,8 @@ namespace escout.Controllers
         [Route("club")]
         public ActionResult<SvcResult> UpdateClub(Club club)
         {
-            return new NotFoundResult();
+            using var service = new ClubService();
+            return service.UpdateClub(club) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -39,7 +43,8 @@ namespace escout.Controllers
         [Route("club")]
         public ActionResult<SvcResult> DeleteClub(int id)
         {
-            return new NotFoundResult();
+            using var service = new ClubService();
+            return service.RemoveClub(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +55,8 @@ namespace escout.Controllers
         [Route("club")]
         public ActionResult<Club> GetClub(int id)
         {
-            return new NotFoundResult();
+            using var service = new ClubService();
+            return service.GetClub(id);
         }
 
         /// <summary>
@@ -61,7 +67,8 @@ namespace escout.Controllers
         [Route("clubs")]
         public ActionResult<List<Club>> GetClubs()
         {
-            return new NotFoundResult();
+            using var service = new ClubService();
+            return service.GetClubs();
         }
     }
 }

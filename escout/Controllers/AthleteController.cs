@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using escout.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("athlete")]
-        public ActionResult<SvcResult> AddAthlete(Athlete athlete)
+        public ActionResult<Athlete> CreateAthlete(Athlete athlete)
         {
-            return new NotFoundResult();
+            using var service = new AthleteService();
+            return service.CreateAthlete(athlete);
         }
 
         /// <summary>
@@ -28,7 +30,8 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<SvcResult> UpdateAthlete(Athlete athlete)
         {
-            return new NotFoundResult();
+            using var service = new AthleteService();
+            return service.UpdateAthlete(athlete) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -37,9 +40,10 @@ namespace escout.Controllers
         [HttpDelete]
         [Authorize]
         [Route("athlete")]
-        public ActionResult<SvcResult> DeleteAthlete(int id)
+        public ActionResult<SvcResult> RemoveAthlete(int id)
         {
-            return new NotFoundResult();
+            using var service = new AthleteService();
+            return service.RemoveAthlete(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<Athlete> GetAthlete(int id)
         {
-            return new NotFoundResult();
+            using var service = new AthleteService();
+            return service.GetAthlete(id);
         }
 
         /// <summary>
@@ -61,7 +66,8 @@ namespace escout.Controllers
         [Route("athletes")]
         public ActionResult<List<Athlete>> GetAthletes()
         {
-            return new NotFoundResult();
+            using var service = new AthleteService();
+            return service.GetAthletes();
         }
     }
 }

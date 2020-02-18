@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using escout.Services;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("sport")]
-        public ActionResult<SvcResult> AddSport(Sport sport)
+        public ActionResult<Sport> CreateSport(Sport sport)
         {
-            return new NotFoundResult();
+            using var service = new SportService();
+            return service.CreateSport(sport);
         }
 
         /// <summary>
@@ -28,7 +30,8 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<SvcResult> UpdateSport(Sport sport)
         {
-            return new NotFoundResult();
+            using var service = new SportService();
+            return service.UpdateSport(sport) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -39,7 +42,8 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<SvcResult> DeleteSport(int id)
         {
-            return new NotFoundResult();
+            using var service = new SportService();
+            return service.RemoveSport(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<Sport> GetSport(int id)
         {
-            return new NotFoundResult();
+            using var service = new SportService();
+            return service.GetSport(id);
         }
 
         /// <summary>
@@ -61,7 +66,8 @@ namespace escout.Controllers
         [Route("sports")]
         public ActionResult<List<Sport>> GetSports()
         {
-            return new NotFoundResult();
+            using var service = new SportService();
+            return service.GetSports();
         }
     }
 }

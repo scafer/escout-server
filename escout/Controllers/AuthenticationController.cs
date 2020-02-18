@@ -1,7 +1,7 @@
 ﻿using escout.Models;
 using escout.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace escout.Controllers
 {
@@ -42,7 +42,7 @@ namespace escout.Controllers
 
             if (userService.CheckEmailExist(user.email)) return SvcResult.Set(1, "Email in use");
             if (userService.CheckUsernameExist(user.username)) return SvcResult.Set(1, "User in use");
-            return !authService.SignUp(user) ? SvcResult.Set(1, "Error while adding user") : SvcResult.Set(0, "Success");
+            return authService.SignUp(user) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error while adding user");
         }
 
         /// <summary>

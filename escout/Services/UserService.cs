@@ -1,7 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Services
 {
@@ -32,7 +32,7 @@ namespace escout.Services
             catch { return false; }
         }
 
-        public bool DeleteUser(User user)
+        public bool RemoveUser(User user)
         {
             try
             {

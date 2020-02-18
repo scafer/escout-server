@@ -1,8 +1,8 @@
 ﻿using escout.Models;
 using escout.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
 
 namespace escout.Controllers
 {
@@ -62,6 +62,26 @@ namespace escout.Controllers
         }
 
         /// <summary>
+        /// Delete user.
+        /// </summary>
+        [HttpDelete]
+        [Authorize]
+        [Route("user")]
+        public ActionResult<SvcResult> RemoveUser()
+        {
+            var user = User.GetUser();
+
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
+
+            using var service = new UserService();
+            var result = service.RemoveUser(user);
+            return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        /// <summary>
         /// Get user.
         /// </summary>
         [HttpGet]
@@ -94,26 +114,6 @@ namespace escout.Controllers
             }
 
             return new NotFoundResult();
-        }
-
-        /// <summary>
-        /// Delete user.
-        /// </summary>
-        [HttpDelete]
-        [Authorize]
-        [Route("user")]
-        public ActionResult<SvcResult> DeleteUser()
-        {
-            var user = User.GetUser();
-
-            if (user == null)
-            {
-                return new NotFoundResult();
-            }
-
-            using var service = new UserService();
-            var result = service.DeleteUser(user);
-            return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
     }
 }

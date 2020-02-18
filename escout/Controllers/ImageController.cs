@@ -1,6 +1,7 @@
 ﻿using escout.Models;
-using Microsoft.AspNetCore.Mvc;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace escout.Controllers
 {
@@ -14,9 +15,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("image")]
-        public ActionResult<SvcResult> AddImage(Image image)
+        public ActionResult<Image> CreateImage(Image image)
         {
-            return new NotFoundResult();
+            using var service = new ImageService();
+            return service.CreateImage(image);
         }
 
         /// <summary>
@@ -27,7 +29,8 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<SvcResult> UpdateImage(Image image)
         {
-            return new NotFoundResult();
+            using var service = new ImageService();
+            return service.UpdateImage(image) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -38,7 +41,8 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<SvcResult> DeleteImage(int id)
         {
-            return new NotFoundResult();
+            using var service = new ImageService();
+            return service.DeleteImage(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -49,7 +53,8 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<Image> GetImage(int id)
         {
-            return new NotFoundResult();
+            using var service = new ImageService();
+            return service.GetImage(id);
         }
     }
 }

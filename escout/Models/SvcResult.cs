@@ -16,4 +16,9 @@
             return new SvcResult(error, message);
         }
     }
+
+    public class Msg
+    {
+        public const string SUCCESS = "Success";
+    }
 }

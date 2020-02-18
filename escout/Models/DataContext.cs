@@ -12,6 +12,8 @@ namespace escout.Models
         public DbSet<CompetitionBoard> competitionBoards { get; set; }
         public DbSet<Event> events { get; set; }
         public DbSet<Game> games { get; set; }
+        public DbSet<GameEvent> gameEvents { get; set; }
+        public DbSet<GameAthlete> gameAthletes { get; set; }
         public DbSet<Sport> sports { get; set; }
         public DbSet<Image> images { get; set; }
 
@@ -47,18 +49,20 @@ namespace escout.Models
     public class Athlete
     {
         public int id { get; set; }
+        public string key { get; set; }
         public string name { get; set; }
         public string fullname { get; set; }
         public string birthDate { get; set; }
         public string birthPlace { get; set; }
         public string citizenship { get; set; }
-        public float height { get; set; }
-        public float weight { get; set; }
+        public double height { get; set; }
+        public double weight { get; set; }
         public string position { get; set; }
         public string agent { get; set; }
         public string currentInternational { get; set; }
         public string status { get; set; }
-        public int currentClub { get; set; }
+        public int? clubId { get; set; }
+        public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }
@@ -66,6 +70,7 @@ namespace escout.Models
     public class Club
     {
         public int id { get; set; }
+        public string key { get; set; }
         public string name { get; set; }
         public string fullname { get; set; }
         public string country { get; set; }
@@ -83,6 +88,7 @@ namespace escout.Models
     public class Competition
     {
         public int id { get; set; }
+        public string key { get; set; }
         public string name { get; set; }
         public string edition { get; set; }
         public int sportId { get; set; }
@@ -152,6 +158,16 @@ namespace escout.Models
         public int eventId { get; set; }
         public int? athleteId { get; set; }
         public int userId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class GameAthlete
+    {
+        public int id { get; set; }
+        public int status { get; set; }
+        public int gameId { get; set; }
+        public int athleteId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }

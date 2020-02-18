@@ -1,7 +1,8 @@
 ﻿using escout.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using escout.Services;
 
 namespace escout.Controllers
 {
@@ -15,9 +16,10 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("competition")]
-        public ActionResult<SvcResult> AddCompetition(Competition competition)
+        public ActionResult<Competition> CreateCompetition(Competition competition)
         {
-            return new NotFoundResult();
+            using var service = new CompetitionService();
+            return service.CreateCompetition(competition);
         }
 
         /// <summary>
@@ -28,7 +30,8 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<SvcResult> UpdateCompetition(Competition competition)
         {
-            return new NotFoundResult();
+            using var service = new CompetitionService();
+            return service.UpdateCompetition(competition) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -39,7 +42,8 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<SvcResult> DeleteCompetition(int id)
         {
-            return new NotFoundResult();
+            using var service = new CompetitionService();
+            return service.RemoveCompetition(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         /// <summary>
@@ -50,7 +54,8 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<Competition> GetCompetition(int id)
         {
-            return new NotFoundResult();
+            using var service = new CompetitionService();
+            return service.GetCompetition(id);
         }
 
         /// <summary>
@@ -61,7 +66,44 @@ namespace escout.Controllers
         [Route("competitions")]
         public ActionResult<List<Competition>> GetCompetitions()
         {
-            return new NotFoundResult();
+            using var service = new CompetitionService();
+            return service.GetCompetitions();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("competitionBoard")]
+        public ActionResult<CompetitionBoard> CreateCompetitionBoard(CompetitionBoard competitionBoard)
+        {
+            using var service = new CompetitionService();
+            return service.CreateCompetitionBoard(competitionBoard);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("competitionBoard")]
+        public ActionResult<SvcResult> UpdateCompetitionBoard(CompetitionBoard competitionBoard)
+        {
+            using var service = new CompetitionService();
+            return service.UpdateCompetitionBoard(competitionBoard) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("competitionBoard")]
+        public ActionResult<SvcResult> DeleteCompetitionBoard(CompetitionBoard competitionBoard)
+        {
+            using var service = new CompetitionService();
+            return service.RemoveCompetitionBoard(competitionBoard) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("competitionBoard")]
+        public ActionResult<CompetitionBoard> GetCompetitionBoard(int id)
+        {
+            using var service = new CompetitionService();
+            return service.GetCompetitionBoard(id);
         }
     }
 }

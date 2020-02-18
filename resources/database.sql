@@ -13,6 +13,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "athletes" (
   "id" SERIAL PRIMARY KEY,
+  "key" varchar,
   "name" varchar,
   "fullname" varchar,
   "birthDate" varchar,
@@ -24,7 +25,7 @@ CREATE TABLE "athletes" (
   "agent" varchar,
   "currentInternational" varchar,
   "status" varchar,
-  "currentClub" int,
+  "clubId" int,
   "imageId" int,
   "created" varchar,
   "updated" varchar
@@ -32,6 +33,7 @@ CREATE TABLE "athletes" (
 
 CREATE TABLE "clubs" (
   "id" SERIAL PRIMARY KEY,
+  "key" varchar,
   "name" varchar,
   "fullname" varchar,
   "country" varchar,
@@ -48,6 +50,7 @@ CREATE TABLE "clubs" (
 
 CREATE TABLE "competitions" (
   "id" SERIAL PRIMARY KEY,
+  "key" varchar,
   "name" varchar,
   "edition" varchar,
   "sportId" int,
@@ -97,6 +100,15 @@ CREATE TABLE "gameEvents" (
   "updated" varchar
 );
 
+CREATE TABLE "gameAthletes" (
+  "id" SERIAL PRIMARY KEY,
+  "status" int,
+  "gameId" int,
+  "athleteId" int,
+  "created" varchar,
+  "updated" varchar
+);
+
 CREATE TABLE "games" (
   "id" SERIAL PRIMARY KEY,
   "timeStart" varchar,
@@ -135,7 +147,7 @@ CREATE TABLE "images" (
 
 ALTER TABLE "users" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
-ALTER TABLE "athletes" ADD FOREIGN KEY ("currentClub") REFERENCES "clubs" ("id");
+ALTER TABLE "athletes" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
 
 ALTER TABLE "athletes" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
@@ -160,6 +172,10 @@ ALTER TABLE "gameEvents" ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
 ALTER TABLE "gameEvents" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 ALTER TABLE "gameEvents" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+
+ALTER TABLE "gameAthletes" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+
+ALTER TABLE "gameAthletes" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("homeId") REFERENCES "clubs" ("id");
 

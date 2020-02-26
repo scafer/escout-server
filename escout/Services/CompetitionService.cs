@@ -13,9 +13,9 @@ namespace escout.Services
         {
             db = new DataContext();
         }
-        public Competition CreateCompetition(Competition competition)
+        public List<Competition> CreateCompetition(List<Competition> competition)
         {
-            db.competitions.Add(competition);
+            db.competitions.AddRange(competition);
             db.SaveChanges();
             return competition;
         }
@@ -53,9 +53,9 @@ namespace escout.Services
             return db.competitions.ToList();
         }
 
-        public CompetitionBoard CreateCompetitionBoard(CompetitionBoard competitionBoard)
+        public List<CompetitionBoard> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
-            db.competitionBoards.Add(competitionBoard);
+            db.competitionBoards.AddRange(competitionBoard);
             db.SaveChanges();
             return competitionBoard;
         }

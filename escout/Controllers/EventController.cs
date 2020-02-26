@@ -16,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("event")]
-        public ActionResult<Event> CreateEvent(Event e)
+        public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
             using var service = new EventService();
             return service.CreateEvent(e);

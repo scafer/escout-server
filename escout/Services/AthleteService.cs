@@ -13,9 +13,9 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Athlete CreateAthlete(Athlete athlete)
+        public List<Athlete> CreateAthlete(List<Athlete> athlete)
         {
-            db.athletes.Add(athlete);
+            db.athletes.AddRange(athlete);
             db.SaveChanges();
             return athlete;
         }

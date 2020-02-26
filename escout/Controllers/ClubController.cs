@@ -16,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("club")]
-        public ActionResult<Club> CreateClub(Club club)
+        public ActionResult<List<Club>> CreateClub(List<Club> club)
         {
             using var service = new ClubService();
             return service.CreateClub(club);

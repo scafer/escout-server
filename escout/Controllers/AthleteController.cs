@@ -16,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("athlete")]
-        public ActionResult<Athlete> CreateAthlete(Athlete athlete)
+        public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athlete)
         {
             using var service = new AthleteService();
             return service.CreateAthlete(athlete);

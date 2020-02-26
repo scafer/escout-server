@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using escout.Services;
+using Newtonsoft.Json;
 
 namespace escout.Controllers
 {
@@ -64,10 +65,18 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("games")]
-        public ActionResult<List<Game>> GetGames()
+        public ActionResult<List<Game>> GetGames(string query)
         {
-            using var service = new GameService();
-            return service.GetGames();
+            try
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                using var service = new GameService();
+                return service.GetGames(criteria);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
         [HttpPost]

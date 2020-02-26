@@ -2,6 +2,7 @@
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace escout.Controllers
@@ -64,10 +65,18 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("athletes")]
-        public ActionResult<List<Athlete>> GetAthletes()
+        public ActionResult<List<Athlete>> GetAthletes(string query)
         {
-            using var service = new AthleteService();
-            return service.GetAthletes();
+            try
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                using var service = new AthleteService();
+                return service.GetAthletes(criteria);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
     }
 }

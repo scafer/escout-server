@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using escout.Services;
+using Newtonsoft.Json;
 
 namespace escout.Controllers
 {
@@ -64,10 +65,18 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("events")]
-        public ActionResult<List<Event>> GetEvents()
+        public ActionResult<List<Event>> GetEvents(string query)
         {
-            using var service = new EventService();
-            return service.GetEvents();
+            try
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                using var service = new EventService();
+                return service.GetEvents(criteria);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
     }
 }

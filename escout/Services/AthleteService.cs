@@ -1,4 +1,5 @@
 ﻿using escout.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,9 +49,10 @@ namespace escout.Services
             return db.athletes.FirstOrDefault(a => a.id == id);
         }
 
-        public List<Athlete> GetAthletes()
+        public List<Athlete> GetAthletes(FilterCriteria criteria)
         {
-            return db.athletes.ToList();
+            string query = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            return db.athletes.FromSqlRaw(query).ToList();
         }
     }
 }

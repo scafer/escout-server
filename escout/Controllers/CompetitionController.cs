@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using escout.Services;
+using Newtonsoft.Json;
 
 namespace escout.Controllers
 {
@@ -64,10 +65,18 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("competitions")]
-        public ActionResult<List<Competition>> GetCompetitions()
+        public ActionResult<List<Competition>> GetCompetitions(string query)
         {
-            using var service = new CompetitionService();
-            return service.GetCompetitions();
+            try
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                using var service = new CompetitionService();
+                return service.GetCompetitions(criteria);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
 ﻿using escout.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,9 +50,10 @@ namespace escout.Services
             return db.games.FirstOrDefault(g => g.id == id);
         }
 
-        public List<Game> GetGames()
+        public List<Game> GetGames(FilterCriteria criteria)
         {
-            return db.games.ToList();
+            string query = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            return db.games.FromSqlRaw(query).ToList();
         }
 
         public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent)
@@ -91,7 +93,7 @@ namespace escout.Services
 
         public List<GameEvent> GetGameEvents(int gameId)
         {
-            return db.gameEvents.ToList(); //TODO: Implement filter
+            return db.gameEvents.Where(g => g.gameId == gameId).ToList();
         }
 
         public List<GameAthlete> CreateGameAthlete(List<GameAthlete> gameAthlete)
@@ -126,7 +128,7 @@ namespace escout.Services
 
         public List<GameAthlete> GetGamesAthletes(int gameId)
         {
-            return db.gameAthletes.ToList(); //TODO: Implement filter
+            return db.gameAthletes.Where(g => g.gameId == gameId).ToList();
         }
     }
 }

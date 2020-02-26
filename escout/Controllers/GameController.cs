@@ -16,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("game")]
-        public ActionResult<Game> CreateGame(Game game)
+        public ActionResult<List<Game>> CreateGame(List<Game> game)
         {
             using var service = new GameService();
             return service.CreateGame(game);
@@ -73,7 +73,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("gameEvent")]
-        public ActionResult<GameEvent> CreateGameEvent(GameEvent gameEvent)
+        public ActionResult<List<GameEvent>> CreateGameEvent(List<GameEvent> gameEvent)
         {
             using var service = new GameService();
             return service.CreateGameEvent(gameEvent);
@@ -118,7 +118,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("gameAthlete")]
-        public ActionResult<GameAthlete> CreateGameAthlete(GameAthlete gameAthlete)
+        public ActionResult<List<GameAthlete>> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
             using var service = new GameService();
             return service.CreateGameAthlete(gameAthlete);

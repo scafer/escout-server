@@ -13,11 +13,11 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Event CreateEvent(Event evt)
+        public List<Event> CreateEvent(List<Event> e)
         {
-            db.events.Add(evt);
+            db.events.AddRange(e);
             db.SaveChanges();
-            return evt;
+            return e;
         }
 
         public bool UpdateEvent(Event evt)

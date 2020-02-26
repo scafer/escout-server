@@ -14,9 +14,9 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Game CreateGame(Game game)
+        public List<Game> CreateGame(List<Game> game)
         {
-            db.games.Add(game);
+            db.games.AddRange(game);
             db.SaveChanges();
             return game;
         }
@@ -54,9 +54,9 @@ namespace escout.Services
             return db.games.ToList();
         }
 
-        public GameEvent CreateGameEvent(GameEvent gameEvent)
+        public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent)
         {
-            db.gameEvents.Add(gameEvent);
+            db.gameEvents.AddRange(gameEvent);
             db.SaveChanges();
             return gameEvent;
         }
@@ -94,9 +94,9 @@ namespace escout.Services
             return db.gameEvents.ToList(); //TODO: Implement filter
         }
 
-        public GameAthlete CreateGameAthlete(GameAthlete gameAthlete)
+        public List<GameAthlete> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
-            db.gameAthletes.Add(gameAthlete);
+            db.gameAthletes.AddRange(gameAthlete);
             db.SaveChanges();
             return gameAthlete;
         }

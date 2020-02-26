@@ -1,4 +1,5 @@
 ﻿using escout.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace escout.Services
@@ -12,9 +13,9 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Image CreateImage(Image image)
+        public List<Image> CreateImage(List<Image> image)
         {
-            db.images.Add(image);
+            db.images.AddRange(image);
             db.SaveChanges();
             return image;
         }

@@ -13,9 +13,9 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Club CreateClub(Club club)
+        public List<Club> CreateClub(List<Club> club)
         {
-            db.clubs.Add(club);
+            db.clubs.AddRange(club);
             db.SaveChanges();
             return club;
         }

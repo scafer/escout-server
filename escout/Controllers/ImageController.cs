@@ -2,6 +2,7 @@
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace escout.Controllers
 {
@@ -15,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("image")]
-        public ActionResult<Image> CreateImage(Image image)
+        public ActionResult<List<Image>> CreateImage(List<Image> image)
         {
             using var service = new ImageService();
             return service.CreateImage(image);

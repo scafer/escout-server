@@ -13,9 +13,9 @@ namespace escout.Services
             db = new DataContext();
         }
 
-        public Sport CreateSport(Sport sport)
+        public List<Sport> CreateSport(List<Sport> sport)
         {
-            db.sports.Add(sport);
+            db.sports.AddRange(sport);
             db.SaveChanges();
             return sport;
         }

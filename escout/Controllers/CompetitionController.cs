@@ -16,7 +16,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("competition")]
-        public ActionResult<Competition> CreateCompetition(Competition competition)
+        public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
             using var service = new CompetitionService();
             return service.CreateCompetition(competition);
@@ -73,7 +73,7 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("competitionBoard")]
-        public ActionResult<CompetitionBoard> CreateCompetitionBoard(CompetitionBoard competitionBoard)
+        public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
             using var service = new CompetitionService();
             return service.CreateCompetitionBoard(competitionBoard);

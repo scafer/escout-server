@@ -1,4 +1,5 @@
 ﻿using escout.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,9 +49,10 @@ namespace escout.Services
             return db.events.FirstOrDefault(e => e.id == id);
         }
 
-        public List<Event> GetEvents()
+        public List<Event> GetEvents(FilterCriteria criteria)
         {
-            return db.events.ToList();
+            string query = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            return db.events.FromSqlRaw(query).ToList();
         }
     }
 }

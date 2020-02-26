@@ -98,7 +98,7 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("users")]
-        public ActionResult<List<User>> GetAllUsers()
+        public ActionResult<List<User>> GetUsers(string query)
         {
             var user = User.GetUser();
 

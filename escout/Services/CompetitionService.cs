@@ -2,6 +2,7 @@
 using escout.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace escout.Services
 {
@@ -48,9 +49,10 @@ namespace escout.Services
             return db.competitions.FirstOrDefault(c => c.id == id);
         }
 
-        public List<Competition> GetCompetitions()
+        public List<Competition> GetCompetitions(FilterCriteria criteria)
         {
-            return db.competitions.ToList();
+            string query = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            return db.competitions.FromSqlRaw(query).ToList();
         }
 
         public List<CompetitionBoard> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)

@@ -1,8 +1,7 @@
-﻿using System;
-using escout.Models;
+﻿using escout.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace escout.Services
 {

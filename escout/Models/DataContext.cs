@@ -1,7 +1,5 @@
 ﻿using escout.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 
 namespace escout.Models
 {

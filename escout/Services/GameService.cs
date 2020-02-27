@@ -1,6 +1,5 @@
 ﻿using escout.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -129,6 +128,21 @@ namespace escout.Services
         public List<GameAthlete> GetGamesAthletes(int gameId)
         {
             return db.gameAthletes.Where(g => g.gameId == gameId).ToList();
+        }
+
+        public GameData GetGameData(int gameId)
+        {
+            GameData gameData = new GameData();
+
+            gameData.game = GetGame(gameId);
+            gameData.clubs = db.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
+            gameData.athletes = db.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
+            gameData.competition = db.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);
+            gameData.sport = db.sports.FirstOrDefault(t => t.id == gameData.competition.sportId);
+            gameData.events = db.events.Where(t => t.sportId == gameData.sport.id).ToList();
+            gameData.gameEvents = db.gameEvents.Where(t => t.gameId == gameId).ToList();
+
+            return gameData;
         }
     }
 }

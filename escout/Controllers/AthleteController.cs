@@ -48,7 +48,7 @@ namespace escout.Controllers
         }
 
         /// <summary>
-        /// Get 1thlete by id.
+        /// Get athlete by id.
         /// </summary>
         [HttpGet]
         [Authorize]

@@ -1,9 +1,9 @@
 ﻿using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using escout.Services;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace escout.Controllers
 {
@@ -158,6 +158,15 @@ namespace escout.Controllers
         {
             using var service = new GameService();
             return service.GetGamesAthletes(gameId);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("gameData")]
+        public ActionResult<GameData> GetGameData(int gameId)
+        {
+            using var service = new GameService();
+            return service.GetGameData(gameId);
         }
     }
 }

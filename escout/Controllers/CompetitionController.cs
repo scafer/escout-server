@@ -1,9 +1,9 @@
 ﻿using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using escout.Services;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace escout.Controllers
 {

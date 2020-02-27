@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace escout.Models
+﻿namespace escout.Models
 {
     public class FilterCriteria
     {

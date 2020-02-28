@@ -25,8 +25,8 @@ namespace escout.Services
             try
             {
                 user.accessLevel = 0;
-                user.created = Configurations.GetDateTime();
-                user.updated = Configurations.GetDateTime();
+                user.created = Utils.GetDateTime();
+                user.updated = Utils.GetDateTime();
                 user.username = user.username.ToLower();
                 user.email = user.email.ToLower();
                 user.password = HashPassword(user.password);

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using escout.Helpers;
 
 namespace escout.Services
 {
@@ -16,6 +17,8 @@ namespace escout.Services
 
         public List<Game> CreateGame(List<Game> game)
         {
+            game.ToList().ForEach(g => g.created = Utils.GetDateTime());
+            game.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             db.games.AddRange(game);
             db.SaveChanges();
             return game;
@@ -25,6 +28,7 @@ namespace escout.Services
         {
             try
             {
+                game.updated = Utils.GetDateTime();
                 db.games.Update(game);
                 db.SaveChanges();
                 return true;
@@ -57,6 +61,8 @@ namespace escout.Services
 
         public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent)
         {
+            gameEvent.ToList().ForEach(g => g.created = Utils.GetDateTime());
+            gameEvent.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             db.gameEvents.AddRange(gameEvent);
             db.SaveChanges();
             return gameEvent;
@@ -66,6 +72,7 @@ namespace escout.Services
         {
             try
             {
+                gameEvent.updated = Utils.GetDateTime();
                 db.gameEvents.Update(gameEvent);
                 db.SaveChanges();
                 return true;
@@ -97,6 +104,8 @@ namespace escout.Services
 
         public List<GameAthlete> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
+            gameAthlete.ToList().ForEach(g => g.created = Utils.GetDateTime());
+            gameAthlete.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             db.gameAthletes.AddRange(gameAthlete);
             db.SaveChanges();
             return gameAthlete;
@@ -106,6 +115,7 @@ namespace escout.Services
         {
             try
             {
+                gameAthlete.updated = Utils.GetDateTime();
                 db.gameAthletes.Update(gameAthlete);
                 db.SaveChanges();
                 return true;

@@ -29,5 +29,10 @@ namespace escout.Helpers
 
             return sb.ToString();
         }
+
+        public static string GetDateTime()
+        {
+            return DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss");
+        }
     }
 }

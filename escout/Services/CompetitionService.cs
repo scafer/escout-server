@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using escout.Helpers;
 
 namespace escout.Services
 {
@@ -15,6 +16,8 @@ namespace escout.Services
         }
         public List<Competition> CreateCompetition(List<Competition> competition)
         {
+            competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            competition.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             db.competitions.AddRange(competition);
             db.SaveChanges();
             return competition;
@@ -24,6 +27,7 @@ namespace escout.Services
         {
             try
             {
+                competition.updated = Utils.GetDateTime();
                 db.competitions.Update(competition);
                 db.SaveChanges();
                 return true;
@@ -56,6 +60,8 @@ namespace escout.Services
 
         public List<CompetitionBoard> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
+            competitionBoard.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            competitionBoard.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             db.competitionBoards.AddRange(competitionBoard);
             db.SaveChanges();
             return competitionBoard;
@@ -65,6 +71,7 @@ namespace escout.Services
         {
             try
             {
+                competitionBoard.updated = Utils.GetDateTime();
                 db.competitionBoards.Update(competitionBoard);
                 db.SaveChanges();
                 return true;

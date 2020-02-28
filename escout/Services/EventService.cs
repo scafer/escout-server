@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using escout.Helpers;
 
 namespace escout.Services
 {
@@ -16,16 +17,19 @@ namespace escout.Services
 
         public List<Event> CreateEvent(List<Event> e)
         {
+            e.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             db.events.AddRange(e);
             db.SaveChanges();
             return e;
         }
 
-        public bool UpdateEvent(Event evt)
+        public bool UpdateEvent(Event e)
         {
             try
             {
-                db.events.Update(evt);
+                e.updated = Utils.GetDateTime();
+                db.events.Update(e);
                 db.SaveChanges();
                 return true;
             }

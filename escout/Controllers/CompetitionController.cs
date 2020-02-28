@@ -100,10 +100,10 @@ namespace escout.Controllers
         [HttpDelete]
         [Authorize]
         [Route("competitionBoard")]
-        public ActionResult<SvcResult> DeleteCompetitionBoard(CompetitionBoard competitionBoard)
+        public ActionResult<SvcResult> DeleteCompetitionBoard(int competitionId)
         {
             using var service = new CompetitionService();
-            return service.RemoveCompetitionBoard(competitionBoard) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            return service.RemoveCompetitionBoard(competitionId) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         [HttpGet]

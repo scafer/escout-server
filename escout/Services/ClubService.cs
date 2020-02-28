@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using escout.Helpers;
 
 namespace escout.Services
 {
@@ -16,6 +17,8 @@ namespace escout.Services
 
         public List<Club> CreateClub(List<Club> club)
         {
+            club.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            club.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             db.clubs.AddRange(club);
             db.SaveChanges();
             return club;
@@ -25,6 +28,7 @@ namespace escout.Services
         {
             try
             {
+                club.updated = Utils.GetDateTime();
                 db.clubs.Update(club);
                 db.SaveChanges();
                 return true;

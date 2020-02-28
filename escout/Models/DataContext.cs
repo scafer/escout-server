@@ -122,8 +122,8 @@ namespace escout.Models
         public string description { get; set; }
         public int sportId { get; set; }
         public int? imageId { get; set; }
-        public int created { get; set; }
-        public int updated { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
     }
 
     public class Game

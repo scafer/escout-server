@@ -1,6 +1,7 @@
 ﻿using escout.Models;
 using System.Collections.Generic;
 using System.Linq;
+using escout.Helpers;
 
 namespace escout.Services
 {
@@ -15,6 +16,8 @@ namespace escout.Services
 
         public List<Image> CreateImage(List<Image> image)
         {
+            image.ToList().ForEach(i => i.created = Utils.GetDateTime());
+            image.ToList().ForEach(i => i.updated = Utils.GetDateTime());
             db.images.AddRange(image);
             db.SaveChanges();
             return image;
@@ -24,6 +27,7 @@ namespace escout.Services
         {
             try
             {
+                image.updated = Utils.GetDateTime();
                 db.images.Update(image);
                 db.SaveChanges();
                 return true;

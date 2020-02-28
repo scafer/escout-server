@@ -16,6 +16,8 @@ namespace escout.Services
 
         public User CreateUser(User user)
         {
+            user.created = Utils.GetDateTime();
+            user.updated = Utils.GetDateTime();
             db.users.Add(user);
             db.SaveChanges();
             return user;
@@ -25,6 +27,7 @@ namespace escout.Services
         {
             try
             {
+                user.updated = Utils.GetDateTime();
                 db.users.Update(user);
                 db.SaveChanges();
                 return true;
@@ -50,6 +53,7 @@ namespace escout.Services
             if (user != null)
             {
                 var generatedPassword = Utils.StringGenerator();
+                user.updated = Utils.GetDateTime();
                 user.password = new AuthService().HashPassword(Utils.GenerateSha256String(generatedPassword));
                 db.users.Update(user);
                 db.SaveChanges();
@@ -65,6 +69,7 @@ namespace escout.Services
             try
             {
                 user.password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                user.updated = Utils.GetDateTime();
                 db.users.Update(user);
                 db.SaveChanges();
                 return true;
@@ -96,12 +101,6 @@ namespace escout.Services
         public bool CheckUsernameExist(string username)
         {
             var check = db.users.FirstOrDefault(u => u.username == username);
-            return check != null;
-        }
-
-        public bool CheckCredentials(string username, string email)
-        {
-            var check = db.users.FirstOrDefault(u => u.username == username || u.email == email);
             return check != null;
         }
     }

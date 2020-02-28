@@ -30,10 +30,5 @@ namespace escout.Helpers
             };
             return builder.ToString();
         }
-
-        public static string GetDateTime()
-        {
-            return DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss");
-        }
     }
 }

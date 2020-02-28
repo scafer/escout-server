@@ -79,10 +79,11 @@ namespace escout.Services
             catch { return false; }
         }
 
-        public bool RemoveCompetitionBoard(CompetitionBoard competitionBoard)
+        public bool RemoveCompetitionBoard(int id)
         {
             try
             {
+                var competitionBoard = db.competitionBoards.FirstOrDefault(c => c.id == id);
                 db.competitionBoards.Remove(competitionBoard);
                 db.SaveChanges();
                 return true;

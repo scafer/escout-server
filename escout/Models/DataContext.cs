@@ -138,6 +138,8 @@ namespace escout.Models
         public int homePenaltyScore { get; set; }
         public int visitorPenaltyScore { get; set; }
         public int status { get; set; }
+        public string type { get; set; }
+        public string location { get; set; }
         public int homeId { get; set; }
         public int visitorId { get; set; }
         public int? competitionId { get; set; }

@@ -120,6 +120,8 @@ CREATE TABLE "games" (
   "homePenaltyScore" int,
   "visitorPenaltyScore" int,
   "status" int,
+  "type" varchar,
+  "location" varchar,
   "homeId" int,
   "visitorId" int,
   "competitionId" int,

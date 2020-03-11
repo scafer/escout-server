@@ -162,6 +162,50 @@ namespace escout.Controllers
 
         [HttpGet]
         [Authorize]
+        [Route("gameUser")]
+        public ActionResult<List<GameUser>> GetGameUser(string query)
+        {
+            try
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                using var service = new GameService();
+                return service.GetGameUsers(criteria);
+            }
+            catch
+            {
+                return new NotFoundResult();
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("gameUser")]
+        public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)
+        {
+            using var service = new GameService();
+            return service.CreateGameUser(gameUsers);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("gameUser")]
+        public ActionResult<SvcResult> UpdateGameUser(GameUser gameUser)
+        {
+            using var service = new GameService();
+            return service.UpdateGameUser(gameUser) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("gameUser")]
+        public ActionResult<SvcResult> DeleteGameUser(GameUser gameUser)
+        {
+            using var service = new GameService();
+            return service.DeleteGameUser(gameUser) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+        }
+
+        [HttpGet]
+        [Authorize]
         [Route("gameData")]
         public ActionResult<GameData> GetGameData(int gameId)
         {

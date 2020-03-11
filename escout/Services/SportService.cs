@@ -55,7 +55,7 @@ namespace escout.Services
 
         public List<Sport> GetSports(FilterCriteria criteria)
         {
-            string query = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            string query = string.Format("SELECT * FROM sports WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
             return db.sports.FromSqlRaw(query).ToList();
         }
     }

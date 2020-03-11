@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using escout.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace escout.Services
 {
@@ -55,7 +57,7 @@ namespace escout.Services
 
         public List<Game> GetGames(FilterCriteria criteria)
         {
-            string query = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            string query = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
             return db.games.FromSqlRaw(query).ToList();
         }
 
@@ -153,6 +155,44 @@ namespace escout.Services
             gameData.gameEvents = db.gameEvents.Where(t => t.gameId == gameId).ToList();
 
             return gameData;
+        }
+
+        public ActionResult<List<GameUser>> GetGameUsers(FilterCriteria criteria)
+        {
+            string query = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+            return db.gameUsers.FromSqlRaw(query).ToList();
+        }
+
+        public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)
+        {
+            gameUsers.ToList().ForEach(g => g.created = Utils.GetDateTime());
+            gameUsers.ToList().ForEach(g => g.updated = Utils.GetDateTime());
+            db.gameUsers.AddRange(gameUsers);
+            db.SaveChanges();
+            return gameUsers;
+        }
+
+        public bool UpdateGameUser(GameUser gameUser)
+        {
+            try
+            {
+                gameUser.updated = Utils.GetDateTime();
+                db.gameUsers.Update(gameUser);
+                db.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+
+        public bool DeleteGameUser(GameUser gameUser)
+        {
+            try
+            {
+                db.gameUsers.Remove(gameUser);
+                db.SaveChanges();
+                return true;
+            }
+            catch { return false; }
         }
     }
 }

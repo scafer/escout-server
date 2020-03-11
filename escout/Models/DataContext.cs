@@ -12,6 +12,7 @@ namespace escout.Models
         public DbSet<CompetitionBoard> competitionBoards { get; set; }
         public DbSet<Event> events { get; set; }
         public DbSet<Game> games { get; set; }
+        public DbSet<GameUser> gameUsers { get; set; }
         public DbSet<GameEvent> gameEvents { get; set; }
         public DbSet<GameAthlete> gameAthletes { get; set; }
         public DbSet<Sport> sports { get; set; }
@@ -145,6 +146,16 @@ namespace escout.Models
         public int? competitionId { get; set; }
         public int? imageId { get; set; }
         public int userId { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class GameUser
+    {
+        public int id { get; set; }
+        public int userId { get; set; }
+        public int gameId { get; set; }
+        public int athleteId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }

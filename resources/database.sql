@@ -131,6 +131,15 @@ CREATE TABLE "games" (
   "updated" varchar
 );
 
+CREATE TABLE "gameUser" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" int,
+  "gameId" int,
+  "athleteId" int,
+  "created" varchar,
+  "updated" varchar
+);
+
 CREATE TABLE "sports" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar,
@@ -188,6 +197,12 @@ ALTER TABLE "games" ADD FOREIGN KEY ("competitionId") REFERENCES "competitions" 
 ALTER TABLE "games" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+
+ALTER TABLE "gameUser" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+
+ALTER TABLE "gameUser" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+
+ALTER TABLE "gameUser" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 ALTER TABLE "sports" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 

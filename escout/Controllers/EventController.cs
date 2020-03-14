@@ -69,9 +69,8 @@ namespace escout.Controllers
         {
             try
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 using var service = new EventService();
-                return service.GetEvents(criteria);
+                return service.GetEvents(query);
             }
             catch
             {

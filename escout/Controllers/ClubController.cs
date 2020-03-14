@@ -70,9 +70,8 @@ namespace escout.Controllers
         {
             try
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 using var service = new ClubService();
-                return service.GetClubs(criteria);
+                return service.GetClubs(query);
             }
             catch
             {

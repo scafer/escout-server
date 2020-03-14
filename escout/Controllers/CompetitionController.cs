@@ -69,9 +69,8 @@ namespace escout.Controllers
         {
             try
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 using var service = new CompetitionService();
-                return service.GetCompetitions(criteria);
+                return service.GetCompetitions(query);
             }
             catch
             {

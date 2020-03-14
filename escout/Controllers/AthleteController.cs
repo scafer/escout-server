@@ -63,15 +63,14 @@ namespace escout.Controllers
         /// Get athletes.
         /// </summary>
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         [Route("athletes")]
         public ActionResult<List<Athlete>> GetAthletes(string query)
         {
             try
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 using var service = new AthleteService();
-                return service.GetAthletes(criteria);
+                return service.GetAthletes(query);
             }
             catch
             {

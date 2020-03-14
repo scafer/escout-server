@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using escout.Helpers;
+using Newtonsoft.Json;
 
 namespace escout.Services
 {
@@ -53,10 +54,18 @@ namespace escout.Services
             return db.athletes.FirstOrDefault(a => a.id == id);
         }
 
-        public List<Athlete> GetAthletes(FilterCriteria criteria)
+        public List<Athlete> GetAthletes(string query)
         {
-            string query = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
-            return db.athletes.FromSqlRaw(query).ToList();
+            if (string.IsNullOrEmpty(query))
+            {
+                return db.athletes.ToList();
+            }
+            else
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                string q = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+                return db.athletes.FromSqlRaw(q).ToList();
+            }
         }
     }
 }

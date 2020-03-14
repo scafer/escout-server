@@ -5,6 +5,7 @@ using System.Linq;
 using escout.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Newtonsoft.Json;
 
 namespace escout.Services
 {
@@ -55,10 +56,18 @@ namespace escout.Services
             return db.games.FirstOrDefault(g => g.id == id);
         }
 
-        public List<Game> GetGames(FilterCriteria criteria)
+        public List<Game> GetGames(string query)
         {
-            string query = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
-            return db.games.FromSqlRaw(query).ToList();
+            if (string.IsNullOrEmpty(query))
+            {
+                return db.games.ToList();
+            }
+            else
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                string q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+                return db.games.FromSqlRaw(q).ToList();
+            }
         }
 
         public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent)
@@ -157,10 +166,18 @@ namespace escout.Services
             return gameData;
         }
 
-        public ActionResult<List<GameUser>> GetGameUsers(FilterCriteria criteria)
+        public ActionResult<List<GameUser>> GetGameUsers(string query)
         {
-            string query = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
-            return db.gameUsers.FromSqlRaw(query).ToList();
+            if (string.IsNullOrEmpty(query))
+            {
+                return db.gameUsers.ToList();
+            }
+            else
+            {
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                string q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+                return db.gameUsers.FromSqlRaw(q).ToList();
+            }
         }
 
         public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)

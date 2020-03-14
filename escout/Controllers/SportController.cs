@@ -69,9 +69,8 @@ namespace escout.Controllers
         {
             try
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 using var service = new SportService();
-                return service.GetSports(criteria);
+                return service.GetSports(query);
             }
             catch
             {

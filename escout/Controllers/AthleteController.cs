@@ -63,7 +63,7 @@ namespace escout.Controllers
         /// Get athletes.
         /// </summary>
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         [Route("athletes")]
         public ActionResult<List<Athlete>> GetAthletes(string query)
         {

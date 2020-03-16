@@ -65,7 +65,7 @@ namespace escout.Services
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+                string q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
                 return db.games.FromSqlRaw(q).ToList();
             }
         }
@@ -175,7 +175,7 @@ namespace escout.Services
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + criteria.condition + "'" + criteria.value + "';");
+                string q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
                 return db.gameUsers.FromSqlRaw(q).ToList();
             }
         }

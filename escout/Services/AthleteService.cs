@@ -1,9 +1,9 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using escout.Helpers;
-using Newtonsoft.Json;
 
 namespace escout.Services
 {

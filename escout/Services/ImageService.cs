@@ -1,7 +1,7 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using System.Collections.Generic;
 using System.Linq;
-using escout.Helpers;
 
 namespace escout.Services
 {

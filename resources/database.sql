@@ -131,7 +131,7 @@ CREATE TABLE "games" (
   "updated" varchar
 );
 
-CREATE TABLE "gameUser" (
+CREATE TABLE "gameUsers" (
   "id" SERIAL PRIMARY KEY,
   "userId" int,
   "gameId" int,

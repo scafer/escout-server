@@ -57,7 +57,7 @@ namespace escout.Services
                 user.password = new AuthService().HashPassword(Utils.GenerateSha256String(generatedPassword));
                 db.users.Update(user);
                 db.SaveChanges();
-                NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);
+                _ = NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);
                 return true;
             }
 

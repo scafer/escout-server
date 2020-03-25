@@ -1,12 +1,13 @@
 ﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
+using System.Threading.Tasks;
 
 namespace escout.Helpers
 {
-    public class NotificationHelper
+    public static class NotificationHelper
     {
-        public static async void SendEmail(string emailTo, string subject, string content)
+        public static async Task SendEmail(string emailTo, string subject, string content)
         {
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_KEY");
             var sendKey = Environment.GetEnvironmentVariable("SENDGRID_EMAIL");

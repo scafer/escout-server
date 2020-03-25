@@ -39,7 +39,7 @@ CREATE TABLE "clubs" (
   "country" varchar,
   "founded" varchar,
   "colors" varchar,
-  "members" numeric,
+  "members" varchar,
   "stadium" varchar,
   "address" varchar,
   "homepage" varchar,
@@ -131,7 +131,7 @@ CREATE TABLE "games" (
   "updated" varchar
 );
 
-CREATE TABLE "gameUser" (
+CREATE TABLE "gameUsers" (
   "id" SERIAL PRIMARY KEY,
   "userId" int,
   "gameId" int,

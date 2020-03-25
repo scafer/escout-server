@@ -39,7 +39,7 @@ CREATE TABLE "clubs" (
   "country" varchar,
   "founded" varchar,
   "colors" varchar,
-  "members" numeric,
+  "members" varchar,
   "stadium" varchar,
   "address" varchar,
   "homepage" varchar,

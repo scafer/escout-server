@@ -35,7 +35,7 @@ namespace escout.Services
                 userService.CreateUser(user);
 
                 if (user.notifications == 1)
-                    NotificationHelper.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
+                    _ = NotificationHelper.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
 
                 return true;
             }

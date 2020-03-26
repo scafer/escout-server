@@ -53,9 +53,9 @@ namespace escout
                     Version = "v1",
                     Contact = new OpenApiContact
                     {
-                        Name = "Sandro Ferreira",
+                        Name = Configurations.GetAppSettings("Developer.Name"),
                         Email = string.Empty,
-                        Url = new System.Uri("https://github.com/scafer")
+                        Url = new System.Uri(Configurations.GetAppSettings("Developer.Email"))
                     }
                 });
                 var securitySchema = new OpenApiSecurityScheme
@@ -72,9 +72,10 @@ namespace escout
                     }
                 };
                 c.AddSecurityDefinition("Bearer", securitySchema);
-
-                var securityRequirement = new OpenApiSecurityRequirement();
-                securityRequirement.Add(securitySchema, new[] { "Bearer" });
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    { securitySchema, new[] { "Bearer" } }
+                };
                 c.AddSecurityRequirement(securityRequirement);
             });
         }

@@ -351,3 +351,4 @@ MigrationBackup/
 
 # Sonarqube files (static code analysis)
 .sonarqube/
+sonarqube.bat

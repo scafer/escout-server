@@ -7,7 +7,7 @@ namespace escout.Services
 {
     public class ImageService : BaseService
     {
-        DataContext db;
+        readonly DataContext db;
 
         public ImageService()
         {

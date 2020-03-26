@@ -9,7 +9,7 @@ namespace escout.Services
 {
     public class CompetitionService : BaseService
     {
-        DataContext db;
+        readonly DataContext db;
 
         public CompetitionService()
         {

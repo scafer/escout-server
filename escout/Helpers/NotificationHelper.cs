@@ -15,7 +15,7 @@ namespace escout.Helpers
             var from = new EmailAddress(sendKey, "eScout App");
             var to = new EmailAddress(emailTo, emailTo);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
-            var response = await client.SendEmailAsync(msg);
+            await client.SendEmailAsync(msg);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace escout.Controllers
         /// Create athlete.
         /// </summary>
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         [Route("athlete")]
         public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athlete)
         {

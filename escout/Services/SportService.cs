@@ -9,7 +9,7 @@ namespace escout.Services
 {
     public class SportService : BaseService
     {
-        private DataContext db;
+        private readonly DataContext db;
 
         public SportService()
         {

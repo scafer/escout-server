@@ -10,7 +10,7 @@ namespace escout.Services
 {
     public class GameService : BaseService
     {
-        DataContext db;
+        readonly DataContext db;
 
         public GameService()
         {

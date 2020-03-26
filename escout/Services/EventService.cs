@@ -9,7 +9,7 @@ namespace escout.Services
 {
     public class EventService : BaseService
     {
-        DataContext db;
+        readonly DataContext db;
 
         public EventService()
         {

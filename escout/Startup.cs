@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace escout
 {
@@ -25,8 +26,15 @@ namespace escout
         {
             services.AddControllers();
 
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = 443;
+            });
+
             var settings = Configurations.GetAppSettings().Build().GetSection("JwtSettings").Get<JwtSettings>();
             var key = Encoding.ASCII.GetBytes(settings.SigningKey);
+
             services.AddAuthentication(c =>
             {
                 c.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

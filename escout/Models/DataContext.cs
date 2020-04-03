@@ -59,6 +59,7 @@ namespace escout.Models
         public double height { get; set; }
         public double weight { get; set; }
         public string position { get; set; }
+        public string positionKey { get; set; }
         public string agent { get; set; }
         public string currentInternational { get; set; }
         public string status { get; set; }
@@ -119,6 +120,7 @@ namespace escout.Models
     public class Event
     {
         public int id { get; set; }
+        public string key { get; set; }
         public string name { get; set; }
         public string description { get; set; }
         public int sportId { get; set; }

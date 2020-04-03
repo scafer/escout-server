@@ -13,7 +13,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "athletes" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar,
+  "key" varchar UNIQUE,
   "name" varchar,
   "fullname" varchar,
   "birthDate" varchar,
@@ -22,6 +22,7 @@ CREATE TABLE "athletes" (
   "height" float,
   "weight" float,
   "position" varchar,
+  "positionKey" int DEFAULT 0,
   "agent" varchar,
   "currentInternational" varchar,
   "status" varchar,
@@ -33,7 +34,7 @@ CREATE TABLE "athletes" (
 
 CREATE TABLE "clubs" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar,
+  "key" varchar UNIQUE,
   "name" varchar,
   "fullname" varchar,
   "country" varchar,
@@ -50,7 +51,7 @@ CREATE TABLE "clubs" (
 
 CREATE TABLE "competitions" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar,
+  "key" varchar UNIQUE,
   "name" varchar,
   "edition" varchar,
   "sportId" int,
@@ -78,6 +79,7 @@ CREATE TABLE "competitionBoards" (
 
 CREATE TABLE "events" (
   "id" SERIAL PRIMARY KEY,
+  "key" varchar UNIQUE,
   "name" varchar,
   "description" varchar,
   "sportId" int,

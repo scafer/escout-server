@@ -200,11 +200,11 @@ ALTER TABLE "games" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
 ALTER TABLE "games" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
 
-ALTER TABLE "gameUser" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+ALTER TABLE "gameUsers" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
 
-ALTER TABLE "gameUser" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+ALTER TABLE "gameUsers" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
 
-ALTER TABLE "gameUser" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
+ALTER TABLE "gameUsers" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 ALTER TABLE "sports" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 

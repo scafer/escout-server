@@ -59,7 +59,7 @@ namespace escout.Models
         public double height { get; set; }
         public double weight { get; set; }
         public string position { get; set; }
-        public string positionKey { get; set; }
+        public int positionKey { get; set; }
         public string agent { get; set; }
         public string currentInternational { get; set; }
         public string status { get; set; }

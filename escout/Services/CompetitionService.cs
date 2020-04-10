@@ -11,10 +11,8 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public CompetitionService()
-        {
-            db = new DataContext();
-        }
+        public CompetitionService() => db = new DataContext();
+
         public List<Competition> CreateCompetition(List<Competition> competition)
         {
             competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -55,16 +53,18 @@ namespace escout.Services
 
         public List<Competition> GetCompetitions(string query)
         {
+            List<Competition> competitions;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.competitions.ToList();
-            }
+                competitions = db.competitions.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.competitions.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                competitions = db.competitions.FromSqlRaw(q).ToList();
             }
+
+            return competitions;
         }
 
         public List<CompetitionBoard> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)

@@ -9,10 +9,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public UserService()
-        {
-            db = new DataContext();
-        }
+        public UserService() => db = new DataContext();
 
         public User CreateUser(User user)
         {

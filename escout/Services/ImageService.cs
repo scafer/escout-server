@@ -9,10 +9,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public ImageService()
-        {
-            db = new DataContext();
-        }
+        public ImageService() => db = new DataContext();
 
         public List<Image> CreateImage(List<Image> image)
         {

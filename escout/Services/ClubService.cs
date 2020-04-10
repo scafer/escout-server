@@ -11,10 +11,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public ClubService()
-        {
-            db = new DataContext();
-        }
+        public ClubService() => db = new DataContext();
 
         public List<Club> CreateClub(List<Club> club)
         {
@@ -56,16 +53,18 @@ namespace escout.Services
 
         public List<Club> GetClubs(string query)
         {
+            List<Club> clubs;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.clubs.ToList();
-            }
+                clubs = db.clubs.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM clubs WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.clubs.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM clubs WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                clubs = db.clubs.FromSqlRaw(q).ToList();
             }
+
+            return clubs;
         }
     }
 }

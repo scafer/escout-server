@@ -19,7 +19,6 @@ namespace escout.Controllers
         {
             using var service = new UserService();
             var result = service.ResetPassword(user.username, user.email);
-
             return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -32,15 +31,11 @@ namespace escout.Controllers
         public ActionResult<SvcResult> ChangePassword(string newPassword)
         {
             var user = User.GetUser();
-
             if (user == null)
-            {
                 return new NotFoundResult();
-            }
 
             using var userService = new UserService();
             var result = userService.ChangePassword(user, newPassword);
-
             return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -70,11 +65,8 @@ namespace escout.Controllers
         public ActionResult<SvcResult> RemoveUser()
         {
             var user = User.GetUser();
-
             if (user == null)
-            {
                 return new NotFoundResult();
-            }
 
             using var service = new UserService();
             var result = service.RemoveUser(user);

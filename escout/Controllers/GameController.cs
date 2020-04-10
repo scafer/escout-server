@@ -82,8 +82,9 @@ namespace escout.Controllers
         [Route("gameEvent")]
         public ActionResult<List<GameEvent>> CreateGameEvent(List<GameEvent> gameEvent)
         {
+            var user = User.GetUser();
             using var service = new GameService();
-            return service.CreateGameEvent(gameEvent);
+            return service.CreateGameEvent(gameEvent, user);
         }
 
         [HttpPut]

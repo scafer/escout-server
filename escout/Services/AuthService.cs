@@ -75,6 +75,7 @@ namespace escout.Services
                 Expires = expirationTime,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return new AuthData
@@ -93,9 +94,7 @@ namespace escout.Services
             using var agent = new UserService();
             var claimsIdentity = claims.Identity as ClaimsIdentity;
             var userId = claimsIdentity.Name;
-
             var user = agent.GetUser(int.Parse(userId));
-
             return user;
         }
     }

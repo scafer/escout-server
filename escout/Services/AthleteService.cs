@@ -11,10 +11,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public AthleteService()
-        {
-            db = new DataContext();
-        }
+        public AthleteService() => db = new DataContext();
 
         public List<Athlete> CreateAthlete(List<Athlete> athlete)
         {
@@ -56,16 +53,18 @@ namespace escout.Services
 
         public List<Athlete> GetAthletes(string query)
         {
+            List<Athlete> athletes;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.athletes.ToList();
-            }
+                athletes = db.athletes.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.athletes.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                athletes = db.athletes.FromSqlRaw(q).ToList();
             }
+
+            return athletes;
         }
     }
 }

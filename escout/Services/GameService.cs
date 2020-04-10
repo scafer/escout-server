@@ -12,10 +12,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public GameService()
-        {
-            db = new DataContext();
-        }
+        public GameService() => db = new DataContext();
 
         public List<Game> CreateGame(List<Game> game)
         {
@@ -57,20 +54,23 @@ namespace escout.Services
 
         public List<Game> GetGames(string query)
         {
+            List<Game> games;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.games.ToList();
-            }
+                games = db.games.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.games.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                games = db.games.FromSqlRaw(q).ToList();
             }
+
+            return games;
         }
 
-        public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent)
+        public List<GameEvent> CreateGameEvent(List<GameEvent> gameEvent, User user)
         {
+            gameEvent.ToList().ForEach(g => g.userId = user.id);
             gameEvent.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameEvent.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             db.gameEvents.AddRange(gameEvent);
@@ -152,8 +152,7 @@ namespace escout.Services
 
         public GameData GetGameData(int gameId)
         {
-            GameData gameData = new GameData();
-
+            var gameData = new GameData();
             gameData.game = GetGame(gameId);
             gameData.clubs = db.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
             gameData.athletes = db.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
@@ -167,16 +166,18 @@ namespace escout.Services
 
         public ActionResult<List<GameUser>> GetGameUsers(string query)
         {
+            List<GameUser> gamesUsers;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.gameUsers.ToList();
-            }
+                gamesUsers = db.gameUsers.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.gameUsers.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                gamesUsers = db.gameUsers.FromSqlRaw(q).ToList();
             }
+
+            return gamesUsers;
         }
 
         public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)

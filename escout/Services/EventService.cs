@@ -11,10 +11,7 @@ namespace escout.Services
     {
         readonly DataContext db;
 
-        public EventService()
-        {
-            db = new DataContext();
-        }
+        public EventService() => db = new DataContext();
 
         public List<Event> CreateEvent(List<Event> e)
         {
@@ -56,16 +53,18 @@ namespace escout.Services
 
         public List<Event> GetEvents(string query)
         {
+            List<Event> events;
+
             if (string.IsNullOrEmpty(query))
-            {
-                return db.events.ToList();
-            }
+                events = db.events.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                string q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return db.events.FromSqlRaw(q).ToList();
+                var q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                events = db.events.FromSqlRaw(q).ToList();
             }
+
+            return events;
         }
     }
 }

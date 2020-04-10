@@ -18,9 +18,7 @@ namespace escout.Helpers
         public static string GenerateSha256String(string inputString)
         {
             var sb = new StringBuilder();
-
             using var hash = SHA256.Create();
-
             var enc = Encoding.UTF8;
             var result = hash.ComputeHash(enc.GetBytes(inputString));
 

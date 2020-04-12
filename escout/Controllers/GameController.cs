@@ -80,11 +80,11 @@ namespace escout.Controllers
         [HttpPost]
         [Authorize]
         [Route("gameEvent")]
-        public ActionResult<List<GameEvent>> CreateGameEvent(List<GameEvent> gameEvent)
+        public ActionResult<SvcResult> CreateGameEvent(List<GameEvent> gameEvent)
         {
             var user = User.GetUser();
             using var service = new GameService();
-            return service.CreateGameEvent(gameEvent, user);
+            return service.CreateGameEvent(gameEvent, user).Count > 0 ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
         [HttpPut]

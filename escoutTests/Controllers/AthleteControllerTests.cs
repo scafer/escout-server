@@ -21,6 +21,7 @@ namespace escout.Controllers.Tests
             db.Database.ExecuteSqlRaw(Queries.CreateDatabase);
         }
 
+        [Ignore]
         [TestMethod]
         public void CreateAthleteTest()
         {
@@ -34,6 +35,7 @@ namespace escout.Controllers.Tests
             Assert.IsNotNull(result.Value);
         }
 
+        [Ignore]
         [TestMethod]
         public void UpdateAthleteTest()
         {
@@ -48,6 +50,7 @@ namespace escout.Controllers.Tests
             Assert.AreEqual(result.Value.errorCode, 0);
         }
 
+        [Ignore]
         [TestMethod]
         public void RemoveAthleteTest()
         {

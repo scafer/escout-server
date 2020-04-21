@@ -27,6 +27,7 @@ namespace escout.Controllers.Tests
             Assert.Fail();
         }
 
+        [Ignore]
         [TestMethod()]
         public void SignUpTest()
         {

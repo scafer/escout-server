@@ -2,6 +2,7 @@ using escout.Helpers;
 using escout.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,8 +26,15 @@ namespace escout
         {
             services.AddControllers();
 
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                options.HttpsPort = 443;
+            });
+
             var settings = Configurations.GetAppSettings().Build().GetSection("JwtSettings").Get<JwtSettings>();
             var key = Encoding.ASCII.GetBytes(settings.SigningKey);
+
             services.AddAuthentication(c =>
             {
                 c.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

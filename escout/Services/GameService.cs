@@ -3,6 +3,7 @@ using escout.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -199,6 +200,16 @@ namespace escout.Services
                 return true;
             }
             catch { return false; }
+        }
+
+        internal ActionResult<List<GameEvent>> AthleteEvents(int athleteId, int numberOfGames)
+        {
+            return db.gameEvents.Where(g => g.athleteId == athleteId).Take(numberOfGames).ToList();
+        }
+
+        internal ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
+        {
+            return db.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
         }
 
         public bool DeleteGameUser(GameUser gameUser)

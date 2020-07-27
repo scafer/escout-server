@@ -204,6 +204,24 @@ namespace escout.Controllers
 
         [HttpGet]
         [Authorize]
+        [Route("athleteEvents")]
+        public ActionResult<List<GameEvent>> AthleteEvents(int athleteId, int numberOfGames)
+        {
+            using var service = new GameService();
+            return service.AthleteEvents(athleteId, numberOfGames);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("athleteGameEvents")]
+        public ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
+        {
+            using var service = new GameService();
+            return service.AthleteGameEvents(athleteId, gameId);
+        }
+
+        [HttpGet]
+        [Authorize]
         [Route("gameData")]
         public ActionResult<GameData> GetGameData(int gameId)
         {

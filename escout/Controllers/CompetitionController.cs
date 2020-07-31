@@ -107,7 +107,7 @@ namespace escout.Controllers
         [HttpGet]
         [Authorize]
         [Route("competitionBoard")]
-        public ActionResult<CompetitionBoard> GetCompetitionBoard(int id)
+        public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
             using var service = new CompetitionService();
             return service.GetCompetitionBoard(id);

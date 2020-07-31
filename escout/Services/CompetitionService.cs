@@ -100,9 +100,9 @@ namespace escout.Services
             catch { return false; }
         }
 
-        public CompetitionBoard GetCompetitionBoard(int competitionId)
+        public List<CompetitionBoard> GetCompetitionBoard(int competitionId)
         {
-            return db.competitionBoards.FirstOrDefault(c => c.competitionId == competitionId);
+            return db.competitionBoards.Where(c => c.competitionId == competitionId).ToList();
         }
     }
 }

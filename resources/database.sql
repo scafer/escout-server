@@ -97,6 +97,7 @@ CREATE TABLE "gameEvents" (
   "gameId" int,
   "eventId" int,
   "athleteId" int,
+  "clubId" int,
   "userId" int,
   "created" varchar,
   "updated" varchar
@@ -183,6 +184,8 @@ ALTER TABLE "gameEvents" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
 ALTER TABLE "gameEvents" ADD FOREIGN KEY ("eventId") REFERENCES "events" ("id");
 
 ALTER TABLE "gameEvents" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
+
+ALTER TABLE "gameEvents" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
 
 ALTER TABLE "gameEvents" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
 

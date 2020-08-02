@@ -172,6 +172,7 @@ namespace escout.Models
         public int gameId { get; set; }
         public int eventId { get; set; }
         public int? athleteId { get; set; }
+        public int? clubId { get; set; }
         public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }

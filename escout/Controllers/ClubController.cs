@@ -77,5 +77,17 @@ namespace escout.Controllers
                 return new NotFoundResult();
             }
         }
+
+        /// <summary>
+        /// Get club statistics.
+        /// </summary>
+        [HttpGet]
+        [Authorize]
+        [Route("clubStatistics")]
+        public ActionResult<Statistics> GetAthleteStatistics(int clubId, int? gameId)
+        {
+            using var service = new ClubService();
+            return service.GetClubStatistics(clubId, gameId);
+        }
     }
 }

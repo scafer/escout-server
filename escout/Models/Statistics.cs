@@ -1,29 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace escout.Models
 {
     public class Statistics
     {
-        public List<GameStats> gameStats { get; set; }
-        public List<TotalStats> totalStats { get; set; }
+        public List<GameStats> GameStats { get; set; }
+        public List<TotalStats> TotalStats { get; set; }
+
+        public Statistics()
+        {
+            GameStats = new List<GameStats>();
+            TotalStats = new List<TotalStats>();
+        }
     }
 
     public class GameStats
     {
-        public int gameId { get; set; }
-        public Event evt { get; set; }
-        public int count { get; set; }
+        public int GameId { get; set; }
+        public int Count { get; set; }
+        public int EventId { get; set; }
     }
 
     public class TotalStats
     {
-        public int count { get; set; }
-        public double average { get; set; }
-        public double median { get; set; }
-        public double standardDeviation { get; set; }
-        public Event evt { get; set; }
+        public int Count { get; set; }
+        public double Average { get; set; }
+        public double Median { get; set; }
+        public double StandardDeviation { get; set; }
+        public int EventId { get; set; }
+    }
+
+    public class Counter
+    {
+        public int Count { get; set; }
+        public int EventId { get; set; }
     }
 }

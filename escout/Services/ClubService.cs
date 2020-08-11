@@ -66,5 +66,64 @@ namespace escout.Services
 
             return clubs;
         }
+
+        public Statistics GetClubStatistics(int clubId, int? gameId)
+        {
+            var gameEvents = new List<GameEvent>();
+            var totalStatistics = new Statistics();
+            var totalEvents = new List<GameEvent>();
+            var count = new List<Counter>();
+
+            if (gameId != null)
+                gameEvents = db.gameEvents.Where(x => x.clubId == clubId && x.gameId == gameId).ToList();
+            else
+                gameEvents = db.gameEvents.Where(x => x.clubId == clubId).ToList();
+
+            var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
+
+            foreach (int i in uniqueGames)
+            {
+                var game = gameEvents.Where(x => x.gameId == i).ToList();
+                foreach (Event e in db.events)
+                {
+                    var events = game.Where(x => x.eventId == e.id).ToList();
+                    var gameStats = new GameStats
+                    {
+                        EventId = e.id,
+                        Count = events.Count(),
+                        GameId = i
+                    };
+
+                    var counter = new Counter
+                    {
+                        Count = gameStats.Count,
+                        EventId = e.id
+                    };
+
+                    count.Add(counter);
+                    totalStatistics.GameStats.Add(gameStats);
+                }
+            }
+
+            foreach (Event e in db.events)
+            {
+                var counter = new List<Counter>();
+                counter = count.Where(x => x.EventId == e.id).ToList();
+                totalEvents = gameEvents.Where(x => x.eventId == e.id).ToList();
+
+                var totalStats = new TotalStats
+                {
+                    EventId = e.id,
+                    Count = totalEvents.Count(),
+                    Average = counter.Average(x => x.Count),
+                    StandardDeviation = 1,
+                    Median = 1
+                };
+
+                totalStatistics.TotalStats.Add(totalStats);
+            }
+
+            return totalStatistics;
+        }
     }
 }

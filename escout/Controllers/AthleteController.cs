@@ -76,5 +76,14 @@ namespace escout.Controllers
                 return new NotFoundResult();
             }
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("athleteStatistics")]
+        public ActionResult<Statistics> GetAthleteStatistics(int athleteId, int? gameId)
+        {
+            using var service = new AthleteService();
+            return service.GetAthleteStatistics(athleteId, gameId);
+        }
     }
 }

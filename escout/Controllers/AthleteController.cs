@@ -77,6 +77,9 @@ namespace escout.Controllers
             }
         }
 
+        /// <summary>
+        /// Get athlete statistics.
+        /// </summary>
         [HttpGet]
         [Authorize]
         [Route("athleteStatistics")]

@@ -1,9 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,13 +67,13 @@ namespace escout.Services
             return athletes;
         }
 
-        public ActionResult<Statistics> GetAthleteStatistics(int athleteId, int? gameId)
+        public Statistics GetAthleteStatistics(int athleteId, int? gameId)
         {
             var gameEvents = new List<GameEvent>();
             var totalStatistics = new Statistics();
             var totalEvents = new List<GameEvent>();
-            var count = new List<xpto>();    
-            
+            var count = new List<Counter>();
+
             if (gameId != null)
                 gameEvents = db.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
             else
@@ -83,46 +81,49 @@ namespace escout.Services
 
             var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
 
-            foreach(int i in uniqueGames)
+            foreach (int i in uniqueGames)
             {
-                var game = gameEvents.Where(x => x.gameId == i);
-                foreach(Event e in db.events)
+                var game = gameEvents.Where(x => x.gameId == i).ToList();
+                foreach (Event e in db.events)
                 {
-                    var events = game.Where(x => x.eventId == e.id);
-                    GameStats gameStats = new GameStats();
-                    gameStats.evt = e;
-                    gameStats.count = events.Count();
-                    gameStats.gameId = i;
-                    totalStatistics.gameStats.Add(gameStats);
-                    var x = new xpto();
-                    x.count = gameStats.count;
-                    x.eventId = e.id;
-                    count.Add(x);
+                    var events = game.Where(x => x.eventId == e.id).ToList();
+                    var gameStats = new GameStats
+                    {
+                        EventId = e.id,
+                        Count = events.Count(),
+                        GameId = i
+                    };
+
+                    var counter = new Counter
+                    {
+                        Count = gameStats.Count,
+                        EventId = e.id
+                    };
+
+                    count.Add(counter);
+                    totalStatistics.GameStats.Add(gameStats);
                 }
             }
 
             foreach (Event e in db.events)
             {
-                var x = new List<xpto>();
-                x = count.Where(x => x.eventId == e.id).ToList();
-                totalEvents = db.gameEvents.Where(x => x.eventId == e.id).ToList();
+                var counter = new List<Counter>();
+                counter = count.Where(x => x.EventId == e.id).ToList();
+                totalEvents = gameEvents.Where(x => x.eventId == e.id).ToList();
 
-                TotalStats totalStats = new TotalStats();
-                totalStats.evt = e;
-                totalStats.count = totalEvents.Count();
-                totalStats.average = x.Average(x => x.count);
-                totalStats.standardDeviation = 1;
-                totalStats.median = 1;
-                totalStatistics.totalStats.Add(totalStats);
+                var totalStats = new TotalStats
+                {
+                    EventId = e.id,
+                    Count = totalEvents.Count(),
+                    Average = counter.Average(x => x.Count),
+                    StandardDeviation = 1,
+                    Median = 1
+                };
+
+                totalStatistics.TotalStats.Add(totalStats);
             }
 
             return totalStatistics;
         }
-    }
-
-    public class xpto
-    {
-        public int count { get; set; }
-        public int eventId { get; set; }
     }
 }

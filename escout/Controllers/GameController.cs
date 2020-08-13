@@ -219,5 +219,14 @@ namespace escout.Controllers
             using var service = new GameService();
             return service.GetGameData(gameId);
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("gameStatistics")]
+        public ActionResult<List<ClubStats>> GetGameStatistics(int gameId)
+        {
+            using var service = new GameService();
+            return service.GetGameStatistics(gameId);
+        }
     }
 }

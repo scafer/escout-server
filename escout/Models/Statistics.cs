@@ -35,4 +35,11 @@ namespace escout.Models
         public int Count { get; set; }
         public int EventId { get; set; }
     }
+
+    public class ClubStats
+    {
+        public int Count { get; set; }
+        public int EventId { get; set; }
+        public int ClubId { get; set; }
+    }
 }

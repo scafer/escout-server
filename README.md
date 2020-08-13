@@ -1,7 +1,7 @@
 # eScout - Server
 
 <a href="#">
-    <img src="https://github.com/scafer/ereferee-client/blob/master/ereferee/ereferee.Android/Resources/drawable/ereferee_icon.png?raw=true" align="right" width="10%" height="10%"/>
+    <img src="resources/images/escout-logo_icon-BLUE.svg" align="right" width="10%" height="10%"/>
 </a>
 
 **By:** Sandro Ferreira - Feb. 3, 2020

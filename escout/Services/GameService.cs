@@ -1,6 +1,5 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -164,7 +163,7 @@ namespace escout.Services
             return gameData;
         }
 
-        public ActionResult<List<GameUser>> GetGameUsers(string query)
+        public List<GameUser> GetGameUsers(string query)
         {
             List<GameUser> gamesUsers;
 
@@ -180,7 +179,7 @@ namespace escout.Services
             return gamesUsers;
         }
 
-        public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)
+        public List<GameUser> CreateGameUser(List<GameUser> gameUsers)
         {
             gameUsers.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameUsers.ToList().ForEach(g => g.updated = Utils.GetDateTime());
@@ -201,7 +200,7 @@ namespace escout.Services
             catch { return false; }
         }
 
-        internal ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
+        public List<GameEvent> AthleteGameEvents(int athleteId, int gameId)
         {
             return db.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
         }
@@ -215,6 +214,35 @@ namespace escout.Services
                 return true;
             }
             catch { return false; }
+        }
+
+        public List<ClubStats> GetGameStatistics(int gameId)
+        {
+            var stats = new List<ClubStats>();
+
+            var gameEvents = db.gameEvents.Where(x => x.gameId == gameId).ToList();
+            var uniqueClubs = gameEvents.Select(x => x.clubId).Distinct().ToList();
+
+            foreach (var i in uniqueClubs)
+            {
+                if(i != null)
+                {
+                    var clubEvents = gameEvents.Where(x => x.clubId == i).ToList();
+                    foreach (Event e in db.events)
+                    {
+                        var evt = clubEvents.Where(x => x.eventId == e.id).ToList();
+                        var stat = new ClubStats
+                        {
+                            Count = evt.Count(),
+                            ClubId = int.Parse(i.ToString()),
+                            EventId = e.id
+                        };
+                        stats.Add(stat);
+                    }
+                }
+            }
+
+            return stats;
         }
     }
 }

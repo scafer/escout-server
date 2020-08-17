@@ -151,8 +151,10 @@ namespace escout.Services
 
         public GameData GetGameData(int gameId)
         {
-            var gameData = new GameData();
-            gameData.game = GetGame(gameId);
+            var gameData = new GameData
+            {
+                game = GetGame(gameId)
+            };
             gameData.clubs = db.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
             gameData.athletes = db.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
             gameData.competition = db.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);

@@ -62,15 +62,16 @@ namespace escout.Controllers
         [HttpDelete]
         [Authorize]
         [Route("user")]
-        public ActionResult<SvcResult> RemoveUser()
+        public ActionResult<SvcResult> RemoveUser(User user)
         {
-            var user = User.GetUser();
-            if (user == null)
-                return new NotFoundResult();
-
-            using var service = new UserService();
-            var result = service.RemoveUser(user);
-            return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            if (user.accessLevel == 0)
+            {
+                using var service = new UserService();
+                var result = service.RemoveUser(user);
+                return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            }
+            else
+                return new UnauthorizedResult();
         }
 
         /// <summary>
@@ -95,17 +96,14 @@ namespace escout.Controllers
             var user = User.GetUser();
 
             if (user == null)
-            {
                 return new NotFoundResult();
-            }
-
-            if (user.accessLevel == 0)
+            else if (user.accessLevel == 0)
             {
                 using var service = new UserService();
                 return service.GetUsers();
             }
-
-            return new NotFoundResult();
+            else
+                return new UnauthorizedResult();
         }
     }
 }

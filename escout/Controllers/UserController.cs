@@ -1,4 +1,4 @@
-﻿using escout.Models;
+﻿n using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

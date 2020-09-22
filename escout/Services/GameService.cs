@@ -183,6 +183,13 @@ namespace escout.Services
 
         public List<GameUser> CreateGameUser(List<GameUser> gameUsers)
         {
+            foreach (var gameUser in gameUsers)
+            {
+                var obj = db.gameUsers.Where(c => c.gameId == gameUser.gameId && c.userId == gameUser.userId && c.athleteId == gameUser.athleteId).ToList();
+                if (obj.Count != 0)
+                    gameUsers.Remove(gameUser);
+            }
+
             gameUsers.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameUsers.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             db.gameUsers.AddRange(gameUsers);
@@ -227,7 +234,7 @@ namespace escout.Services
 
             foreach (var i in uniqueClubs)
             {
-                if(i != null)
+                if (i != null)
                 {
                     var clubEvents = gameEvents.Where(x => x.clubId == i).ToList();
                     foreach (Event e in db.events)

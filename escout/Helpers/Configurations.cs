@@ -24,7 +24,7 @@ namespace escout.Helpers
 
         public static string GetNpgsqlConnectionString()
         {
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "postgres://postgres:password@localhost:5432/postgres";
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
 

@@ -1,3 +1,5 @@
+-- Create Database Schema
+
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
   "username" varchar UNIQUE NOT NULL,

@@ -1,4 +1,4 @@
-name: .NET Core
+name: .NET 5.0
 
 on:
   push:
@@ -13,8 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1.6.0
       with:
         dotnet-version: 3.1.101
     - name: Install dependencies

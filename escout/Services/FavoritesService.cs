@@ -16,7 +16,22 @@ namespace escout.Services
         {
             try
             {
-                if (db.favorites.FirstOrDefault(a => a.id == favorite.id) == null)
+                if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) == null)
+                {
+                    db.favorites.Add(favorite);
+                    db.SaveChanges();
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) == null)
+                {
+                    db.favorites.Add(favorite);
+                    db.SaveChanges();
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) == null)
+                {
+                    db.favorites.Add(favorite);
+                    db.SaveChanges();
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) == null)
                 {
                     db.favorites.Add(favorite);
                     db.SaveChanges();

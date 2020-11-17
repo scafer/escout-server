@@ -1,5 +1,3 @@
--- Create Database Schema
-
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
   "username" varchar UNIQUE NOT NULL,
@@ -161,6 +159,17 @@ CREATE TABLE "images" (
   "updated" varchar
 );
 
+CREATE TABLE "favorites" (
+  "id" SERIAL PRIMARY KEY,
+  "userId" int,
+  "athleteId" int,
+  "clubId" int,
+  "competitionId" int,
+  "gameId" int,
+  "created" varchar,
+  "updated" varchar
+);
+
 ALTER TABLE "users" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
 
 ALTER TABLE "athletes" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
@@ -212,5 +221,15 @@ ALTER TABLE "gameUsers" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
 ALTER TABLE "gameUsers" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 ALTER TABLE "sports" ADD FOREIGN KEY ("imageId") REFERENCES "images" ("id");
+
+ALTER TABLE "favorites" ADD FOREIGN KEY ("userId") REFERENCES "users" ("id");
+
+ALTER TABLE "favorites" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
+
+ALTER TABLE "favorites" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
+
+ALTER TABLE "favorites" ADD FOREIGN KEY ("competitionId") REFERENCES "competitions" ("id");
+
+ALTER TABLE "favorites" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
 
 COMMENT ON COLUMN "gameEvents"."key" IS 'timestamp$userId';

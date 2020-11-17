@@ -17,6 +17,7 @@ namespace escout.Models
         public DbSet<GameAthlete> gameAthletes { get; set; }
         public DbSet<Sport> sports { get; set; }
         public DbSet<Image> images { get; set; }
+        public DbSet<Favorite> favorites { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -193,6 +194,18 @@ namespace escout.Models
         public int id { get; set; }
         public string image { get; set; }
         public string imageUrl { get; set; }
+        public string created { get; set; }
+        public string updated { get; set; }
+    }
+
+    public class Favorite
+    {
+        public int id { get; set; }
+        public int userId { get; set; }
+        public int? athleteId { get; set; }
+        public int? clubId { get; set; }
+        public int? competitionId { get; set; }
+        public int? gameId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }

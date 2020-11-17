@@ -81,8 +81,7 @@ namespace escout.Services
                 favorites = db.favorites.ToList();
             else
             {
-                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                var q = string.Format("SELECT * FROM favorites WHERE " + "userId=" + userId + " AND " + criteria.fieldName + " IS NOT NULL;");
+                var q = string.Format("SELECT * FROM favorites WHERE \"userId\"="+ userId + " AND \"" + query + "\" IS NOT NULL;");
                 favorites = db.favorites.FromSqlRaw(q).ToList();
             }
 

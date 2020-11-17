@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace escout.Helpers
 {
@@ -31,23 +32,25 @@ namespace escout.Helpers
             return stdDev;
         }
 
-        public static double Median(int[] values)
+        public static double Median(int[] numbers)
         {
             double median = 0.0;
 
             try
             {
-                if (values == null || values.Length == 0)
-                    Console.WriteLine("Median of empty array not defined.");
+                int numberCount = numbers.Count();
+                int halfIndex = numbers.Count() / 2;
+                var sortedNumbers = numbers.OrderBy(n => n);
 
-                //make sure the list is sorted, but use a new array
-                double[] sortedPNumbers = (double[])values.Clone();
-                Array.Sort(sortedPNumbers);
-
-                //get the median
-                int size = sortedPNumbers.Length;
-                int mid = size / 2;
-                median = (size % 2 != 0) ? (double)sortedPNumbers[mid] : ((double)sortedPNumbers[mid] + (double)sortedPNumbers[mid - 1]) / 2;
+                if ((numberCount % 2) == 0)
+                {
+                    median = ((sortedNumbers.ElementAt(halfIndex) +
+                        sortedNumbers.ElementAt((halfIndex - 1))) / 2);
+                }
+                else
+                {
+                    median = sortedNumbers.ElementAt(halfIndex);
+                }
             }
             catch (Exception ex)
             {

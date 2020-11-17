@@ -16,32 +16,38 @@ namespace escout.Services
         {
             try
             {
-                if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) == null)
+                if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null)
                 {
-                    db.favorites.Add(favorite);
-                    db.SaveChanges();
-                }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) == null)
-                {
-                    db.favorites.Add(favorite);
-                    db.SaveChanges();
-                }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) == null)
-                {
-                    db.favorites.Add(favorite);
-                    db.SaveChanges();
-                }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) == null)
-                {
-                    db.favorites.Add(favorite);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    var f = db.favorites.FirstOrDefault(a => a.id == favorite.id);
+                    var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);
                     db.favorites.Remove(f);
                     db.SaveChanges();
                     return true;
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null)
+                {
+                    var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId);
+                    db.favorites.Remove(f);
+                    db.SaveChanges();
+                    return true;
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null)
+                {
+                    var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId);
+                    db.favorites.Remove(f);
+                    db.SaveChanges();
+                    return true;
+                }
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null)
+                {
+                    var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId);
+                    db.favorites.Remove(f);
+                    db.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    db.favorites.Add(favorite);
+                    db.SaveChanges();
                 }
                 return true;
             }

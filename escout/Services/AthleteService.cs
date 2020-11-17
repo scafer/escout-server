@@ -116,8 +116,8 @@ namespace escout.Services
                     EventId = e.id,
                     Count = totalEvents.Count(),
                     Average = counter.Average(x => x.Count),
-                    StandardDeviation = 1,
-                    Median = 1
+                    StandardDeviation = GameStatistics.StdDev(counter.Select(x => x.Count).ToArray()),
+                    Median = GameStatistics.Median(counter.Select(x => x.Count).ToArray())
                 };
 
                 totalStatistics.TotalStats.Add(totalStats);

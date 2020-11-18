@@ -16,28 +16,28 @@ namespace escout.Services
         {
             try
             {
-                if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null)
+                if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null && favorite.athleteId != null)
                 {
                     var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);
                     db.favorites.Remove(f);
                     db.SaveChanges();
                     return true;
                 }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null)
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null && favorite.clubId != null)
                 {
                     var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId);
                     db.favorites.Remove(f);
                     db.SaveChanges();
                     return true;
                 }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null)
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null && favorite.competitionId != null)
                 {
                     var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId);
                     db.favorites.Remove(f);
                     db.SaveChanges();
                     return true;
                 }
-                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null)
+                else if (db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null && favorite.gameId != null)
                 {
                     var f = db.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId);
                     db.favorites.Remove(f);

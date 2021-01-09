@@ -1,48 +1,40 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
 
 namespace escout.Controllers.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class AuthenticationControllerTests
     {
-        private DataContext db = new DataContext();
-        AuthenticationController controller = new AuthenticationController();
+        private AuthenticationController controller;
+        private DataContext context;
 
         [TestInitialize]
         public void Setup()
         {
-            Environment.SetEnvironmentVariable("DATABASE_URL", "postgres://postgres:password@localhost:5432/postgres");
-            db.Database.ExecuteSqlRaw(Queries.CreateDatabase);
+            context = TestUtils.GetMockContext();
+            controller = new AuthenticationController(context);
         }
 
-        [Ignore]
-        [TestMethod()]
-        public void SignInTest()
+        [TestCleanup]
+        public void TearDown()
         {
-            Assert.Fail();
+            context.Database.EnsureDeleted();
         }
 
-        [Ignore]
-        [TestMethod()]
+        [TestMethod]
         public void SignUpTest()
         {
-            var user = new User { username = "test", password = "test", email = "test" };
+            var user = new User() { username = "test", email = "test@email.com", password = "test" };
+
             var result = controller.SignUp(user);
+            var userRow = context.users.FirstOrDefault();
 
-            Assert.IsNotNull(db.users.FirstOrDefault(t => t.id == user.id));
             Assert.AreEqual(result.Value.errorCode, 0);
-        }
-
-        [Ignore]
-        [TestMethod()]
-        public void AuthenticatedTest()
-        {
-            Assert.Fail();
+            Assert.AreEqual(user.username, userRow.username);
+            Assert.AreEqual(user.email, userRow.email);
         }
     }
 }

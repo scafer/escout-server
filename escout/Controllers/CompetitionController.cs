@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class CompetitionController : ControllerBase
     {
+        private readonly DataContext context;
+        public CompetitionController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Create competition.
         /// </summary>
@@ -18,7 +21,7 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.CreateCompetition(competition);
         }
 
@@ -30,7 +33,7 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<SvcResult> UpdateCompetition(Competition competition)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.UpdateCompetition(competition) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -42,7 +45,7 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<SvcResult> DeleteCompetition(int id)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.RemoveCompetition(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -54,7 +57,7 @@ namespace escout.Controllers
         [Route("competition")]
         public ActionResult<Competition> GetCompetition(int id)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.GetCompetition(id);
         }
 
@@ -68,7 +71,7 @@ namespace escout.Controllers
         {
             try
             {
-                using var service = new CompetitionService();
+                using var service = new CompetitionService(context);
                 return service.GetCompetitions(query);
             }
             catch
@@ -82,7 +85,7 @@ namespace escout.Controllers
         [Route("competitionBoard")]
         public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.CreateCompetitionBoard(competitionBoard);
         }
 
@@ -91,7 +94,7 @@ namespace escout.Controllers
         [Route("competitionBoard")]
         public ActionResult<SvcResult> UpdateCompetitionBoard(CompetitionBoard competitionBoard)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.UpdateCompetitionBoard(competitionBoard) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -100,7 +103,7 @@ namespace escout.Controllers
         [Route("competitionBoard")]
         public ActionResult<SvcResult> DeleteCompetitionBoard(int id)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.RemoveCompetitionBoard(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -109,7 +112,7 @@ namespace escout.Controllers
         [Route("competitionBoard")]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
-            using var service = new CompetitionService();
+            using var service = new CompetitionService(context);
             return service.GetCompetitionBoard(id);
         }
     }

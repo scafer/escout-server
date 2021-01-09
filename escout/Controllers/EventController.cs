@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
+        private readonly DataContext context;
+        public EventController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Create event.
         /// </summary>
@@ -18,7 +21,7 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
-            using var service = new EventService();
+            using var service = new EventService(context);
             return service.CreateEvent(e);
         }
 
@@ -30,7 +33,7 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<SvcResult> UpdateEvent(Event e)
         {
-            using var service = new EventService();
+            using var service = new EventService(context);
             return service.UpdateEvent(e) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -42,7 +45,7 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<SvcResult> DeleteEvent(int id)
         {
-            using var service = new EventService();
+            using var service = new EventService(context);
             return service.RemoveEvent(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -54,7 +57,7 @@ namespace escout.Controllers
         [Route("event")]
         public ActionResult<Event> GetEvent(int id)
         {
-            using var service = new EventService();
+            using var service = new EventService(context);
             return service.GetEvent(id);
         }
 
@@ -68,7 +71,7 @@ namespace escout.Controllers
         {
             try
             {
-                using var service = new EventService();
+                using var service = new EventService(context);
                 return service.GetEvents(query);
             }
             catch

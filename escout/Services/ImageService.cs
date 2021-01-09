@@ -7,16 +7,15 @@ namespace escout.Services
 {
     public class ImageService : BaseService
     {
-        readonly DataContext db;
-
-        public ImageService() => db = new DataContext();
+        private readonly DataContext context;
+        public ImageService(DataContext context) => this.context = context;
 
         public List<Image> CreateImage(List<Image> image)
         {
             image.ToList().ForEach(i => i.created = Utils.GetDateTime());
             image.ToList().ForEach(i => i.updated = Utils.GetDateTime());
-            db.images.AddRange(image);
-            db.SaveChanges();
+            context.images.AddRange(image);
+            context.SaveChanges();
             return image;
         }
 
@@ -25,8 +24,8 @@ namespace escout.Services
             try
             {
                 image.updated = Utils.GetDateTime();
-                db.images.Update(image);
-                db.SaveChanges();
+                context.images.Update(image);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -36,9 +35,9 @@ namespace escout.Services
         {
             try
             {
-                var image = db.images.FirstOrDefault(i => i.id == id);
-                db.images.Remove(image);
-                db.SaveChanges();
+                var image = context.images.FirstOrDefault(i => i.id == id);
+                context.images.Remove(image);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -46,7 +45,7 @@ namespace escout.Services
 
         public Image GetImage(int id)
         {
-            return db.images.FirstOrDefault(i => i.id == id);
+            return context.images.FirstOrDefault(i => i.id == id);
         }
     }
 }

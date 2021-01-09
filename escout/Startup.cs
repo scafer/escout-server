@@ -2,6 +2,7 @@ using escout.Helpers;
 using escout.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +25,8 @@ namespace escout
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddDbContext<DataContext>(x => x.UseNpgsql(Configurations.GetNpgsqlConnectionString()));
 
             var settings = Configurations.GetAppSettings().Build().GetSection("JwtSettings").Get<JwtSettings>();
             var key = Encoding.ASCII.GetBytes(settings.SigningKey);

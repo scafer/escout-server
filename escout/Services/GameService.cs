@@ -9,16 +9,15 @@ namespace escout.Services
 {
     public class GameService : BaseService
     {
-        readonly DataContext db;
-
-        public GameService() => db = new DataContext();
+        private readonly DataContext context;
+        public GameService(DataContext context) => this.context = context;
 
         public List<Game> CreateGame(List<Game> game)
         {
             game.ToList().ForEach(g => g.created = Utils.GetDateTime());
             game.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            db.games.AddRange(game);
-            db.SaveChanges();
+            context.games.AddRange(game);
+            context.SaveChanges();
             return game;
         }
 
@@ -27,8 +26,8 @@ namespace escout.Services
             try
             {
                 game.updated = Utils.GetDateTime();
-                db.games.Update(game);
-                db.SaveChanges();
+                context.games.Update(game);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -38,9 +37,9 @@ namespace escout.Services
         {
             try
             {
-                var game = db.games.FirstOrDefault(g => g.id == id);
-                db.games.Remove(game);
-                db.SaveChanges();
+                var game = context.games.FirstOrDefault(g => g.id == id);
+                context.games.Remove(game);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -48,7 +47,7 @@ namespace escout.Services
 
         public Game GetGame(int id)
         {
-            return db.games.FirstOrDefault(g => g.id == id);
+            return context.games.FirstOrDefault(g => g.id == id);
         }
 
         public List<Game> GetGames(string query)
@@ -56,12 +55,12 @@ namespace escout.Services
             List<Game> games;
 
             if (string.IsNullOrEmpty(query))
-                games = db.games.ToList();
+                games = context.games.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 var q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                games = db.games.FromSqlRaw(q).ToList();
+                games = context.games.FromSqlRaw(q).ToList();
             }
 
             return games;
@@ -72,8 +71,8 @@ namespace escout.Services
             gameEvent.ToList().ForEach(g => g.userId = user.id);
             gameEvent.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameEvent.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            db.gameEvents.AddRange(gameEvent);
-            db.SaveChanges();
+            context.gameEvents.AddRange(gameEvent);
+            context.SaveChanges();
             return gameEvent;
         }
 
@@ -82,8 +81,8 @@ namespace escout.Services
             try
             {
                 gameEvent.updated = Utils.GetDateTime();
-                db.gameEvents.Update(gameEvent);
-                db.SaveChanges();
+                context.gameEvents.Update(gameEvent);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -93,9 +92,9 @@ namespace escout.Services
         {
             try
             {
-                var gameEvent = db.gameEvents.FirstOrDefault(g => g.id == id);
-                db.gameEvents.Remove(gameEvent);
-                db.SaveChanges();
+                var gameEvent = context.gameEvents.FirstOrDefault(g => g.id == id);
+                context.gameEvents.Remove(gameEvent);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -103,20 +102,20 @@ namespace escout.Services
 
         public GameEvent GetGameEvent(int id)
         {
-            return db.gameEvents.FirstOrDefault(g => g.id == id);
+            return context.gameEvents.FirstOrDefault(g => g.id == id);
         }
 
         public List<GameEvent> GetGameEvents(int gameId)
         {
-            return db.gameEvents.Where(g => g.gameId == gameId).ToList();
+            return context.gameEvents.Where(g => g.gameId == gameId).ToList();
         }
 
         public List<GameAthlete> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
             gameAthlete.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameAthlete.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            db.gameAthletes.AddRange(gameAthlete);
-            db.SaveChanges();
+            context.gameAthletes.AddRange(gameAthlete);
+            context.SaveChanges();
             return gameAthlete;
         }
 
@@ -125,8 +124,8 @@ namespace escout.Services
             try
             {
                 gameAthlete.updated = Utils.GetDateTime();
-                db.gameAthletes.Update(gameAthlete);
-                db.SaveChanges();
+                context.gameAthletes.Update(gameAthlete);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -136,9 +135,9 @@ namespace escout.Services
         {
             try
             {
-                var gameAthlete = db.gameAthletes.FirstOrDefault(g => g.id == id);
-                db.gameAthletes.Remove(gameAthlete);
-                db.SaveChanges();
+                var gameAthlete = context.gameAthletes.FirstOrDefault(g => g.id == id);
+                context.gameAthletes.Remove(gameAthlete);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -146,26 +145,26 @@ namespace escout.Services
 
         public List<GameAthlete> GetGamesAthletes(int gameId)
         {
-            return db.gameAthletes.Where(g => g.gameId == gameId).ToList();
+            return context.gameAthletes.Where(g => g.gameId == gameId).ToList();
         }
 
         public GameData GetGameData(int gameId)
         {
             var gameData = new GameData();
             gameData.game = GetGame(gameId);
-            gameData.clubs = db.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
-            gameData.athletes = db.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
+            gameData.clubs = context.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
+            gameData.athletes = context.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
 
             if (gameData.game.competitionId != null)
             {
-                gameData.competition = db.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);
-                gameData.sport = db.sports.FirstOrDefault(t => t.id == gameData.competition.sportId);
+                gameData.competition = context.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);
+                gameData.sport = context.sports.FirstOrDefault(t => t.id == gameData.competition.sportId);
             }
             else
-                gameData.sport = db.sports.FirstOrDefault(t => t.name == "Soccer");
+                gameData.sport = context.sports.FirstOrDefault(t => t.name == "Soccer");
 
-            gameData.events = db.events.Where(t => t.sportId == gameData.sport.id).ToList();
-            gameData.gameEvents = db.gameEvents.Where(t => t.gameId == gameId).ToList();
+            gameData.events = context.events.Where(t => t.sportId == gameData.sport.id).ToList();
+            gameData.gameEvents = context.gameEvents.Where(t => t.gameId == gameId).ToList();
 
             return gameData;
         }
@@ -175,12 +174,12 @@ namespace escout.Services
             List<GameUser> gamesUsers;
 
             if (string.IsNullOrEmpty(query))
-                gamesUsers = db.gameUsers.ToList();
+                gamesUsers = context.gameUsers.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 var q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                gamesUsers = db.gameUsers.FromSqlRaw(q).ToList();
+                gamesUsers = context.gameUsers.FromSqlRaw(q).ToList();
             }
 
             return gamesUsers;
@@ -190,15 +189,15 @@ namespace escout.Services
         {
             foreach (var gameUser in gameUsers)
             {
-                var obj = db.gameUsers.Where(c => c.gameId == gameUser.gameId && c.userId == gameUser.userId && c.athleteId == gameUser.athleteId).ToList();
+                var obj = context.gameUsers.Where(c => c.gameId == gameUser.gameId && c.userId == gameUser.userId && c.athleteId == gameUser.athleteId).ToList();
                 if (obj.Count != 0)
                     gameUsers.Remove(gameUser);
             }
 
             gameUsers.ToList().ForEach(g => g.created = Utils.GetDateTime());
             gameUsers.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            db.gameUsers.AddRange(gameUsers);
-            db.SaveChanges();
+            context.gameUsers.AddRange(gameUsers);
+            context.SaveChanges();
             return gameUsers;
         }
 
@@ -207,8 +206,8 @@ namespace escout.Services
             try
             {
                 gameUser.updated = Utils.GetDateTime();
-                db.gameUsers.Update(gameUser);
-                db.SaveChanges();
+                context.gameUsers.Update(gameUser);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -216,15 +215,15 @@ namespace escout.Services
 
         public List<GameEvent> AthleteGameEvents(int athleteId, int gameId)
         {
-            return db.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
+            return context.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
         }
 
         public bool DeleteGameUser(GameUser gameUser)
         {
             try
             {
-                db.gameUsers.Remove(gameUser);
-                db.SaveChanges();
+                context.gameUsers.Remove(gameUser);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -234,7 +233,7 @@ namespace escout.Services
         {
             var stats = new List<ClubStats>();
 
-            var gameEvents = db.gameEvents.Where(x => x.gameId == gameId).ToList();
+            var gameEvents = context.gameEvents.Where(x => x.gameId == gameId).ToList();
             var uniqueClubs = gameEvents.Select(x => x.clubId).Distinct().ToList();
 
             foreach (var i in uniqueClubs)
@@ -242,7 +241,7 @@ namespace escout.Services
                 if (i != null)
                 {
                     var clubEvents = gameEvents.Where(x => x.clubId == i).ToList();
-                    foreach (Event e in db.events)
+                    foreach (Event e in context.events)
                     {
                         var evt = clubEvents.Where(x => x.eventId == e.id).ToList();
                         var stat = new ClubStats

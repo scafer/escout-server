@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class SportController : ControllerBase
     {
+        private readonly DataContext context;
+        public SportController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Create sport.
         /// </summary>
@@ -18,7 +21,7 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<List<Sport>> CreateSport(List<Sport> sport)
         {
-            using var service = new SportService();
+            using var service = new SportService(context);
             return service.CreateSport(sport);
         }
 
@@ -30,7 +33,7 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<SvcResult> UpdateSport(Sport sport)
         {
-            using var service = new SportService();
+            using var service = new SportService(context);
             return service.UpdateSport(sport) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -42,7 +45,7 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<SvcResult> DeleteSport(int id)
         {
-            using var service = new SportService();
+            using var service = new SportService(context);
             return service.RemoveSport(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -54,7 +57,7 @@ namespace escout.Controllers
         [Route("sport")]
         public ActionResult<Sport> GetSport(int id)
         {
-            using var service = new SportService();
+            using var service = new SportService(context);
             return service.GetSport(id);
         }
 
@@ -68,7 +71,7 @@ namespace escout.Controllers
         {
             try
             {
-                using var service = new SportService();
+                using var service = new SportService(context);
                 return service.GetSports(query);
             }
             catch

@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
+        private readonly DataContext context;
+        public ImageController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Create image.
         /// </summary>
@@ -18,7 +21,7 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<List<Image>> CreateImage(List<Image> image)
         {
-            using var service = new ImageService();
+            using var service = new ImageService(context);
             return service.CreateImage(image);
         }
 
@@ -30,7 +33,7 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<SvcResult> UpdateImage(Image image)
         {
-            using var service = new ImageService();
+            using var service = new ImageService(context);
             return service.UpdateImage(image) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -42,7 +45,7 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<SvcResult> DeleteImage(int id)
         {
-            using var service = new ImageService();
+            using var service = new ImageService(context);
             return service.DeleteImage(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -54,7 +57,7 @@ namespace escout.Controllers
         [Route("image")]
         public ActionResult<Image> GetImage(int id)
         {
-            using var service = new ImageService();
+            using var service = new ImageService(context);
             return service.GetImage(id);
         }
     }

@@ -1,8 +1,6 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,71 +9,74 @@ namespace escout.Controllers.Tests
     [TestClass]
     public class AthleteControllerTests
     {
-        private DataContext db = new DataContext();
-        AthleteController controller = new AthleteController();
+        private AthleteController controller;
+        private DataContext context;
 
         [TestInitialize]
         public void Setup()
         {
-            Environment.SetEnvironmentVariable("DATABASE_URL", "postgres://postgres:password@localhost:5432/postgres");
-            db.Database.ExecuteSqlRaw(Queries.CreateDatabase);
+            context = TestUtils.GetMockContext();
+            controller = new AthleteController(context);
         }
 
-        [Ignore]
+        [TestCleanup]
+        public void TearDown()
+        {
+            context.Database.EnsureDeleted();
+        }
+
         [TestMethod]
         public void CreateAthleteTest()
         {
-            List<Athlete> athletes = new List<Athlete>();
-            var athlete = new Athlete();
-
-            athletes.Add(athlete);
+            var athletes = new List<Athlete> { new() { name = "test" } };
             var result = controller.CreateAthlete(athletes);
 
-            Assert.IsNotNull(db.athletes.FirstOrDefault(t => t.Equals(athletes[0])));
-            Assert.IsNotNull(result.Value);
+            Assert.AreEqual(1, result.Value.Count);
+            Assert.AreEqual("test", result.Value.First().name);
         }
 
-        [Ignore]
         [TestMethod]
         public void UpdateAthleteTest()
         {
-            var athlete = new Athlete();
-            db.athletes.Add(athlete);
-            db.SaveChanges();
-
-            athlete.key = string.Empty;
+            var athlete = TestUtils.AddAthleteToContext(context);
+            athlete.fullname = "test athlete";
             var result = controller.UpdateAthlete(athlete);
 
-            Assert.IsNotNull(db.athletes.FirstOrDefault(t => t.id == athlete.id)?.key);
-            Assert.AreEqual(result.Value.errorCode, 0);
+            Assert.AreEqual(0, result.Value.errorCode);
+            Assert.AreEqual(athlete.fullname, context.athletes.First().fullname);
         }
 
-        [Ignore]
         [TestMethod]
         public void RemoveAthleteTest()
         {
-            var athlete = new Athlete();
-            db.athletes.Add(athlete);
-            db.SaveChanges();
+            TestUtils.AddAthleteToContext(context);
+            var result = controller.RemoveAthlete(context.athletes.First().id);
 
-            Assert.IsNotNull(db.athletes.FirstOrDefault(t => t.id == athlete.id));
-
-            var result = controller.RemoveAthlete(athlete.id);
-
-            Assert.IsNull(db.athletes.FirstOrDefault(t => t.id == athlete.id));
-            Assert.AreEqual(result.Value.errorCode, 0);
+            Assert.AreEqual(0, result.Value.errorCode);
+            Assert.AreEqual(0, context.athletes.Count());
         }
 
-        [Ignore]
         [TestMethod]
         public void GetAthleteTest()
         {
+            var athlete = TestUtils.AddAthleteToContext(context);
+            var result = controller.GetAthlete(context.athletes.First().id);
 
+            Assert.AreEqual(athlete.name, result.Value.name);
+        }
+
+        [TestMethod]
+        public void GetAthletesTest()
+        {
+            TestUtils.AddAthleteToContext(context);
+            var result = controller.GetAthletes(string.Empty);
+
+            Assert.AreEqual(1, result.Value.Count);
         }
 
         [Ignore]
         [TestMethod]
-        public void GetAthletesTest()
+        public void GetAthleteStatistics()
         {
 
         }

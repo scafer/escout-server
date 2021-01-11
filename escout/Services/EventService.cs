@@ -9,16 +9,15 @@ namespace escout.Services
 {
     public class EventService : BaseService
     {
-        readonly DataContext db;
-
-        public EventService() => db = new DataContext();
+        private readonly DataContext context;
+        public EventService(DataContext context) => this.context = context;
 
         public List<Event> CreateEvent(List<Event> e)
         {
             e.ToList().ForEach(c => c.created = Utils.GetDateTime());
             e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            db.events.AddRange(e);
-            db.SaveChanges();
+            context.events.AddRange(e);
+            context.SaveChanges();
             return e;
         }
 
@@ -27,8 +26,8 @@ namespace escout.Services
             try
             {
                 e.updated = Utils.GetDateTime();
-                db.events.Update(e);
-                db.SaveChanges();
+                context.events.Update(e);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -38,9 +37,9 @@ namespace escout.Services
         {
             try
             {
-                var evt = db.events.FirstOrDefault(e => e.id == id);
-                db.events.Remove(evt);
-                db.SaveChanges();
+                var evt = context.events.FirstOrDefault(e => e.id == id);
+                context.events.Remove(evt);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -48,7 +47,7 @@ namespace escout.Services
 
         public Event GetEvent(int id)
         {
-            return db.events.FirstOrDefault(e => e.id == id);
+            return context.events.FirstOrDefault(e => e.id == id);
         }
 
         public List<Event> GetEvents(string query)
@@ -56,12 +55,12 @@ namespace escout.Services
             List<Event> events;
 
             if (string.IsNullOrEmpty(query))
-                events = db.events.ToList();
+                events = context.events.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 var q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                events = db.events.FromSqlRaw(q).ToList();
+                events = context.events.FromSqlRaw(q).ToList();
             }
 
             return events;

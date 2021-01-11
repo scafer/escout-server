@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class AthleteController : ControllerBase
     {
+        private readonly DataContext context;
+        public AthleteController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Create athlete.
         /// </summary>
@@ -18,7 +21,7 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athlete)
         {
-            using var service = new AthleteService();
+            using var service = new AthleteService(context);
             return service.CreateAthlete(athlete);
         }
 
@@ -30,7 +33,7 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<SvcResult> UpdateAthlete(Athlete athlete)
         {
-            using var service = new AthleteService();
+            using var service = new AthleteService(context);
             return service.UpdateAthlete(athlete) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -42,7 +45,7 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<SvcResult> RemoveAthlete(int id)
         {
-            using var service = new AthleteService();
+            using var service = new AthleteService(context);
             return service.RemoveAthlete(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -54,7 +57,7 @@ namespace escout.Controllers
         [Route("athlete")]
         public ActionResult<Athlete> GetAthlete(int id)
         {
-            using var service = new AthleteService();
+            using var service = new AthleteService(context);
             return service.GetAthlete(id);
         }
 
@@ -68,7 +71,7 @@ namespace escout.Controllers
         {
             try
             {
-                using var service = new AthleteService();
+                using var service = new AthleteService(context);
                 return service.GetAthletes(query);
             }
             catch
@@ -85,7 +88,7 @@ namespace escout.Controllers
         [Route("athleteStatistics")]
         public ActionResult<Statistics> GetAthleteStatistics(int athleteId, int? gameId)
         {
-            using var service = new AthleteService();
+            using var service = new AthleteService(context);
             return service.GetAthleteStatistics(athleteId, gameId);
         }
     }

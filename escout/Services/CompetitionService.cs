@@ -9,16 +9,15 @@ namespace escout.Services
 {
     public class CompetitionService : BaseService
     {
-        readonly DataContext db;
-
-        public CompetitionService() => db = new DataContext();
+        private readonly DataContext context;
+        public CompetitionService(DataContext context) => this.context = context;
 
         public List<Competition> CreateCompetition(List<Competition> competition)
         {
             competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
             competition.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            db.competitions.AddRange(competition);
-            db.SaveChanges();
+            context.competitions.AddRange(competition);
+            context.SaveChanges();
             return competition;
         }
 
@@ -27,8 +26,8 @@ namespace escout.Services
             try
             {
                 competition.updated = Utils.GetDateTime();
-                db.competitions.Update(competition);
-                db.SaveChanges();
+                context.competitions.Update(competition);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -38,9 +37,9 @@ namespace escout.Services
         {
             try
             {
-                var competition = db.competitions.FirstOrDefault(c => c.id == id);
-                db.competitions.Remove(competition);
-                db.SaveChanges();
+                var competition = context.competitions.FirstOrDefault(c => c.id == id);
+                context.competitions.Remove(competition);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -48,7 +47,7 @@ namespace escout.Services
 
         public Competition GetCompetition(int id)
         {
-            return db.competitions.FirstOrDefault(c => c.id == id);
+            return context.competitions.FirstOrDefault(c => c.id == id);
         }
 
         public List<Competition> GetCompetitions(string query)
@@ -56,12 +55,12 @@ namespace escout.Services
             List<Competition> competitions;
 
             if (string.IsNullOrEmpty(query))
-                competitions = db.competitions.ToList();
+                competitions = context.competitions.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 var q = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                competitions = db.competitions.FromSqlRaw(q).ToList();
+                competitions = context.competitions.FromSqlRaw(q).ToList();
             }
 
             return competitions;
@@ -71,8 +70,8 @@ namespace escout.Services
         {
             competitionBoard.ToList().ForEach(c => c.created = Utils.GetDateTime());
             competitionBoard.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            db.competitionBoards.AddRange(competitionBoard);
-            db.SaveChanges();
+            context.competitionBoards.AddRange(competitionBoard);
+            context.SaveChanges();
             return competitionBoard;
         }
 
@@ -81,8 +80,8 @@ namespace escout.Services
             try
             {
                 competitionBoard.updated = Utils.GetDateTime();
-                db.competitionBoards.Update(competitionBoard);
-                db.SaveChanges();
+                context.competitionBoards.Update(competitionBoard);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -92,9 +91,9 @@ namespace escout.Services
         {
             try
             {
-                var competitionBoard = db.competitionBoards.FirstOrDefault(c => c.id == id);
-                db.competitionBoards.Remove(competitionBoard);
-                db.SaveChanges();
+                var competitionBoard = context.competitionBoards.FirstOrDefault(c => c.id == id);
+                context.competitionBoards.Remove(competitionBoard);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -102,7 +101,7 @@ namespace escout.Services
 
         public List<CompetitionBoard> GetCompetitionBoard(int competitionId)
         {
-            return db.competitionBoards.Where(c => c.competitionId == competitionId).ToList();
+            return context.competitionBoards.Where(c => c.competitionId == competitionId).ToList();
         }
     }
 }

@@ -9,16 +9,15 @@ namespace escout.Services
 {
     public class AthleteService : BaseService
     {
-        readonly DataContext db;
-
-        public AthleteService() => db = new DataContext();
+        private readonly DataContext context;
+        public AthleteService(DataContext context) => this.context = context;
 
         public List<Athlete> CreateAthlete(List<Athlete> athlete)
         {
             athlete.ToList().ForEach(a => a.created = Utils.GetDateTime());
             athlete.ToList().ForEach(a => a.updated = Utils.GetDateTime());
-            db.athletes.AddRange(athlete);
-            db.SaveChanges();
+            context.athletes.AddRange(athlete);
+            context.SaveChanges();
             return athlete;
         }
 
@@ -27,8 +26,8 @@ namespace escout.Services
             try
             {
                 athlete.updated = Utils.GetDateTime();
-                db.athletes.Update(athlete);
-                db.SaveChanges();
+                context.athletes.Update(athlete);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -38,9 +37,9 @@ namespace escout.Services
         {
             try
             {
-                var athlete = db.athletes.FirstOrDefault(a => a.id == id);
-                db.athletes.Remove(athlete);
-                db.SaveChanges();
+                var athlete = context.athletes.FirstOrDefault(a => a.id == id);
+                context.athletes.Remove(athlete);
+                context.SaveChanges();
                 return true;
             }
             catch { return false; }
@@ -48,7 +47,7 @@ namespace escout.Services
 
         public Athlete GetAthlete(int id)
         {
-            return db.athletes.FirstOrDefault(a => a.id == id);
+            return context.athletes.FirstOrDefault(a => a.id == id);
         }
 
         public List<Athlete> GetAthletes(string query)
@@ -56,12 +55,12 @@ namespace escout.Services
             List<Athlete> athletes;
 
             if (string.IsNullOrEmpty(query))
-                athletes = db.athletes.ToList();
+                athletes = context.athletes.ToList();
             else
             {
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                 var q = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                athletes = db.athletes.FromSqlRaw(q).ToList();
+                athletes = context.athletes.FromSqlRaw(q).ToList();
             }
 
             return athletes;
@@ -75,16 +74,16 @@ namespace escout.Services
             var count = new List<Counter>();
 
             if (gameId != null)
-                gameEvents = db.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
+                gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
             else
-                gameEvents = db.gameEvents.Where(x => x.athleteId == athleteId).ToList();
+                gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId).ToList();
 
             var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
 
             foreach (int i in uniqueGames)
             {
                 var game = gameEvents.Where(x => x.gameId == i).ToList();
-                foreach (Event e in db.events)
+                foreach (Event e in context.events)
                 {
                     var events = game.Where(x => x.eventId == e.id).ToList();
                     var gameStats = new GameStats
@@ -105,7 +104,7 @@ namespace escout.Services
                 }
             }
 
-            foreach (Event e in db.events)
+            foreach (Event e in context.events)
             {
                 var counter = new List<Counter>();
                 counter = count.Where(x => x.EventId == e.id).ToList();

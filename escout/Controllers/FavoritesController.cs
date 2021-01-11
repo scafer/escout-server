@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class FavoritesController : ControllerBase
     {
+        private readonly DataContext context;
+        public FavoritesController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Toogle favorite.
         /// </summary>
@@ -18,9 +21,9 @@ namespace escout.Controllers
         [Route("favorite")]
         public ActionResult<SvcResult> ToogleFavorite(Favorite favorite)
         {
-            var currentUser = User.GetUser();
+            var currentUser = User.GetUser(new UserService(context));
             favorite.userId = currentUser.id;
-            using var service = new FavoritesService();
+            using var service = new FavoritesService(context);
             return service.ToogleFavorite(favorite) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
 
@@ -34,8 +37,8 @@ namespace escout.Controllers
         {
             try
             {
-                var currentUser = User.GetUser();
-                using var service = new FavoritesService();
+                var currentUser = User.GetUser(new UserService(context));
+                using var service = new FavoritesService(context);
                 return service.GetFavorite(currentUser.id, query);
             }
             catch
@@ -54,8 +57,8 @@ namespace escout.Controllers
         {
             try
             {
-                var currentUser = User.GetUser();
-                using var service = new FavoritesService();
+                var currentUser = User.GetUser(new UserService(context));
+                using var service = new FavoritesService(context);
                 return service.GetFavorites(currentUser.id, query);
             }
             catch

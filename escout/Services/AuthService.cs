@@ -11,9 +11,12 @@ namespace escout.Services
 {
     public class AuthService : BaseService
     {
+        private readonly DataContext context;
+        public AuthService(DataContext context) => this.context = context;
+
         public User SignIn(User user)
         {
-            using var agent = new UserService();
+            using var agent = new UserService(context);
             var account = agent.GetUser(user.username.ToLower());
 
             if (account == null) return null;
@@ -31,7 +34,7 @@ namespace escout.Services
                 user.email = user.email.ToLower();
                 user.password = HashPassword(user.password);
 
-                using var userService = new UserService();
+                using var userService = new UserService(context);
                 userService.CreateUser(user);
 
                 if (user.notifications == 1)
@@ -89,9 +92,8 @@ namespace escout.Services
 
     public static class UserExtensions
     {
-        public static User GetUser(this ClaimsPrincipal claims)
+        public static User GetUser(this ClaimsPrincipal claims, UserService agent)
         {
-            using var agent = new UserService();
             var claimsIdentity = claims.Identity as ClaimsIdentity;
             var userId = claimsIdentity.Name;
             var user = agent.GetUser(int.Parse(userId));

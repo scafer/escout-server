@@ -7,9 +7,12 @@ namespace escout.Services
 {
     public class UserService : BaseService
     {
-        readonly DataContext db;
+        private readonly DataContext db;
 
-        public UserService() => db = new DataContext();
+        public UserService(DataContext context)
+        {
+            this.db = context;
+        }
 
         public User CreateUser(User user)
         {
@@ -51,7 +54,7 @@ namespace escout.Services
             {
                 var generatedPassword = Utils.StringGenerator();
                 user.updated = Utils.GetDateTime();
-                user.password = new AuthService().HashPassword(Utils.GenerateSha256String(generatedPassword));
+                user.password = new AuthService(db).HashPassword(Utils.GenerateSha256String(generatedPassword));
                 db.users.Update(user);
                 db.SaveChanges();
                 _ = NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);

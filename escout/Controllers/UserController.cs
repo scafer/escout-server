@@ -10,6 +10,9 @@ namespace escout.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly DataContext context;
+        public UserController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Reset user password.
         /// </summary>
@@ -17,7 +20,7 @@ namespace escout.Controllers
         [Route("resetPassword")]
         public ActionResult<SvcResult> ResetPassword(User user)
         {
-            using var service = new UserService();
+            using var service = new UserService(context);
             var result = service.ResetPassword(user.username, user.email);
             return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
@@ -30,11 +33,11 @@ namespace escout.Controllers
         [Route("changePassword")]
         public ActionResult<SvcResult> ChangePassword(string newPassword)
         {
-            var user = User.GetUser();
+            var user = User.GetUser(new UserService(context));
             if (user == null)
                 return new NotFoundResult();
 
-            using var userService = new UserService();
+            using var userService = new UserService(context);
             var result = userService.ChangePassword(user, newPassword);
             return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
@@ -47,11 +50,11 @@ namespace escout.Controllers
         [Route("user")]
         public ActionResult<SvcResult> UpdateUser(User user)
         {
-            var currentUser = User.GetUser();
+            var currentUser = User.GetUser(new UserService(context));
             if (currentUser.accessLevel != 0)
                 user.id = currentUser.id;
 
-            using var userService = new UserService();
+            using var userService = new UserService(context);
             var result = userService.UpdateUser(user);
             return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
         }
@@ -66,7 +69,7 @@ namespace escout.Controllers
         {
             if (user.accessLevel == 0)
             {
-                using var service = new UserService();
+                using var service = new UserService(context);
                 var result = service.RemoveUser(user);
                 return result ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
             }
@@ -82,7 +85,7 @@ namespace escout.Controllers
         [Authorize]
         public ActionResult<User> GetUser()
         {
-            return User.GetUser();
+            return User.GetUser(new UserService(context));
         }
 
         /// <summary>
@@ -93,13 +96,13 @@ namespace escout.Controllers
         [Route("users")]
         public ActionResult<List<User>> GetUsers(string query)
         {
-            var user = User.GetUser();
+            var user = User.GetUser(new UserService(context));
 
             if (user == null)
                 return new NotFoundResult();
             else if (user.accessLevel == 0)
             {
-                using var service = new UserService();
+                using var service = new UserService(context);
                 return service.GetUsers();
             }
             else

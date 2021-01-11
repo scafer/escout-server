@@ -1,48 +1,79 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Linq;
 
 namespace escout.Controllers.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class AuthenticationControllerTests
     {
-        private DataContext db = new DataContext();
-        AuthenticationController controller = new AuthenticationController();
+        private AuthenticationController controller;
+        private DataContext context;
 
         [TestInitialize]
         public void Setup()
         {
-            Environment.SetEnvironmentVariable("DATABASE_URL", "postgres://postgres:password@localhost:5432/postgres");
-            db.Database.ExecuteSqlRaw(Queries.CreateDatabase);
+            context = TestUtils.GetMockContext();
+            controller = new AuthenticationController(context);
         }
 
-        [Ignore]
-        [TestMethod()]
-        public void SignInTest()
+        [TestCleanup]
+        public void TearDown()
         {
-            Assert.Fail();
+            context.Database.EnsureDeleted();
         }
 
-        [Ignore]
-        [TestMethod()]
+        [TestMethod]
+        public void SignInAuthorized()
+        {
+            controller.SignUp(new User() { username = "test", email = "test@email.com", password = "test" });
+            var result = controller.SignIn(new User() { username = "test", password = "test" });
+
+            Assert.IsNotNull(result.Value.Token);
+        }
+
+        [TestMethod]
+        public void SignInUnauthorized()
+        {
+            controller.SignUp(new User() { username = "test", email = "test@email.com", password = "test" });
+            var result = controller.SignIn(new User() { username = "test", password = "test1" });
+
+            Assert.IsNull(result.Value);
+            Assert.AreEqual(404, ((StatusCodeResult)result.Result).StatusCode);
+        }
+
+        [TestMethod]
         public void SignUpTest()
         {
-            var user = new User { username = "test", password = "test", email = "test" };
+            var user = new User() { username = "test", email = "test@email.com", password = "test" };
             var result = controller.SignUp(user);
+            var userRow = context.users.FirstOrDefault();
 
-            Assert.IsNotNull(db.users.FirstOrDefault(t => t.id == user.id));
-            Assert.AreEqual(result.Value.errorCode, 0);
+            Assert.AreEqual(0, result.Value.errorCode);
+            Assert.AreEqual(userRow.username, user.username);
+            Assert.AreEqual(userRow.email, user.email);
         }
 
-        [Ignore]
-        [TestMethod()]
-        public void AuthenticatedTest()
+        [TestMethod]
+        public void SignUpTestDuplicatedUsername()
         {
-            Assert.Fail();
+            TestUtils.AddUserToContext(context);
+            var result = controller.SignUp(new User() { username = "test", email = "test1@email.com", password = "test" });
+
+            Assert.AreEqual(1, result.Value.errorCode);
+            Assert.AreEqual("User in use", result.Value.errorMessage);
+        }
+
+        [TestMethod]
+        public void SignUpTestDuplicatedEmail()
+        {
+            TestUtils.AddUserToContext(context);
+            var result = controller.SignUp(new User() { username = "test1", email = "test@email.com", password = "test" });
+
+            Assert.AreEqual(1, result.Value.errorCode);
+            Assert.AreEqual("Email in use", result.Value.errorMessage);
         }
     }
 }

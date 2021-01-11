@@ -9,6 +9,9 @@ namespace escout.Controllers
     [Route("api/v1")]
     public class AuthenticationController : ControllerBase
     {
+        private readonly DataContext context;
+        public AuthenticationController(DataContext context) => this.context = context;
+
         /// <summary>
         /// Generate authentication token.
         /// </summary>
@@ -17,7 +20,7 @@ namespace escout.Controllers
         [Route("signIn")]
         public ActionResult<AuthData> SignIn(User userData)
         {
-            using var service = new AuthService();
+            using var service = new AuthService(context);
             var user = service.SignIn(userData);
 
             if (user != null)
@@ -37,8 +40,8 @@ namespace escout.Controllers
         [Route("signUp")]
         public ActionResult<SvcResult> SignUp(User user)
         {
-            using var userService = new UserService();
-            using var authService = new AuthService();
+            using var userService = new UserService(context);
+            using var authService = new AuthService(context);
 
             if (userService.CheckEmailExist(user.email)) return SvcResult.Set(1, "Email in use");
             if (userService.CheckUsernameExist(user.username)) return SvcResult.Set(1, "User in use");

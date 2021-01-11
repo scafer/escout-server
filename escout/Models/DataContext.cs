@@ -1,5 +1,4 @@
-﻿using escout.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace escout.Models
 {
@@ -19,10 +18,9 @@ namespace escout.Models
         public DbSet<Image> images { get; set; }
         public DbSet<Favorite> favorites { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql(Configurations.GetNpgsqlConnectionString());
-        }
+        public DataContext() { }
+
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     }
 
     public class User

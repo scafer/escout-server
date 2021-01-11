@@ -1,44 +1,82 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using escout.Models;
+using escoutTests.Resources;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers.Tests
 {
     [TestClass]
     public class AthleteControllerTests
     {
+        private AthleteController controller;
+        private DataContext context;
 
         [TestInitialize]
         public void Setup()
         {
+            context = TestUtils.GetMockContext();
+            controller = new AthleteController(context);
         }
 
-        [Ignore]
+        [TestCleanup]
+        public void TearDown()
+        {
+            context.Database.EnsureDeleted();
+        }
+
         [TestMethod]
         public void CreateAthleteTest()
         {
+            var athletes = new List<Athlete> { new() { name = "test" } };
+            var result = controller.CreateAthlete(athletes);
+
+            Assert.AreEqual(1, result.Value.Count);
+            Assert.AreEqual("test", result.Value.First().name);
         }
 
-        [Ignore]
         [TestMethod]
         public void UpdateAthleteTest()
         {
+            var athlete = TestUtils.AddAthleteToContext(context);
+            athlete.fullname = "test athlete";
+            var result = controller.UpdateAthlete(athlete);
+
+            Assert.AreEqual(0, result.Value.errorCode);
+            Assert.AreEqual(athlete.fullname, context.athletes.First().fullname);
         }
 
-        [Ignore]
         [TestMethod]
         public void RemoveAthleteTest()
         {
+            TestUtils.AddAthleteToContext(context);
+            var result = controller.RemoveAthlete(context.athletes.First().id);
+
+            Assert.AreEqual(0, result.Value.errorCode);
+            Assert.AreEqual(0, context.athletes.Count());
         }
 
-        [Ignore]
         [TestMethod]
         public void GetAthleteTest()
         {
+            var athlete = TestUtils.AddAthleteToContext(context);
+            var result = controller.GetAthlete(context.athletes.First().id);
 
+            Assert.AreEqual(athlete.name, result.Value.name);
+        }
+
+        [TestMethod]
+        public void GetAthletesTest()
+        {
+            TestUtils.AddAthleteToContext(context);
+            var result = controller.GetAthletes(string.Empty);
+
+            Assert.AreEqual(1, result.Value.Count);
         }
 
         [Ignore]
         [TestMethod]
-        public void GetAthletesTest()
+        public void GetAthleteStatistics()
         {
 
         }

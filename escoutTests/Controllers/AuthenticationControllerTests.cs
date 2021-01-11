@@ -1,8 +1,8 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 
 namespace escout.Controllers.Tests
 {
@@ -59,9 +59,7 @@ namespace escout.Controllers.Tests
         [TestMethod]
         public void SignUpTestDuplicatedUsername()
         {
-            context.users.Add(new User() { username = "test", email = "test@email.com", password = "test" });
-            context.SaveChanges();
-
+            TestUtils.AddUserToContext(context);
             var result = controller.SignUp(new User() { username = "test", email = "test1@email.com", password = "test" });
 
             Assert.AreEqual(1, result.Value.errorCode);
@@ -71,9 +69,7 @@ namespace escout.Controllers.Tests
         [TestMethod]
         public void SignUpTestDuplicatedEmail()
         {
-            context.users.Add(new User(){username = "test", email = "test@email.com", password = "test"});
-            context.SaveChanges();
-
+            TestUtils.AddUserToContext(context);
             var result = controller.SignUp(new User() { username = "test1", email = "test@email.com", password = "test" });
 
             Assert.AreEqual(1, result.Value.errorCode);

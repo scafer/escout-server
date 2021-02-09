@@ -1,6 +1,5 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,38 +8,38 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GameObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
-    public class EventController : ControllerBase
+    [Route("api/v1/game-object")]
+    public class SportController : ControllerBase
     {
         private readonly DataContext context;
-        public EventController(DataContext context) => this.context = context;
+        public SportController(DataContext context) => this.context = context;
 
         [HttpPost]
-        [Route("event")]
+        [Route("sport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<List<Event>> CreateEvent(List<Event> e)
+        public ActionResult<List<Sport>> CreateSport(List<Sport> sport)
         {
-            e.ToList().ForEach(c => c.created = Utils.GetDateTime());
-            e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            context.events.AddRange(e);
+            sport.ToList().ForEach(s => s.created = Utils.GetDateTime());
+            sport.ToList().ForEach(s => s.updated = Utils.GetDateTime());
+            context.sports.AddRange(sport);
             context.SaveChanges();
-            return e;
+            return sport;
         }
 
         [HttpPut]
-        [Route("event")]
+        [Route("sport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateEvent(Event e)
+        public IActionResult UpdateSport(Sport sport)
         {
             try
             {
-                e.updated = Utils.GetDateTime();
-                context.events.Update(e);
+                sport.updated = Utils.GetDateTime();
+                context.sports.Update(sport);
                 context.SaveChanges();
                 return Ok();
             }
@@ -48,15 +47,15 @@ namespace escout.Controllers
         }
 
         [HttpDelete]
-        [Route("event")]
+        [Route("sport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult DeleteEvent(int id)
+        public IActionResult DeleteSport(int id)
         {
             try
             {
-                var evt = context.events.FirstOrDefault(e => e.id == id);
-                context.events.Remove(evt);
+                var sport = context.sports.FirstOrDefault(s => s.id == id);
+                context.sports.Remove(sport);
                 context.SaveChanges();
                 return Ok();
             }
@@ -64,32 +63,32 @@ namespace escout.Controllers
         }
 
         [HttpGet]
-        [Route("event")]
+        [Route("sport")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Event> GetEvent(int id)
+        public ActionResult<Sport> GetSport(int id)
         {
-            return context.events.FirstOrDefault(e => e.id == id);
+            return context.sports.FirstOrDefault(s => s.id == id);
         }
 
         [HttpGet]
-        [Route("events")]
+        [Route("sports")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<List<Event>> GetEvents(string query)
+        public ActionResult<List<Sport>> GetSports(string query)
         {
             try
             {
-                List<Event> events;
+                List<Sport> sports;
 
                 if (string.IsNullOrEmpty(query))
-                    events = context.events.ToList();
+                    sports = context.sports.ToList();
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    events = context.events.FromSqlRaw(q).ToList();
+                    var q = string.Format("SELECT * FROM sports WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    sports = context.sports.FromSqlRaw(q).ToList();
                 }
 
-                return events;
+                return sports;
             }
             catch
             {

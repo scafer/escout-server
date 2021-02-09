@@ -9,11 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GameObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/game-object")]
     public class AthleteController : ControllerBase
     {
         private readonly DataContext context;
@@ -97,72 +97,6 @@ namespace escout.Controllers
                 return athletes;
             }
             catch { return new NotFoundResult(); }
-        }
-
-        [HttpGet]
-        [Route("athleteStatistics")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Statistics> GetAthleteStatistics(int athleteId, int? gameId)
-        {
-            try
-            {
-                var gameEvents = new List<GameEvent>();
-                var totalStatistics = new Statistics();
-                var totalEvents = new List<GameEvent>();
-                var count = new List<Counter>();
-
-                if (gameId != null)
-                    gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
-                else
-                    gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId).ToList();
-
-                var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
-
-                foreach (int i in uniqueGames)
-                {
-                    var game = gameEvents.Where(x => x.gameId == i).ToList();
-                    foreach (Event e in context.events)
-                    {
-                        var events = game.Where(x => x.eventId == e.id).ToList();
-                        var gameStats = new GameStats
-                        {
-                            EventId = e.id,
-                            Count = events.Count(),
-                            GameId = i
-                        };
-
-                        var counter = new Counter
-                        {
-                            Count = gameStats.Count,
-                            EventId = e.id
-                        };
-
-                        count.Add(counter);
-                        totalStatistics.GameStats.Add(gameStats);
-                    }
-                }
-
-                foreach (Event e in context.events)
-                {
-                    var counter = new List<Counter>();
-                    counter = count.Where(x => x.EventId == e.id).ToList();
-                    totalEvents = gameEvents.Where(x => x.eventId == e.id).ToList();
-
-                    var totalStats = new TotalStats
-                    {
-                        EventId = e.id,
-                        Count = totalEvents.Count(),
-                        Average = counter.Average(x => x.Count),
-                        StandardDeviation = GameStatistics.StdDev(counter.Select(x => x.Count).ToArray()),
-                        Median = GameStatistics.Median(counter.Select(x => x.Count).ToArray())
-                    };
-
-                    totalStatistics.TotalStats.Add(totalStats);
-                }
-
-                return totalStatistics;
-            }
-            catch(Exception ex) { return BadRequest(ex.Message); }
         }
     }
 }

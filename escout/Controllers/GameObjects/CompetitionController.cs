@@ -1,6 +1,5 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +8,11 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GameObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/game-object")]
     public class CompetitionController : ControllerBase
     {
         private readonly DataContext context;
@@ -98,7 +97,7 @@ namespace escout.Controllers
         }
 
         [HttpPost]
-        [Route("competitionBoard")]
+        [Route("competition-board")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
@@ -110,7 +109,7 @@ namespace escout.Controllers
         }
 
         [HttpPut]
-        [Route("competitionBoard")]
+        [Route("competition-board")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetitionBoard(CompetitionBoard competitionBoard)
@@ -126,7 +125,7 @@ namespace escout.Controllers
         }
 
         [HttpDelete]
-        [Route("competitionBoard")]
+        [Route("competition-board")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetitionBoard(int id)
@@ -142,7 +141,7 @@ namespace escout.Controllers
         }
 
         [HttpGet]
-        [Route("competitionBoard")]
+        [Route("competition-board")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {

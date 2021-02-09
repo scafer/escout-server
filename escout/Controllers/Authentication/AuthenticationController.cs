@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace escout.Controllers
+namespace escout.Controllers.Authentication
 {
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/authentication")]
     public class AuthenticationController : ControllerBase
     {
         private readonly DataContext context;
@@ -18,7 +18,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("signIn")]
+        [Route("sign-in")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<AuthData> SignIn(User user)
@@ -38,7 +38,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("signUp")]
+        [Route("sign-up")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult SignUp(User user)
@@ -60,7 +60,7 @@ namespace escout.Controllers
                 context.SaveChanges();
 
                 if (user.notifications == 1)
-                    _ = NotificationHelper.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
+                    _ = Notifications.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
 
                 return Ok();
             }
@@ -72,7 +72,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("resetPassword")]
+        [Route("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ResetPassword(User user1)
@@ -87,7 +87,7 @@ namespace escout.Controllers
             user.password = TokenService.HashPassword(Utils.GenerateSha256String(generatedPassword));
             context.users.Update(user);
             context.SaveChanges();
-            _ = NotificationHelper.SendEmail(user.email, "New eScout Password", generatedPassword);
+            _ = Notifications.SendEmail(user.email, "New eScout Password", generatedPassword);
             return Ok();
         }
 

@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GenericObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/generic-object")]
     public class UserController : ControllerBase
     {
         private readonly DataContext context;
         public UserController(DataContext context) => this.context = context;
 
         [HttpPost]
-        [Route("changePassword")]
+        [Route("change-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ChangePassword(string newPassword)

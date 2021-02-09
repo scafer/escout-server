@@ -1,17 +1,16 @@
 ﻿using escout.Helpers;
 using escout.Models;
-using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GenericObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/generic-object")]
     public class ImageController : ControllerBase
     {
         private readonly DataContext context;

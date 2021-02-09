@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using escout.Controllers.GameObjects;
 using escout.Models;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;

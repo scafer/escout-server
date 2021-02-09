@@ -21,4 +21,10 @@
     <PackageReference Include="Sendgrid" Version="9.22.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\GameObjects\" />
+    <Folder Include="Controllers\GenericObjects\" />
+    <Folder Include="Controllers\Authentication\" />
+    <Folder Include="Controllers\GameStatistics\" />
+  </ItemGroup>
 </Project>

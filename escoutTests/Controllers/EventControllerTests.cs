@@ -1,4 +1,5 @@
-﻿using escout.Models;
+﻿using escout.Controllers.GameObjects;
+using escout.Models;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

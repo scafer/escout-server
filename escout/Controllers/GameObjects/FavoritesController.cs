@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace escout.Controllers
+namespace escout.Controllers.GameObjects
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/game-object")]
     public class FavoritesController : ControllerBase
     {
         private readonly DataContext context;

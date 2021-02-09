@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("sport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Sport>> CreateSport(List<Sport> sport)
         {
             sport.ToList().ForEach(s => s.created = Utils.GetDateTime());
@@ -31,6 +33,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("sport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateSport(Sport sport)
         {
             try
@@ -45,6 +49,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("sport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteSport(int id)
         {
             try
@@ -59,6 +65,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("sport")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Sport> GetSport(int id)
         {
             return context.sports.FirstOrDefault(s => s.id == id);
@@ -66,6 +73,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("sports")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Sport>> GetSports(string query)
         {
             try

@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Image>> CreateImage(List<Image> image)
         {
             image.ToList().ForEach(i => i.created = Utils.GetDateTime());
@@ -29,6 +31,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateImage(Image image)
         {
             try
@@ -43,6 +47,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteImage(int id)
         {
             try
@@ -57,6 +63,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Image> GetImage(int id)
         {
             return context.images.FirstOrDefault(i => i.id == id);

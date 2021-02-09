@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -24,6 +25,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("game")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Game>> CreateGame(List<Game> game)
         {
             game.ToList().ForEach(g => g.created = Utils.GetDateTime());
@@ -35,6 +37,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("game")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGame(Game game)
         {
             try
@@ -49,6 +53,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("game")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGame(int id)
         {
             try
@@ -63,6 +69,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("game")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Game> GetGame(int id)
         {
             return context.games.FirstOrDefault(g => g.id == id);
@@ -70,6 +77,8 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("games")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<List<Game>> GetGames(string query)
         {
             try
@@ -95,6 +104,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("gameEvent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult CreateGameEvent(List<GameEvent> gameEvent)
         {
             gameEvent.ToList().ForEach(g => g.userId = User.GetUser(context).id);
@@ -107,6 +117,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("gameEvent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGameEvent(GameEvent gameEvent)
         {
             try
@@ -121,6 +133,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("gameEvent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGameEvent(int id)
         {
             try
@@ -135,6 +149,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameEvent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<GameEvent> GetGameEvent(int id)
         {
             return context.gameEvents.FirstOrDefault(g => g.id == id);
@@ -142,6 +157,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameEvents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> GetGameEvents(int gameId)
         {
             return context.gameEvents.Where(g => g.gameId == gameId).ToList();
@@ -149,6 +165,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("gameAthlete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameAthlete>> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
             gameAthlete.ToList().ForEach(g => g.created = Utils.GetDateTime());
@@ -160,6 +177,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("gameAthlete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGameAthlete(GameAthlete gameAthlete)
         {
             try
@@ -174,6 +193,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("gameAthlete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGameAthlete(int id)
         {
             try
@@ -188,6 +209,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameAthletes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameAthlete>> GetGameAthletes(int gameId)
         {
             return context.gameAthletes.Where(g => g.gameId == gameId).ToList();
@@ -195,6 +217,8 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<List<GameUser>> GetGameUser(string query)
         {
             try
@@ -220,6 +244,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("gameUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameUser>> CreateGameUser(List<GameUser> gameUsers)
         {
             foreach (var gameUser in gameUsers)
@@ -238,6 +263,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("gameUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGameUser(GameUser gameUser)
         {
             try
@@ -252,6 +279,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("gameUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGameUser(GameUser gameUser)
         {
             try
@@ -265,6 +294,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("athleteGameEvents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
         {
             return context.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
@@ -272,6 +302,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameData")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<GameData> GetGameData(int gameId)
         {
             var gameData = new GameData();
@@ -295,6 +326,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("gameStatistics")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<ClubStats>> GetGameStatistics(int gameId)
         {
             var stats = new List<ClubStats>();

@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("changePassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ChangePassword(string newPassword)
         {
             var user = User.GetUser(context);
@@ -37,6 +40,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateUser(User user)
         {
             try
@@ -51,6 +56,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteUser(User user)
         {
             try
@@ -64,6 +71,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<User> GetUser()
         {
             return User.GetUser(context);
@@ -71,6 +79,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("users")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<User>> GetUsers(string query)
         {
             var user = User.GetUser(context);

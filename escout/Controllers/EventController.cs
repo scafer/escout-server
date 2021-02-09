@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("event")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
             e.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -31,6 +33,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("event")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateEvent(Event e)
         {
             try
@@ -45,6 +49,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("event")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteEvent(int id)
         {
             try
@@ -59,6 +65,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("event")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Event> GetEvent(int id)
         {
             return context.events.FirstOrDefault(e => e.id == id);
@@ -66,6 +73,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("events")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Event>> GetEvents(string query)
         {
             try

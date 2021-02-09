@@ -2,6 +2,7 @@
 using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("competition")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
             competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -31,6 +33,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("competition")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetition(Competition competition)
         {
             try
@@ -45,6 +49,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("competition")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetition(int id)
         {
             try
@@ -59,6 +65,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("competition")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Competition> GetCompetition(int id)
         {
             return context.competitions.FirstOrDefault(c => c.id == id);
@@ -66,6 +73,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("competitions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Competition>> GetCompetitions(string query)
         {
             try
@@ -91,6 +99,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("competitionBoard")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
             competitionBoard.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -102,6 +111,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("competitionBoard")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetitionBoard(CompetitionBoard competitionBoard)
         {
             try
@@ -116,6 +127,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("competitionBoard")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetitionBoard(int id)
         {
             try
@@ -130,6 +143,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("competitionBoard")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
             return context.competitionBoards.Where(c => c.competitionId == id).ToList();

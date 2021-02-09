@@ -1,6 +1,7 @@
 ﻿using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -19,6 +20,8 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("favorite")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ToogleFavorite(Favorite favorite)
         {
             try
@@ -66,6 +69,8 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("favorite")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<List<Favorite>> GetFavorite(string query)
         {
             try
@@ -91,6 +96,8 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("favorites")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<List<Favorite>> GetFavorites(string query)
         {
             try

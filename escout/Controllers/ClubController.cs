@@ -1,6 +1,7 @@
 ﻿using escout.Helpers;
 using escout.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace escout.Controllers
 
         [HttpPost]
         [Route("club")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Club>> CreateClub(List<Club> club)
         {
             club.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -32,6 +34,8 @@ namespace escout.Controllers
 
         [HttpPut]
         [Route("club")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateClub(Club club)
         {
             try
@@ -46,6 +50,8 @@ namespace escout.Controllers
 
         [HttpDelete]
         [Route("club")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteClub(int id)
         {
             try
@@ -60,6 +66,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("club")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Club> GetClub(int id)
         {
             return context.clubs.FirstOrDefault(c => c.id == id);
@@ -67,6 +74,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("clubs")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Club>> GetClubs(string query)
         {
             try
@@ -92,6 +100,7 @@ namespace escout.Controllers
 
         [HttpGet]
         [Route("clubStatistics")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Statistics> GetAthleteStatistics(int clubId, int? gameId)
         {
             var gameEvents = new List<GameEvent>();

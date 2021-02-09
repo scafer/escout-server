@@ -2,6 +2,7 @@
 using System.Linq;
 using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace escout.Controllers.Tests
@@ -42,8 +43,8 @@ namespace escout.Controllers.Tests
             sport.name = "test event";
             var result = controller.UpdateSport(sport);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(sport.name, context.sports.First().name);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +53,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddSportToContext(context);
             var result = controller.DeleteSport(context.sports.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.sports.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

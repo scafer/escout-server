@@ -1,78 +1,87 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers
 {
-    [Route("api/v1")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1")]
     public class CompetitionController : ControllerBase
     {
         private readonly DataContext context;
         public CompetitionController(DataContext context) => this.context = context;
 
-        /// <summary>
-        /// Create competition.
-        /// </summary>
         [HttpPost]
-        [Authorize]
         [Route("competition")]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
-            using var service = new CompetitionService(context);
-            return service.CreateCompetition(competition);
+            competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            competition.ToList().ForEach(c => c.updated = Utils.GetDateTime());
+            context.competitions.AddRange(competition);
+            context.SaveChanges();
+            return competition;
         }
 
-        /// <summary>
-        /// Update competition.
-        /// </summary>
         [HttpPut]
-        [Authorize]
         [Route("competition")]
-        public ActionResult<SvcResult> UpdateCompetition(Competition competition)
+        public IActionResult UpdateCompetition(Competition competition)
         {
-            using var service = new CompetitionService(context);
-            return service.UpdateCompetition(competition) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                competition.updated = Utils.GetDateTime();
+                context.competitions.Update(competition);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Delete competition.
-        /// </summary>
         [HttpDelete]
-        [Authorize]
         [Route("competition")]
-        public ActionResult<SvcResult> DeleteCompetition(int id)
+        public IActionResult DeleteCompetition(int id)
         {
-            using var service = new CompetitionService(context);
-            return service.RemoveCompetition(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                var competition = context.competitions.FirstOrDefault(c => c.id == id);
+                context.competitions.Remove(competition);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Get competition.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("competition")]
         public ActionResult<Competition> GetCompetition(int id)
         {
-            using var service = new CompetitionService(context);
-            return service.GetCompetition(id);
+            return context.competitions.FirstOrDefault(c => c.id == id);
         }
 
-        /// <summary>
-        /// Get competitions.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("competitions")]
         public ActionResult<List<Competition>> GetCompetitions(string query)
         {
             try
             {
-                using var service = new CompetitionService(context);
-                return service.GetCompetitions(query);
+                List<Competition> competitions;
+
+                if (string.IsNullOrEmpty(query))
+                    competitions = context.competitions.ToList();
+                else
+                {
+                    var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                    var q = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    competitions = context.competitions.FromSqlRaw(q).ToList();
+                }
+
+                return competitions;
             }
             catch
             {
@@ -81,39 +90,49 @@ namespace escout.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("competitionBoard")]
         public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
-            using var service = new CompetitionService(context);
-            return service.CreateCompetitionBoard(competitionBoard);
+            competitionBoard.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            competitionBoard.ToList().ForEach(c => c.updated = Utils.GetDateTime());
+            context.competitionBoards.AddRange(competitionBoard);
+            context.SaveChanges();
+            return competitionBoard;
         }
 
         [HttpPut]
-        [Authorize]
         [Route("competitionBoard")]
-        public ActionResult<SvcResult> UpdateCompetitionBoard(CompetitionBoard competitionBoard)
+        public IActionResult UpdateCompetitionBoard(CompetitionBoard competitionBoard)
         {
-            using var service = new CompetitionService(context);
-            return service.UpdateCompetitionBoard(competitionBoard) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                competitionBoard.updated = Utils.GetDateTime();
+                context.competitionBoards.Update(competitionBoard);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
         [HttpDelete]
-        [Authorize]
         [Route("competitionBoard")]
-        public ActionResult<SvcResult> DeleteCompetitionBoard(int id)
+        public IActionResult DeleteCompetitionBoard(int id)
         {
-            using var service = new CompetitionService(context);
-            return service.RemoveCompetitionBoard(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                var competitionBoard = context.competitionBoards.FirstOrDefault(c => c.id == id);
+                context.competitionBoards.Remove(competitionBoard);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
         [HttpGet]
-        [Authorize]
         [Route("competitionBoard")]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
-            using var service = new CompetitionService(context);
-            return service.GetCompetitionBoard(id);
+            return context.competitionBoards.Where(c => c.competitionId == id).ToList();
         }
     }
 }

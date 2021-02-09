@@ -1,78 +1,87 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers
 {
-    [Route("api/v1")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1")]
     public class SportController : ControllerBase
     {
         private readonly DataContext context;
         public SportController(DataContext context) => this.context = context;
 
-        /// <summary>
-        /// Create sport.
-        /// </summary>
         [HttpPost]
-        [Authorize]
         [Route("sport")]
         public ActionResult<List<Sport>> CreateSport(List<Sport> sport)
         {
-            using var service = new SportService(context);
-            return service.CreateSport(sport);
+            sport.ToList().ForEach(s => s.created = Utils.GetDateTime());
+            sport.ToList().ForEach(s => s.updated = Utils.GetDateTime());
+            context.sports.AddRange(sport);
+            context.SaveChanges();
+            return sport;
         }
 
-        /// <summary>
-        /// Update sport.
-        /// </summary>
         [HttpPut]
-        [Authorize]
         [Route("sport")]
-        public ActionResult<SvcResult> UpdateSport(Sport sport)
+        public IActionResult UpdateSport(Sport sport)
         {
-            using var service = new SportService(context);
-            return service.UpdateSport(sport) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                sport.updated = Utils.GetDateTime();
+                context.sports.Update(sport);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Delete sport.
-        /// </summary>
         [HttpDelete]
-        [Authorize]
         [Route("sport")]
-        public ActionResult<SvcResult> DeleteSport(int id)
+        public IActionResult DeleteSport(int id)
         {
-            using var service = new SportService(context);
-            return service.RemoveSport(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                var sport = context.sports.FirstOrDefault(s => s.id == id);
+                context.sports.Remove(sport);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Get sport.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("sport")]
         public ActionResult<Sport> GetSport(int id)
         {
-            using var service = new SportService(context);
-            return service.GetSport(id);
+            return context.sports.FirstOrDefault(s => s.id == id);
         }
 
-        /// <summary>
-        /// Get sports.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("sports")]
         public ActionResult<List<Sport>> GetSports(string query)
         {
             try
             {
-                using var service = new SportService(context);
-                return service.GetSports(query);
+                List<Sport> sports;
+
+                if (string.IsNullOrEmpty(query))
+                    sports = context.sports.ToList();
+                else
+                {
+                    var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                    var q = string.Format("SELECT * FROM sports WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    sports = context.sports.FromSqlRaw(q).ToList();
+                }
+
+                return sports;
             }
             catch
             {

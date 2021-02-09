@@ -1,64 +1,65 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers
 {
-    [Route("api/v1")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1")]
     public class ImageController : ControllerBase
     {
         private readonly DataContext context;
         public ImageController(DataContext context) => this.context = context;
 
-        /// <summary>
-        /// Create image.
-        /// </summary>
         [HttpPost]
-        [Authorize]
         [Route("image")]
         public ActionResult<List<Image>> CreateImage(List<Image> image)
         {
-            using var service = new ImageService(context);
-            return service.CreateImage(image);
+            image.ToList().ForEach(i => i.created = Utils.GetDateTime());
+            image.ToList().ForEach(i => i.updated = Utils.GetDateTime());
+            context.images.AddRange(image);
+            context.SaveChanges();
+            return image;
         }
 
-        /// <summary>
-        /// Update image.
-        /// </summary>
         [HttpPut]
-        [Authorize]
         [Route("image")]
-        public ActionResult<SvcResult> UpdateImage(Image image)
+        public IActionResult UpdateImage(Image image)
         {
-            using var service = new ImageService(context);
-            return service.UpdateImage(image) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                image.updated = Utils.GetDateTime();
+                context.images.Update(image);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Delete image.
-        /// </summary>
         [HttpDelete]
-        [Authorize]
         [Route("image")]
-        public ActionResult<SvcResult> DeleteImage(int id)
+        public IActionResult DeleteImage(int id)
         {
-            using var service = new ImageService(context);
-            return service.DeleteImage(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                var image = context.images.FirstOrDefault(i => i.id == id);
+                context.images.Remove(image);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Get image.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("image")]
         public ActionResult<Image> GetImage(int id)
         {
-            using var service = new ImageService(context);
-            return service.GetImage(id);
+            return context.images.FirstOrDefault(i => i.id == id);
         }
     }
 }

@@ -1,78 +1,87 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers
 {
-    [Route("api/v1")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1")]
     public class EventController : ControllerBase
     {
         private readonly DataContext context;
         public EventController(DataContext context) => this.context = context;
 
-        /// <summary>
-        /// Create event.
-        /// </summary>
         [HttpPost]
-        [Authorize]
         [Route("event")]
         public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
-            using var service = new EventService(context);
-            return service.CreateEvent(e);
+            e.ToList().ForEach(c => c.created = Utils.GetDateTime());
+            e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
+            context.events.AddRange(e);
+            context.SaveChanges();
+            return e;
         }
 
-        /// <summary>
-        /// Update event.
-        /// </summary>
         [HttpPut]
-        [Authorize]
         [Route("event")]
-        public ActionResult<SvcResult> UpdateEvent(Event e)
+        public IActionResult UpdateEvent(Event e)
         {
-            using var service = new EventService(context);
-            return service.UpdateEvent(e) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                e.updated = Utils.GetDateTime();
+                context.events.Update(e);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Delete event.
-        /// </summary>
         [HttpDelete]
-        [Authorize]
         [Route("event")]
-        public ActionResult<SvcResult> DeleteEvent(int id)
+        public IActionResult DeleteEvent(int id)
         {
-            using var service = new EventService(context);
-            return service.RemoveEvent(id) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                var evt = context.events.FirstOrDefault(e => e.id == id);
+                context.events.Remove(evt);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch { return BadRequest(); }
         }
 
-        /// <summary>
-        /// Get event.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("event")]
         public ActionResult<Event> GetEvent(int id)
         {
-            using var service = new EventService(context);
-            return service.GetEvent(id);
+            return context.events.FirstOrDefault(e => e.id == id);
         }
 
-        /// <summary>
-        /// Get events.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("events")]
         public ActionResult<List<Event>> GetEvents(string query)
         {
             try
             {
-                using var service = new EventService(context);
-                return service.GetEvents(query);
+                List<Event> events;
+
+                if (string.IsNullOrEmpty(query))
+                    events = context.events.ToList();
+                else
+                {
+                    var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                    var q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    events = context.events.FromSqlRaw(q).ToList();
+                }
+
+                return events;
             }
             catch
             {

@@ -2,6 +2,7 @@
 using System.Linq;
 using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace escout.Controllers.Tests
@@ -44,8 +45,8 @@ namespace escout.Controllers.Tests
             game.type = "test type";
             var result = controller.UpdateGame(game);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(game.type, context.games.First().type);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -54,8 +55,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddGameToContext(context);
             var result = controller.DeleteGame(context.games.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.games.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

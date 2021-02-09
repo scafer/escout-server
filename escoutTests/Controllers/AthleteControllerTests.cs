@@ -1,5 +1,6 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,6 @@ namespace escout.Controllers.Tests
             var athletes = new List<Athlete> { new() { name = "test" } };
             var result = controller.CreateAthlete(athletes);
 
-            Assert.AreEqual(1, result.Value.Count);
             Assert.AreEqual("test", result.Value.First().name);
         }
 
@@ -42,8 +42,8 @@ namespace escout.Controllers.Tests
             athlete.fullname = "test athlete";
             var result = controller.UpdateAthlete(athlete);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(athlete.fullname, context.athletes.First().fullname);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +52,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddAthleteToContext(context);
             var result = controller.RemoveAthlete(context.athletes.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.athletes.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

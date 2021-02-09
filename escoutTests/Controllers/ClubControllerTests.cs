@@ -1,5 +1,6 @@
 ﻿using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +43,8 @@ namespace escout.Controllers.Tests
             athlete.fullname = "test athlete";
             var result = controller.UpdateClub(athlete);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(athlete.fullname, context.clubs.First().fullname);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +53,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddClubToContext(context);
             var result = controller.DeleteClub(context.clubs.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.clubs.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

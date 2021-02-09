@@ -2,44 +2,86 @@
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers
 {
-    [Route("api/v1")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1")]
     public class FavoritesController : ControllerBase
     {
         private readonly DataContext context;
         public FavoritesController(DataContext context) => this.context = context;
 
-        /// <summary>
-        /// Toogle favorite.
-        /// </summary>
         [HttpPost]
-        [Authorize]
         [Route("favorite")]
-        public ActionResult<SvcResult> ToogleFavorite(Favorite favorite)
+        public IActionResult ToogleFavorite(Favorite favorite)
         {
-            var currentUser = User.GetUser(new UserService(context));
-            favorite.userId = currentUser.id;
-            using var service = new FavoritesService(context);
-            return service.ToogleFavorite(favorite) ? SvcResult.Set(0, "Success") : SvcResult.Set(1, "Error");
+            try
+            {
+                if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null && favorite.athleteId != null)
+                {
+                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);
+                    context.favorites.Remove(f);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null && favorite.clubId != null)
+                {
+                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId);
+                    context.favorites.Remove(f);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null && favorite.competitionId != null)
+                {
+                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId);
+                    context.favorites.Remove(f);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null && favorite.gameId != null)
+                {
+                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId);
+                    context.favorites.Remove(f);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                else
+                {
+                    context.favorites.Add(favorite);
+                    context.SaveChanges();
+                }
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
-        /// <summary>
-        /// Get favorite.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("favorite")]
         public ActionResult<List<Favorite>> GetFavorite(string query)
         {
             try
             {
-                var currentUser = User.GetUser(new UserService(context));
-                using var service = new FavoritesService(context);
-                return service.GetFavorite(currentUser.id, query);
+                List<Favorite> favorites;
+
+                if (string.IsNullOrEmpty(query))
+                    favorites = context.favorites.ToList();
+                else
+                {
+                    var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                    var q = string.Format("SELECT * FROM favorites WHERE " + "userId=" + User.GetUser(context).id + " AND " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    favorites = context.favorites.FromSqlRaw(q).ToList();
+                }
+
+                return favorites;
             }
             catch
             {
@@ -47,19 +89,23 @@ namespace escout.Controllers
             }
         }
 
-        /// <summary>
-        /// Get favorites.
-        /// </summary>
         [HttpGet]
-        [Authorize]
         [Route("favorites")]
         public ActionResult<List<Favorite>> GetFavorites(string query)
         {
             try
             {
-                var currentUser = User.GetUser(new UserService(context));
-                using var service = new FavoritesService(context);
-                return service.GetFavorites(currentUser.id, query);
+                List<Favorite> favorites;
+
+                if (string.IsNullOrEmpty(query))
+                    favorites = context.favorites.ToList();
+                else
+                {
+                    var q = string.Format("SELECT * FROM favorites WHERE \"userId\"=" + User.GetUser(context).id + " AND \"" + query + "\" IS NOT NULL;");
+                    favorites = context.favorites.FromSqlRaw(q).ToList();
+                }
+
+                return favorites;
             }
             catch
             {

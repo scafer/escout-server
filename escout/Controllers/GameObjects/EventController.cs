@@ -1,5 +1,6 @@
 ﻿using escout.Helpers;
 using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,19 @@ namespace escout.Controllers.GameObjects
     public class EventController : ControllerBase
     {
         private readonly DataContext context;
-        public EventController(DataContext context) => this.context = context;
+        public EventController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("event")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
+            if (User.GetUser(context).accessLevel.Equals(0))
+                return Forbid();
+
             e.ToList().ForEach(c => c.created = Utils.GetDateTime());
             e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             context.events.AddRange(e);
@@ -36,6 +43,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateEvent(Event e)
         {
+            if (User.GetUser(context).accessLevel.Equals(0))
+                return Forbid();
+
             try
             {
                 e.updated = Utils.GetDateTime();
@@ -52,6 +62,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteEvent(int id)
         {
+            if (User.GetUser(context).accessLevel.Equals(0))
+                return Forbid();
+
             try
             {
                 var evt = context.events.FirstOrDefault(e => e.id == id);

@@ -14,7 +14,10 @@ namespace escout.Controllers.GenericObjects
     public class ImageController : ControllerBase
     {
         private readonly DataContext context;
-        public ImageController(DataContext context) => this.context = context;
+        public ImageController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("image")]

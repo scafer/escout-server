@@ -16,7 +16,10 @@ namespace escout.Controllers.GameObjects
     public class FavoritesController : ControllerBase
     {
         private readonly DataContext context;
-        public FavoritesController(DataContext context) => this.context = context;
+        public FavoritesController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("favorite")]

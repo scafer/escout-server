@@ -1,5 +1,6 @@
 ﻿using escout.Helpers;
 using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,10 @@ namespace escout.Controllers.GameObjects
     public class AthleteController : ControllerBase
     {
         private readonly DataContext context;
-        public AthleteController(DataContext context) => this.context = context;
+        public AthleteController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("athlete")]
@@ -25,6 +29,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athletes)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 athletes.ToList().ForEach(a => a.created = Utils.GetDateTime());
@@ -42,6 +49,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult UpdateAthlete(Athlete athlete)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 athlete.updated = Utils.GetDateTime();
@@ -58,6 +68,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RemoveAthlete(int id)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 var athlete = context.athletes.FirstOrDefault(a => a.id == id);

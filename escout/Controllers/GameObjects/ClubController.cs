@@ -1,5 +1,6 @@
 ﻿using escout.Helpers;
 using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,19 @@ namespace escout.Controllers.GameObjects
     public class ClubController : ControllerBase
     {
         private readonly DataContext context;
-        public ClubController(DataContext context) => this.context = context;
+        public ClubController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("club")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Club>> CreateClub(List<Club> club)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             club.ToList().ForEach(c => c.created = Utils.GetDateTime());
             club.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             context.clubs.AddRange(club);
@@ -38,6 +45,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateClub(Club club)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 club.updated = Utils.GetDateTime();
@@ -54,6 +64,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteClub(int id)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 var club = context.clubs.FirstOrDefault(c => c.id == id);

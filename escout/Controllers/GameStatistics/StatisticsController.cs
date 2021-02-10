@@ -15,7 +15,10 @@ namespace escout.Controllers.GameStatistics
     public class StatisticsController : Controller
     {
         private readonly DataContext context;
-        public StatisticsController(DataContext context) => this.context = context;
+        public StatisticsController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpGet]
         [Route("athlete")]

@@ -14,7 +14,10 @@ namespace escout.Controllers.Authentication
     public class AuthenticationController : ControllerBase
     {
         private readonly DataContext context;
-        public AuthenticationController(DataContext context) => this.context = context;
+        public AuthenticationController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [AllowAnonymous]
@@ -27,7 +30,9 @@ namespace escout.Controllers.Authentication
 
             if (account != null)
             {
-                if (TokenService.VerifyPassword(user.password, account.password))
+                if (account.accessLevel.Equals(-1))
+                    return Forbid("Account unauthorized.");
+                else if (TokenService.VerifyPassword(user.password, account.password))
                     return TokenService.GenerateToken(account);
                 else
                     return BadRequest("Password is wrong.");
@@ -50,7 +55,7 @@ namespace escout.Controllers.Authentication
 
             try
             {
-                user.accessLevel = 0;
+                user.accessLevel = int.Parse(Configurations.GetDefaultAccessLevel());
                 user.created = Utils.GetDateTime();
                 user.updated = Utils.GetDateTime();
                 user.username = user.username.ToLower();
@@ -60,7 +65,7 @@ namespace escout.Controllers.Authentication
                 context.SaveChanges();
 
                 if (user.notifications == 1)
-                    _ = Notifications.SendEmail(user.email, "Welcome to eScout", "Welcome to eScout " + user.username);
+                    _ = Notifications.SendEmail(user.email, "eScout Notification", "Welcome to eScout " + user.username);
 
                 return Ok();
             }
@@ -75,19 +80,19 @@ namespace escout.Controllers.Authentication
         [Route("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult ResetPassword(User user1)
+        public IActionResult ResetPassword(User user)
         {
-            var user = context.users.FirstOrDefault(u => u.username == user1.username || u.email == user1.email);
+            var userData = context.users.FirstOrDefault(u => u.username == user.username || u.email == user.email);
 
-            if (user == null)
+            if (userData == null)
                 return BadRequest("Account does not exist");
 
             var generatedPassword = Utils.StringGenerator();
-            user.updated = Utils.GetDateTime();
-            user.password = TokenService.HashPassword(Utils.GenerateSha256String(generatedPassword));
-            context.users.Update(user);
+            userData.updated = Utils.GetDateTime();
+            userData.password = TokenService.HashPassword(Utils.GenerateSha256String(generatedPassword));
+            context.users.Update(userData);
             context.SaveChanges();
-            _ = Notifications.SendEmail(user.email, "New eScout Password", generatedPassword);
+            _ = Notifications.SendEmail(userData.email, "New eScout Password", generatedPassword);
             return Ok();
         }
 

@@ -15,7 +15,10 @@ namespace escout.Controllers.GenericObjects
     public class UserController : ControllerBase
     {
         private readonly DataContext context;
-        public UserController(DataContext context) => this.context = context;
+        public UserController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("change-password")]
@@ -60,6 +63,9 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteUser(User user)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 context.users.Remove(user);

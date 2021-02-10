@@ -1,5 +1,6 @@
 ﻿using escout.Helpers;
 using escout.Models;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +17,19 @@ namespace escout.Controllers.GameObjects
     public class CompetitionController : ControllerBase
     {
         private readonly DataContext context;
-        public CompetitionController(DataContext context) => this.context = context;
+        public CompetitionController(DataContext context)
+        {
+            this.context = context;
+        }
 
         [HttpPost]
         [Route("competition")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
             competition.ToList().ForEach(c => c.updated = Utils.GetDateTime());
             context.competitions.AddRange(competition);
@@ -36,6 +43,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetition(Competition competition)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 competition.updated = Utils.GetDateTime();
@@ -52,6 +62,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetition(int id)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 var competition = context.competitions.FirstOrDefault(c => c.id == id);

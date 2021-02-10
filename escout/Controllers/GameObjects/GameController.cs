@@ -28,6 +28,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Game>> CreateGame(List<Game> game)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             game.ToList().ForEach(g => g.created = Utils.GetDateTime());
             game.ToList().ForEach(g => g.updated = Utils.GetDateTime());
             context.games.AddRange(game);
@@ -41,6 +44,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGame(Game game)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 game.updated = Utils.GetDateTime();
@@ -57,6 +63,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGame(int id)
         {
+            if (User.GetUser(context).accessLevel <= 2)
+                return Forbid();
+
             try
             {
                 var game = context.games.FirstOrDefault(g => g.id == id);

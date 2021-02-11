@@ -29,7 +29,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athletes)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try
@@ -49,7 +49,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult UpdateAthlete(Athlete athlete)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try
@@ -68,7 +68,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RemoveAthlete(int id)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try

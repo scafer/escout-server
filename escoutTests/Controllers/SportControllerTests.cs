@@ -19,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new SportController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 0);
         }
 
         [TestCleanup]

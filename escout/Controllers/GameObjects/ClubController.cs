@@ -28,7 +28,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Club>> CreateClub(List<Club> club)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             club.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -45,7 +45,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateClub(Club club)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try
@@ -64,7 +64,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteClub(int id)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Security.Claims;
 using escout.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace escoutTests.Resources
@@ -12,6 +13,16 @@ namespace escoutTests.Resources
             var context = new DataContext(dbContextOptions.Options);
             context.Database.EnsureCreated();
             return context;
+        }
+
+        public static DefaultHttpContext SetUserContext(DataContext context, int level)
+        {
+            var user = new User() { username = "test", email = "test@email.com", password = "test" , accessLevel = level};
+            context.users.Add(user);
+            context.SaveChanges();
+
+            var identity = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.id.ToString()) }));
+            return new DefaultHttpContext { User = identity };
         }
 
         public static Event AddEventToContext(DataContext context)

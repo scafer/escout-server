@@ -19,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new ClubController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 2);
         }
 
         [TestCleanup]

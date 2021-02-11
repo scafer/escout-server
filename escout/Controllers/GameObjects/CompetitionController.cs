@@ -27,7 +27,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
@@ -43,7 +43,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetition(Competition competition)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try
@@ -62,7 +62,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetition(int id)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (User.GetUser(context).accessLevel >= 3)
                 return Forbid();
 
             try

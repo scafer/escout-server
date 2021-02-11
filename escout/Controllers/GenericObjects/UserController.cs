@@ -63,7 +63,7 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteUser(User user)
         {
-            if (User.GetUser(context).accessLevel <= 2)
+            if (!User.GetUser(context).accessLevel.Equals(0))
                 return Forbid();
 
             try

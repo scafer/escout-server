@@ -168,6 +168,7 @@ CREATE TABLE "images" (
   "id" SERIAL PRIMARY KEY,
   "imageUrl" varchar UNIQUE,
   "tags" varchar,
+  "description" varchar,
   "created" varchar,
   "updated" varchar
 );

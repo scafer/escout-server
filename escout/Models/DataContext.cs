@@ -207,6 +207,7 @@ namespace escout.Models
         public int id { get; set; }
         public string imageUrl  { get; set; }
         public string tags { get; set; }
+        public string description { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
     }

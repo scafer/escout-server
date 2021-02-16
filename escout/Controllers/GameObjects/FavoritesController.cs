@@ -29,6 +29,8 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
+                favorite.userId = User.GetUser(context).id;
+
                 if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null && favorite.athleteId != null)
                 {
                     var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);

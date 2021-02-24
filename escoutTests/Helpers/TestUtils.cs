@@ -1,7 +1,7 @@
-﻿using System.Security.Claims;
-using escout.Models;
+﻿using escout.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace escoutTests.Resources
 {
@@ -17,7 +17,7 @@ namespace escoutTests.Resources
 
         public static DefaultHttpContext SetUserContext(DataContext context, int level)
         {
-            var user = new User() { username = "test", email = "test@email.com", password = "test" , accessLevel = level};
+            var user = new User() { username = "test", email = "test@email.com", password = "test", accessLevel = level };
             context.users.Add(user);
             context.SaveChanges();
 
@@ -76,7 +76,7 @@ namespace escoutTests.Resources
         {
             var club1 = AddClubToContext(context);
             var club2 = AddClubToContext(context);
-            var game = new Game() { homeId = club1.id, visitorId = club2.id, type = "test"};
+            var game = new Game() { homeId = club1.id, visitorId = club2.id, type = "test" };
             context.games.Add(game);
             context.SaveChanges();
 
@@ -85,7 +85,7 @@ namespace escoutTests.Resources
 
         public static Image AddImageToContext(DataContext context)
         {
-            var image = new Image() {imageUrl = "test"};
+            var image = new Image() { imageUrl = "test" };
             context.images.Add(image);
             context.SaveChanges();
 
@@ -103,7 +103,7 @@ namespace escoutTests.Resources
 
         public static User AddUserToContext(DataContext context)
         {
-            var user = new User() {username = "test", email = "test@email.com", password = "test"};
+            var user = new User() { username = "test", email = "test@email.com", password = "test" };
             context.users.Add(user);
             context.SaveChanges();
 

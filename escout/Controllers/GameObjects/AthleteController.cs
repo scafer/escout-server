@@ -40,7 +40,7 @@ namespace escout.Controllers.GameObjects
                 context.SaveChanges();
                 return athletes;
             }
-            catch(Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpPut]
@@ -59,7 +59,7 @@ namespace escout.Controllers.GameObjects
                 context.SaveChanges();
                 return Ok();
             }
-            catch(Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpDelete]
@@ -78,7 +78,7 @@ namespace escout.Controllers.GameObjects
                 context.SaveChanges();
                 return Ok();
             }
-            catch(Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpGet]

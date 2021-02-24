@@ -55,7 +55,7 @@ namespace escout.Controllers.GameObjects
                 context.SaveChanges();
                 return Ok();
             }
-            catch(Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpDelete]
@@ -74,7 +74,7 @@ namespace escout.Controllers.GameObjects
                 context.SaveChanges();
                 return Ok();
             }
-            catch(Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpGet]

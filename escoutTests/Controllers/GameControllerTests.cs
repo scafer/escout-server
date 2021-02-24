@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using escout.Controllers.GameObjects;
+﻿using escout.Controllers.GameObjects;
 using escout.Models;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers.Tests
 {
@@ -34,7 +34,7 @@ namespace escout.Controllers.Tests
             var club1 = TestUtils.AddClubToContext(context);
             var club2 = TestUtils.AddClubToContext(context);
 
-            var game = new List<Game> { new() {homeId = club1.id, visitorId = club2.id} };
+            var game = new List<Game> { new() { homeId = club1.id, visitorId = club2.id } };
             var result = controller.CreateGame(game);
 
             Assert.AreEqual(1, result.Value.Count);

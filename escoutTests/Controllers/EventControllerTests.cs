@@ -1,5 +1,7 @@
-﻿using escout.Models;
+﻿using escout.Controllers.GameObjects;
+using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new EventController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 0);
         }
 
         [TestCleanup]
@@ -42,8 +45,8 @@ namespace escout.Controllers.Tests
             evt.name = "test event";
             var result = controller.UpdateEvent(evt);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(evt.name, context.events.First().name);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +55,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddEventToContext(context);
             var result = controller.DeleteEvent(context.events.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.events.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

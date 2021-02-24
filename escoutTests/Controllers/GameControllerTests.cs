@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using escout.Controllers.GameObjects;
 using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers.Tests
 {
@@ -17,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new GameController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 2);
         }
 
         [TestCleanup]
@@ -31,7 +34,7 @@ namespace escout.Controllers.Tests
             var club1 = TestUtils.AddClubToContext(context);
             var club2 = TestUtils.AddClubToContext(context);
 
-            var game = new List<Game> { new() {homeId = club1.id, visitorId = club2.id} };
+            var game = new List<Game> { new() { homeId = club1.id, visitorId = club2.id } };
             var result = controller.CreateGame(game);
 
             Assert.AreEqual(1, result.Value.Count);
@@ -44,8 +47,8 @@ namespace escout.Controllers.Tests
             game.type = "test type";
             var result = controller.UpdateGame(game);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(game.type, context.games.First().type);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -54,8 +57,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddGameToContext(context);
             var result = controller.DeleteGame(context.games.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.games.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

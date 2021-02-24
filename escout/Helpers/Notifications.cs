@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace escout.Helpers
 {
-    public static class NotificationHelper
+    public static class Notifications
     {
         public static async Task SendEmail(string emailTo, string subject, string content)
         {

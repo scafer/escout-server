@@ -1,5 +1,7 @@
-﻿using escout.Models;
+﻿using escout.Controllers.GenericObjects;
+using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -16,6 +18,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new UserController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 0);
         }
 
         [TestCleanup]
@@ -38,7 +41,6 @@ namespace escout.Controllers.Tests
             Assert.Fail();
         }
 
-        [Ignore]
         [TestMethod]
         public void UpdateUserTest()
         {
@@ -46,18 +48,19 @@ namespace escout.Controllers.Tests
             user.username = "testuser";
             var result = controller.UpdateUser(user);
 
-            Assert.AreEqual(0, result.Value.errorCode);
-            Assert.AreEqual(user.username, context.users.First().username);
+            Assert.IsNotNull(context.users.First(u => u.username == user.username));
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
         public void RemoveUserTest()
         {
-            var user = TestUtils.AddUserToContext(context);
-            var result = controller.RemoveUser(user);
 
-            Assert.AreEqual(0, result.Value.errorCode);
-            Assert.AreEqual(0, context.users.Count());
+            var user = TestUtils.AddUserToContext(context);
+            var result = controller.DeleteUser(user);
+
+            Assert.AreEqual(1, context.users.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [Ignore]
@@ -68,16 +71,18 @@ namespace escout.Controllers.Tests
             var result = controller.GetUser();
 
             Assert.AreEqual(user.username, result.Value.username);
+            Assert.AreEqual(200, ((StatusCodeResult)result.Result).StatusCode);
         }
 
         [Ignore]
         [TestMethod]
         public void GetUsersTest()
         {
-            var user = TestUtils.AddUserToContext(context);
+            TestUtils.AddUserToContext(context);
             var result = controller.GetUsers(string.Empty);
 
             Assert.AreEqual(1, result.Value.Count);
+            Assert.AreEqual(200, ((StatusCodeResult)result.Result).StatusCode);
         }
     }
 }

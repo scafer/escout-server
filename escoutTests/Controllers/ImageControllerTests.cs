@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using escout.Controllers.GenericObjects;
 using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace escout.Controllers.Tests
 {
@@ -42,8 +44,8 @@ namespace escout.Controllers.Tests
             image.imageUrl = "test image";
             var result = controller.UpdateImage(image);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(image.imageUrl, context.images.First().imageUrl);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +54,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddImageToContext(context);
             var result = controller.DeleteImage(context.images.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.images.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

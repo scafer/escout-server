@@ -38,5 +38,10 @@ namespace escout.Helpers
             };
             return builder.ToString();
         }
+
+        public static string GetDefaultAccessLevel()
+        {
+            return Environment.GetEnvironmentVariable("DEFAULT_USER_ACCESS_LEVEL") ?? "3";
+        }
     }
 }

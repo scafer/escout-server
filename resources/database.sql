@@ -49,6 +49,21 @@ CREATE TABLE "clubs" (
   "updated" varchar
 );
 
+CREATE TABLE "clubAthletes" (
+  "id" SERIAL PRIMARY KEY,
+  "clubId" int,
+  "athleteId" int,
+  "status" int,
+  "number" int,
+  "startDate" varchar,
+  "endDate" varchar,
+  "position" varchar,
+  "positionKey" int DEFAULT 0,
+  "data" varchar,
+  "created" varchar,
+  "updated" varchar
+);
+
 CREATE TABLE "competitions" (
   "id" SERIAL PRIMARY KEY,
   "key" varchar UNIQUE,
@@ -116,8 +131,6 @@ CREATE TABLE "games" (
   "id" SERIAL PRIMARY KEY,
   "timeStart" varchar,
   "timeEnd" varchar,
-  "homeColor" varchar,
-  "visitorColor" varchar,
   "homeScore" int DEFAULT 0,
   "visitorScore" int DEFAULT 0,
   "homePenaltyScore" int DEFAULT 0,
@@ -145,7 +158,7 @@ CREATE TABLE "gameUsers" (
 
 CREATE TABLE "sports" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar,
+  "name" varchar UNIQUE,
   "imageId" int,
   "created" varchar,
   "updated" varchar
@@ -153,8 +166,9 @@ CREATE TABLE "sports" (
 
 CREATE TABLE "images" (
   "id" SERIAL PRIMARY KEY,
-  "image" varchar,
-  "imageUrl" varchar,
+  "imageUrl" varchar UNIQUE,
+  "tags" varchar,
+  "description" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -231,5 +245,9 @@ ALTER TABLE "favorites" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
 ALTER TABLE "favorites" ADD FOREIGN KEY ("competitionId") REFERENCES "competitions" ("id");
 
 ALTER TABLE "favorites" ADD FOREIGN KEY ("gameId") REFERENCES "games" ("id");
+
+ALTER TABLE "clubAthletes" ADD FOREIGN KEY ("clubId") REFERENCES "clubs" ("id");
+
+ALTER TABLE "clubAthletes" ADD FOREIGN KEY ("athleteId") REFERENCES "athletes" ("id");
 
 COMMENT ON COLUMN "gameEvents"."key" IS 'timestamp$userId';

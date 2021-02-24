@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using escout.Models;
+﻿using escout.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace escoutTests.Resources
 {
@@ -12,6 +13,16 @@ namespace escoutTests.Resources
             var context = new DataContext(dbContextOptions.Options);
             context.Database.EnsureCreated();
             return context;
+        }
+
+        public static DefaultHttpContext SetUserContext(DataContext context, int level)
+        {
+            var user = new User() { username = "test", email = "test@email.com", password = "test", accessLevel = level };
+            context.users.Add(user);
+            context.SaveChanges();
+
+            var identity = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, user.id.ToString()) }));
+            return new DefaultHttpContext { User = identity };
         }
 
         public static Event AddEventToContext(DataContext context)
@@ -65,7 +76,7 @@ namespace escoutTests.Resources
         {
             var club1 = AddClubToContext(context);
             var club2 = AddClubToContext(context);
-            var game = new Game() { homeId = club1.id, visitorId = club2.id, type = "test"};
+            var game = new Game() { homeId = club1.id, visitorId = club2.id, type = "test" };
             context.games.Add(game);
             context.SaveChanges();
 
@@ -74,7 +85,7 @@ namespace escoutTests.Resources
 
         public static Image AddImageToContext(DataContext context)
         {
-            var image = new Image() {imageUrl = "test"};
+            var image = new Image() { imageUrl = "test" };
             context.images.Add(image);
             context.SaveChanges();
 
@@ -92,7 +103,7 @@ namespace escoutTests.Resources
 
         public static User AddUserToContext(DataContext context)
         {
-            var user = new User() {username = "test", email = "test@email.com", password = "test"};
+            var user = new User() { username = "test", email = "test@email.com", password = "test" };
             context.users.Add(user);
             context.SaveChanges();
 

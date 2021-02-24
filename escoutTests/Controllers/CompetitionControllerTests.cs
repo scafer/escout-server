@@ -1,5 +1,7 @@
-﻿using escout.Models;
+﻿using escout.Controllers.GameObjects;
+using escout.Models;
 using escoutTests.Resources;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new CompetitionController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 2);
         }
 
         [TestCleanup]
@@ -42,8 +45,8 @@ namespace escout.Controllers.Tests
             competition.edition = "test edition";
             var result = controller.UpdateCompetition(competition);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(competition.edition, context.competitions.First().edition);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -52,8 +55,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddCompetitionToContext(context);
             var result = controller.DeleteCompetition(context.competitions.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.competitions.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -80,7 +83,6 @@ namespace escout.Controllers.Tests
             var competition = TestUtils.AddCompetitionToContext(context);
             var club = TestUtils.AddClubToContext(context);
             var boards = new List<CompetitionBoard> { new() { competitionId = competition.id, clubId = club.id } };
-
             var result = controller.CreateCompetitionBoard(boards);
 
             Assert.AreEqual(1, result.Value.Count);
@@ -93,8 +95,8 @@ namespace escout.Controllers.Tests
             board.points = 10;
             var result = controller.UpdateCompetitionBoard(board);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(board.points, context.competitionBoards.First().points);
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]
@@ -103,8 +105,8 @@ namespace escout.Controllers.Tests
             TestUtils.AddCompetitionBoardToContext(context);
             var result = controller.DeleteCompetitionBoard(context.competitionBoards.First().id);
 
-            Assert.AreEqual(0, result.Value.errorCode);
             Assert.AreEqual(0, context.competitionBoards.Count());
+            Assert.AreEqual(200, ((StatusCodeResult)result).StatusCode);
         }
 
         [TestMethod]

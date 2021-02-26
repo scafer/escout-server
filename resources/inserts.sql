@@ -4,6 +4,7 @@ INSERT INTO "sports" ("id", "name", "imageId") VALUES (1, 'Soccer', NULL);
 
 -- Insert Soccer Events
 
+INSERT INTO "events" ("name", "description", "sportId", "imageId", "key") VALUES ('Continue', NULL, 1, NULL, 'Soccer000');
 INSERT INTO "events" ("name", "description", "sportId", "imageId", "key") VALUES ('Ball Recovery', NULL, 1, NULL, 'Soccer001');
 INSERT INTO "events" ("name", "description", "sportId", "imageId", "key") VALUES ('Interruption', NULL, 1, NULL, 'Soccer002');
 INSERT INTO "events" ("name", "description", "sportId", "imageId", "key") VALUES ('Ball Lost', NULL, 1, NULL, 'Soccer003');

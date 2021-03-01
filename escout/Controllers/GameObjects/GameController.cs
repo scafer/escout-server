@@ -105,10 +105,7 @@ namespace escout.Controllers.GameObjects
 
                 return games;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
 
         [HttpPost]
@@ -245,10 +242,7 @@ namespace escout.Controllers.GameObjects
 
                 return gamesUsers;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
 
         [HttpPost]

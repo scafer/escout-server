@@ -4,6 +4,8 @@ using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -90,10 +92,15 @@ namespace escout.Controllers.GenericObjects
         {
             var user = User.GetUser(context);
 
-            if (user == null)
-                return new NotFoundResult();
-            else if (user.accessLevel == 0)
-                return context.users.ToList();
+            if (user.accessLevel == 0)
+            {
+                if(string.IsNullOrEmpty(query))
+                    return context.users.ToList();
+
+                var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
+                var q = string.Format("SELECT * FROM users WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                return context.users.FromSqlRaw(q).ToList();
+            }
             else
                 return new UnauthorizedResult();
         }

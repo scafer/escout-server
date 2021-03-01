@@ -103,10 +103,7 @@ namespace escout.Controllers.GameObjects
 
                 return events;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
     }
 }

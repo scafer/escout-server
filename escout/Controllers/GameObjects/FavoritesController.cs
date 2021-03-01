@@ -66,10 +66,7 @@ namespace escout.Controllers.GameObjects
                 }
                 return Ok();
             }
-            catch
-            {
-                return BadRequest();
-            }
+            catch { return BadRequest(); }
         }
 
         [HttpGet]
@@ -93,10 +90,7 @@ namespace escout.Controllers.GameObjects
 
                 return favorites;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
 
         [HttpGet]
@@ -119,10 +113,7 @@ namespace escout.Controllers.GameObjects
 
                 return favorites;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
     }
 }

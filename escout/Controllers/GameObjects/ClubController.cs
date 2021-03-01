@@ -36,7 +36,6 @@ namespace escout.Controllers.GameObjects
             context.clubs.AddRange(club);
             context.SaveChanges();
             return club;
-
         }
 
         [HttpPut]
@@ -105,10 +104,7 @@ namespace escout.Controllers.GameObjects
 
                 return clubs;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
     }
 }

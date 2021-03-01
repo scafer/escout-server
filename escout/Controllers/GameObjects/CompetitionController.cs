@@ -103,10 +103,7 @@ namespace escout.Controllers.GameObjects
 
                 return competitions;
             }
-            catch
-            {
-                return new NotFoundResult();
-            }
+            catch { return new NotFoundResult(); }
         }
 
         [HttpPost]

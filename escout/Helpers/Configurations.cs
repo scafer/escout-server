@@ -34,8 +34,7 @@ namespace escout.Helpers
                 Port = databaseUri.Port,
                 Username = userInfo[0],
                 Password = userInfo[1],
-                Database = databaseUri.LocalPath.TrimStart('/'),
-                SslMode = SslMode.Prefer
+                Database = databaseUri.LocalPath.TrimStart('/')
             };
             return builder.ToString();
         }

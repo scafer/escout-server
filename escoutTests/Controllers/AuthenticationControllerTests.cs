@@ -1,5 +1,5 @@
 ﻿using escout.Controllers.Authentication;
-using escout.Models;
+using escout.Models.Database;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

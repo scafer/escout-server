@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +14,10 @@ namespace escout.Controllers.GameStatistics
     [Route("api/v1/game-statistics")]
     public class StatisticsController : Controller
     {
-        private readonly DataContext context;
-        public StatisticsController(DataContext context)
+        private readonly DataContext dataContext;
+        public StatisticsController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpGet]
@@ -33,16 +33,20 @@ namespace escout.Controllers.GameStatistics
                 var count = new List<Counter>();
 
                 if (gameId != null)
-                    gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
+                {
+                    gameEvents = dataContext.gameEvents.Where(x => x.athleteId == athleteId && x.gameId == gameId).ToList();
+                }
                 else
-                    gameEvents = context.gameEvents.Where(x => x.athleteId == athleteId).ToList();
+                {
+                    gameEvents = dataContext.gameEvents.Where(x => x.athleteId == athleteId).ToList();
+                }
 
                 var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
 
                 foreach (int i in uniqueGames)
                 {
                     var game = gameEvents.Where(x => x.gameId == i).ToList();
-                    foreach (Event e in context.events)
+                    foreach (Event e in dataContext.events)
                     {
                         var events = game.Where(x => x.eventId == e.id).ToList();
                         var gameStats = new GameStats
@@ -63,7 +67,7 @@ namespace escout.Controllers.GameStatistics
                     }
                 }
 
-                foreach (Event e in context.events)
+                foreach (Event e in dataContext.events)
                 {
                     var counter = new List<Counter>();
                     counter = count.Where(x => x.EventId == e.id).ToList();
@@ -74,8 +78,8 @@ namespace escout.Controllers.GameStatistics
                         EventId = e.id,
                         Count = totalEvents.Count(),
                         Average = counter.Average(x => x.Count),
-                        StandardDeviation = Utils.StdDev(counter.Select(x => x.Count).ToArray()),
-                        Median = Utils.Median(counter.Select(x => x.Count).ToArray())
+                        StandardDeviation = GenericUtils.StdDev(counter.Select(x => x.Count).ToArray()),
+                        Median = GenericUtils.Median(counter.Select(x => x.Count).ToArray())
                     };
 
                     totalStatistics.TotalStats.Add(totalStats);
@@ -83,7 +87,10 @@ namespace escout.Controllers.GameStatistics
 
                 return totalStatistics;
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -97,16 +104,20 @@ namespace escout.Controllers.GameStatistics
             var count = new List<Counter>();
 
             if (gameId != null)
-                gameEvents = context.gameEvents.Where(x => x.clubId == clubId && x.gameId == gameId).ToList();
+            {
+                gameEvents = dataContext.gameEvents.Where(x => x.clubId == clubId && x.gameId == gameId).ToList();
+            }
             else
-                gameEvents = context.gameEvents.Where(x => x.clubId == clubId).ToList();
+            {
+                gameEvents = dataContext.gameEvents.Where(x => x.clubId == clubId).ToList();
+            }
 
             var uniqueGames = gameEvents.Select(x => x.gameId).Distinct();
 
             foreach (int i in uniqueGames)
             {
                 var game = gameEvents.Where(x => x.gameId == i).ToList();
-                foreach (Event e in context.events)
+                foreach (Event e in dataContext.events)
                 {
                     var events = game.Where(x => x.eventId == e.id).ToList();
                     var gameStats = new GameStats
@@ -127,7 +138,7 @@ namespace escout.Controllers.GameStatistics
                 }
             }
 
-            foreach (Event e in context.events)
+            foreach (Event e in dataContext.events)
             {
                 var counter = new List<Counter>();
                 counter = count.Where(x => x.EventId == e.id).ToList();
@@ -138,8 +149,8 @@ namespace escout.Controllers.GameStatistics
                     EventId = e.id,
                     Count = totalEvents.Count(),
                     Average = counter.Average(x => x.Count),
-                    StandardDeviation = Utils.StdDev(counter.Select(x => x.Count).ToArray()),
-                    Median = Utils.Median(counter.Select(x => x.Count).ToArray())
+                    StandardDeviation = GenericUtils.StdDev(counter.Select(x => x.Count).ToArray()),
+                    Median = GenericUtils.Median(counter.Select(x => x.Count).ToArray())
                 };
 
                 totalStatistics.TotalStats.Add(totalStats);
@@ -155,21 +166,21 @@ namespace escout.Controllers.GameStatistics
         {
             var stats = new List<ClubStats>();
 
-            var gameEvents = context.gameEvents.Where(x => x.gameId == gameId).ToList();
+            var gameEvents = dataContext.gameEvents.Where(x => x.gameId == gameId).ToList();
             var uniqueClubs = gameEvents.Select(x => x.clubId).Distinct().ToList();
 
-            foreach (var i in uniqueClubs)
+            foreach (var club in uniqueClubs)
             {
-                if (i != null)
+                if (club != null)
                 {
-                    var clubEvents = gameEvents.Where(x => x.clubId == i).ToList();
-                    foreach (Event e in context.events)
+                    var clubEvents = gameEvents.Where(x => x.clubId == club).ToList();
+                    foreach (Event e in dataContext.events)
                     {
                         var evt = clubEvents.Where(x => x.eventId == e.id).ToList();
                         var stat = new ClubStats
                         {
                             Count = evt.Count(),
-                            ClubId = int.Parse(i.ToString()),
+                            ClubId = int.Parse(club.ToString()),
                             EventId = e.id
                         };
                         stats.Add(stat);

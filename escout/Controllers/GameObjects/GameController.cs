@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +16,11 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class GameController : ControllerBase
     {
-        private readonly DataContext context;
+        private readonly DataContext dataContext;
 
-        public GameController(DataContext context)
+        public GameController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -28,13 +28,15 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Game>> CreateGame(List<Game> game)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= 3)
+            {
                 return Forbid();
+            }
 
-            game.ToList().ForEach(g => g.created = Utils.GetDateTime());
-            game.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            context.games.AddRange(game);
-            context.SaveChanges();
+            game.ToList().ForEach(g => g.created = GenericUtils.GetDateTime());
+            game.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
+            dataContext.games.AddRange(game);
+            dataContext.SaveChanges();
             return game;
         }
 
@@ -44,14 +46,16 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateGame(Game game)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= 3)
+            {
                 return Forbid();
+            }
 
             try
             {
-                game.updated = Utils.GetDateTime();
-                context.games.Update(game);
-                context.SaveChanges();
+                game.updated = GenericUtils.GetDateTime();
+                dataContext.games.Update(game);
+                dataContext.SaveChanges();
                 return Ok();
             }
             catch { return BadRequest(); }
@@ -63,17 +67,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteGame(int id)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= 3)
+            {
                 return Forbid();
+            }
 
             try
             {
-                var game = context.games.FirstOrDefault(g => g.id == id);
-                context.games.Remove(game);
-                context.SaveChanges();
+                var game = dataContext.games.FirstOrDefault(g => g.id == id);
+                dataContext.games.Remove(game);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -81,7 +90,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Game> GetGame(int id)
         {
-            return context.games.FirstOrDefault(g => g.id == id);
+            return dataContext.games.FirstOrDefault(g => g.id == id);
         }
 
         [HttpGet]
@@ -95,17 +104,22 @@ namespace escout.Controllers.GameObjects
                 List<Game> games;
 
                 if (string.IsNullOrEmpty(query))
-                    games = context.games.ToList();
+                {
+                    games = dataContext.games.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                     var q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    games = context.games.FromSqlRaw(q).ToList();
+                    games = dataContext.games.FromSqlRaw(q).ToList();
                 }
 
                 return games;
             }
-            catch { return new NotFoundResult(); }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
         [HttpPost]
@@ -113,11 +127,11 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult CreateGameEvent(List<GameEvent> gameEvent)
         {
-            gameEvent.ToList().ForEach(g => g.userId = User.GetUser(context).id);
-            gameEvent.ToList().ForEach(g => g.created = Utils.GetDateTime());
-            gameEvent.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            context.gameEvents.AddRange(gameEvent);
-            context.SaveChanges();
+            gameEvent.ToList().ForEach(g => g.userId = User.GetUser(dataContext).id);
+            gameEvent.ToList().ForEach(g => g.created = GenericUtils.GetDateTime());
+            gameEvent.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
+            dataContext.gameEvents.AddRange(gameEvent);
+            dataContext.SaveChanges();
             return gameEvent.Count > 0 ? Ok() : BadRequest();
         }
 
@@ -129,12 +143,15 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                gameEvent.updated = Utils.GetDateTime();
-                context.gameEvents.Update(gameEvent);
-                context.SaveChanges();
+                gameEvent.updated = GenericUtils.GetDateTime();
+                dataContext.gameEvents.Update(gameEvent);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -145,12 +162,15 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                var gameEvent = context.gameEvents.FirstOrDefault(g => g.id == id);
-                context.gameEvents.Remove(gameEvent);
-                context.SaveChanges();
+                var gameEvent = dataContext.gameEvents.FirstOrDefault(g => g.id == id);
+                dataContext.gameEvents.Remove(gameEvent);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -158,7 +178,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<GameEvent> GetGameEvent(int id)
         {
-            return context.gameEvents.FirstOrDefault(g => g.id == id);
+            return dataContext.gameEvents.FirstOrDefault(g => g.id == id);
         }
 
         [HttpGet]
@@ -166,7 +186,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> GetGameEvents(int gameId)
         {
-            return context.gameEvents.Where(g => g.gameId == gameId).ToList();
+            return dataContext.gameEvents.Where(g => g.gameId == gameId).ToList();
         }
 
         [HttpPost]
@@ -174,10 +194,10 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameAthlete>> CreateGameAthlete(List<GameAthlete> gameAthlete)
         {
-            gameAthlete.ToList().ForEach(g => g.created = Utils.GetDateTime());
-            gameAthlete.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            context.gameAthletes.AddRange(gameAthlete);
-            context.SaveChanges();
+            gameAthlete.ToList().ForEach(g => g.created = GenericUtils.GetDateTime());
+            gameAthlete.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
+            dataContext.gameAthletes.AddRange(gameAthlete);
+            dataContext.SaveChanges();
             return gameAthlete;
         }
 
@@ -189,12 +209,15 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                gameAthlete.updated = Utils.GetDateTime();
-                context.gameAthletes.Update(gameAthlete);
-                context.SaveChanges();
+                gameAthlete.updated = GenericUtils.GetDateTime();
+                dataContext.gameAthletes.Update(gameAthlete);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -205,12 +228,15 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                var gameAthlete = context.gameAthletes.FirstOrDefault(g => g.id == id);
-                context.gameAthletes.Remove(gameAthlete);
-                context.SaveChanges();
+                var gameAthlete = dataContext.gameAthletes.FirstOrDefault(g => g.id == id);
+                dataContext.gameAthletes.Remove(gameAthlete);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -218,7 +244,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameAthlete>> GetGameAthletes(int gameId)
         {
-            return context.gameAthletes.Where(g => g.gameId == gameId).ToList();
+            return dataContext.gameAthletes.Where(g => g.gameId == gameId).ToList();
         }
 
         [HttpGet]
@@ -232,17 +258,22 @@ namespace escout.Controllers.GameObjects
                 List<GameUser> gamesUsers;
 
                 if (string.IsNullOrEmpty(query))
-                    gamesUsers = context.gameUsers.ToList();
+                {
+                    gamesUsers = dataContext.gameUsers.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM gameUsers WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    gamesUsers = context.gameUsers.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY, "gameUsers", criteria.fieldName, criteria.condition, criteria.value);
+                    gamesUsers = dataContext.gameUsers.FromSqlRaw(q).ToList();
                 }
 
                 return gamesUsers;
             }
-            catch { return new NotFoundResult(); }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
 
         [HttpPost]
@@ -252,15 +283,17 @@ namespace escout.Controllers.GameObjects
         {
             foreach (var gameUser in gameUsers)
             {
-                var obj = context.gameUsers.Where(c => c.gameId == gameUser.gameId && c.userId == gameUser.userId && c.athleteId == gameUser.athleteId).ToList();
+                var obj = dataContext.gameUsers.Where(c => c.gameId == gameUser.gameId && c.userId == gameUser.userId && c.athleteId == gameUser.athleteId).ToList();
                 if (obj.Count != 0)
+                {
                     gameUsers.Remove(gameUser);
+                }
             }
 
-            gameUsers.ToList().ForEach(g => g.created = Utils.GetDateTime());
-            gameUsers.ToList().ForEach(g => g.updated = Utils.GetDateTime());
-            context.gameUsers.AddRange(gameUsers);
-            context.SaveChanges();
+            gameUsers.ToList().ForEach(g => g.created = GenericUtils.GetDateTime());
+            gameUsers.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
+            dataContext.gameUsers.AddRange(gameUsers);
+            dataContext.SaveChanges();
             return gameUsers;
         }
 
@@ -272,12 +305,15 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                gameUser.updated = Utils.GetDateTime();
-                context.gameUsers.Update(gameUser);
-                context.SaveChanges();
+                gameUser.updated = GenericUtils.GetDateTime();
+                dataContext.gameUsers.Update(gameUser);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -288,11 +324,14 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                context.gameUsers.Remove(gameUser);
-                context.SaveChanges();
+                dataContext.gameUsers.Remove(gameUser);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -300,7 +339,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
         {
-            return context.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
+            return dataContext.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
         }
 
         [HttpGet]
@@ -309,20 +348,22 @@ namespace escout.Controllers.GameObjects
         public ActionResult<GameData> GetGameData(int gameId)
         {
             var gameData = new GameData();
-            gameData.game = context.games.FirstOrDefault(g => g.id == gameId);
-            gameData.clubs = context.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
-            gameData.athletes = context.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
+            gameData.game = dataContext.games.FirstOrDefault(g => g.id == gameId);
+            gameData.clubs = dataContext.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
+            gameData.athletes = dataContext.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
 
             if (gameData.game.competitionId != null)
             {
-                gameData.competition = context.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);
-                gameData.sport = context.sports.FirstOrDefault(t => t.id == gameData.competition.sportId);
+                gameData.competition = dataContext.competitions.FirstOrDefault(t => t.id == gameData.game.competitionId);
+                gameData.sport = dataContext.sports.FirstOrDefault(t => t.id == gameData.competition.sportId);
             }
             else
-                gameData.sport = context.sports.FirstOrDefault(t => t.name == "Soccer");
+            {
+                gameData.sport = dataContext.sports.FirstOrDefault(t => t.name == "Soccer");
+            }
 
-            gameData.events = context.events.Where(t => t.sportId == gameData.sport.id).ToList();
-            gameData.gameEvents = context.gameEvents.Where(t => t.gameId == gameId).ToList();
+            gameData.events = dataContext.events.Where(t => t.sportId == gameData.sport.id).ToList();
+            gameData.gameEvents = dataContext.gameEvents.Where(t => t.gameId == gameId).ToList();
 
             return gameData;
         }

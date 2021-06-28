@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace escout.Models
+namespace escout.Models.Database
 {
     public class Statistics
     {

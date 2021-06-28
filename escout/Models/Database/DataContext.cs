@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace escout.Models
+namespace escout.Models.Database
 {
     public class DataContext : DbContext
     {

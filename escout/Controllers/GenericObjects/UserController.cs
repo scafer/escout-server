@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +16,10 @@ namespace escout.Controllers.GenericObjects
     [Route("api/v1/generic-object")]
     public class UserController : ControllerBase
     {
-        private readonly DataContext context;
-        public UserController(DataContext context)
+        private readonly DataContext dataContext;
+        public UserController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -28,19 +28,25 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ChangePassword(string newPassword)
         {
-            var user = User.GetUser(context);
+            var user = User.GetUser(dataContext);
+
             if (user == null)
+            {
                 return new NotFoundResult();
+            }
 
             try
             {
                 user.password = BCrypt.Net.BCrypt.HashPassword(newPassword);
-                user.updated = Utils.GetDateTime();
-                context.users.Update(user);
-                context.SaveChanges();
+                user.updated = GenericUtils.GetDateTime();
+                dataContext.users.Update(user);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut]
@@ -51,12 +57,15 @@ namespace escout.Controllers.GenericObjects
         {
             try
             {
-                user.updated = Utils.GetDateTime();
-                context.users.Update(user);
-                context.SaveChanges();
+                user.updated = GenericUtils.GetDateTime();
+                dataContext.users.Update(user);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -65,16 +74,21 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteUser(User user)
         {
-            if (!User.GetUser(context).accessLevel.Equals(0))
+            if (User.GetUser(dataContext).accessLevel != ConstValues.AL_ADMINISTRATOR)
+            {
                 return Forbid();
+            }
 
             try
             {
-                context.users.Remove(user);
-                context.SaveChanges();
+                dataContext.users.Remove(user);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -82,7 +96,7 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<User> GetUser()
         {
-            return User.GetUser(context);
+            return User.GetUser(dataContext);
         }
 
         [HttpGet]
@@ -90,19 +104,21 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<User>> GetUsers(string query)
         {
-            var user = User.GetUser(context);
-
-            if (user.accessLevel == 0)
+            if (User.GetUser(dataContext).accessLevel == ConstValues.AL_ADMINISTRATOR)
             {
-                if(string.IsNullOrEmpty(query))
-                    return context.users.ToList();
+                if (string.IsNullOrEmpty(query))
+                {
+                    return dataContext.users.ToList();
+                }
 
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                var q = string.Format("SELECT * FROM users WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                return context.users.FromSqlRaw(q).ToList();
+                var q = string.Format(ConstValues.QUERY, criteria.fieldName, criteria.condition, criteria.value);
+                return dataContext.users.FromSqlRaw(q).ToList();
             }
             else
+            {
                 return new UnauthorizedResult();
+            }
         }
     }
 }

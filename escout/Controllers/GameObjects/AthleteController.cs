@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +17,10 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class AthleteController : ControllerBase
     {
-        private readonly DataContext context;
-        public AthleteController(DataContext context)
+        private readonly DataContext dataContext;
+        public AthleteController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -29,18 +29,23 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<List<Athlete>> CreateAthlete(List<Athlete> athletes)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                athletes.ToList().ForEach(a => a.created = Utils.GetDateTime());
-                athletes.ToList().ForEach(a => a.updated = Utils.GetDateTime());
-                context.athletes.AddRange(athletes);
-                context.SaveChanges();
+                athletes.ToList().ForEach(a => a.created = GenericUtils.GetDateTime());
+                athletes.ToList().ForEach(a => a.updated = GenericUtils.GetDateTime());
+                dataContext.athletes.AddRange(athletes);
+                dataContext.SaveChanges();
                 return athletes;
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
@@ -49,17 +54,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult UpdateAthlete(Athlete athlete)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                athlete.updated = Utils.GetDateTime();
-                context.athletes.Update(athlete);
-                context.SaveChanges();
+                athlete.updated = GenericUtils.GetDateTime();
+                dataContext.athletes.Update(athlete);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
@@ -68,17 +78,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RemoveAthlete(int id)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                var athlete = context.athletes.FirstOrDefault(a => a.id == id);
-                context.athletes.Remove(athlete);
-                context.SaveChanges();
+                var athlete = dataContext.athletes.FirstOrDefault(a => a.id == id);
+                dataContext.athletes.Remove(athlete);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -86,7 +101,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Athlete> GetAthlete(int id)
         {
-            return context.athletes.FirstOrDefault(a => a.id == id);
+            return dataContext.athletes.FirstOrDefault(a => a.id == id);
         }
 
         [HttpGet]
@@ -98,18 +113,24 @@ namespace escout.Controllers.GameObjects
             try
             {
                 List<Athlete> athletes;
+
                 if (string.IsNullOrEmpty(query))
-                    athletes = context.athletes.ToList();
+                {
+                    athletes = dataContext.athletes.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM athletes WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    athletes = context.athletes.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY, "athletes", criteria.fieldName, criteria.condition, criteria.value);
+                    athletes = dataContext.athletes.FromSqlRaw(q).ToList();
                 }
 
                 return athletes;
             }
-            catch { return new NotFoundResult(); }
+            catch
+            {
+                return new NotFoundResult();
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +13,10 @@ namespace escout.Controllers.Authentication
     [Route("api/v1/authentication")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly DataContext context;
-        public AuthenticationController(DataContext context)
+        private readonly DataContext dataContext;
+        public AuthenticationController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -26,19 +26,27 @@ namespace escout.Controllers.Authentication
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<AuthData> SignIn(User user)
         {
-            var account = context.users.FirstOrDefault(u => u.username == user.username.ToLower());
+            var account = dataContext.users.FirstOrDefault(u => u.username == user.username.ToLower());
 
             if (account != null)
             {
                 if (account.accessLevel.Equals(-1))
-                    return Forbid("Account unauthorized.");
+                {
+                    return Forbid(ConstValues.MSG_ACCOUNT_UNAUTHORIZED);
+                }
                 else if (TokenService.VerifyPassword(user.password, account.password))
+                {
                     return TokenService.GenerateToken(account);
+                }
                 else
-                    return BadRequest("Password is wrong.");
+                {
+                    return BadRequest(ConstValues.MSG_WRONG_PASSWORD);
+                }
             }
             else
-                return BadRequest("Account does not exist.");
+            {
+                return BadRequest(ConstValues.MSG_ACCOUNT_NOT_FOUND);
+            }
         }
 
         [HttpPost]
@@ -49,27 +57,37 @@ namespace escout.Controllers.Authentication
         public IActionResult SignUp(User user)
         {
             if (CheckEmailExist(user.email))
-                return BadRequest("Email in use");
+            {
+                return BadRequest(ConstValues.MSG_EMAIL_USED);
+            }
+
             if (CheckUsernameExist(user.username))
-                return BadRequest("Username in use");
+            {
+                return BadRequest(ConstValues.MSG_USERNAME_USED);
+            }
 
             try
             {
                 user.accessLevel = int.Parse(Configurations.GetDefaultAccessLevel());
-                user.created = Utils.GetDateTime();
-                user.updated = Utils.GetDateTime();
+                user.created = GenericUtils.GetDateTime();
+                user.updated = GenericUtils.GetDateTime();
                 user.username = user.username.ToLower();
                 user.email = user.email.ToLower();
                 user.password = TokenService.HashPassword(user.password);
-                context.users.Add(user);
-                context.SaveChanges();
+                dataContext.users.Add(user);
+                dataContext.SaveChanges();
 
                 if (user.notifications == 1)
-                    _ = Notifications.SendEmail(user.email, "eScout Notification", "Welcome to eScout " + user.username);
+                {
+                    _ = Notifications.SendEmail(user.email, ConstValues.NTF_TITLE_GENERIC, string.Format(ConstValues.NTF_BODY_NEW_ACCOUNT, user.username));
+                }
 
                 return Ok();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -79,17 +97,20 @@ namespace escout.Controllers.Authentication
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult ResetPassword(User user)
         {
-            var userData = context.users.FirstOrDefault(u => u.username == user.username || u.email == user.email);
+            var userData = dataContext.users.FirstOrDefault(u => u.username == user.username || u.email == user.email);
 
             if (userData == null)
-                return BadRequest("Account does not exist");
+            {
+                return BadRequest(ConstValues.MSG_ACCOUNT_NOT_FOUND);
+            }
 
-            var generatedPassword = Utils.StringGenerator();
-            userData.updated = Utils.GetDateTime();
-            userData.password = TokenService.HashPassword(Utils.GenerateSha256String(generatedPassword));
-            context.users.Update(userData);
-            context.SaveChanges();
-            _ = Notifications.SendEmail(userData.email, "New eScout Password", generatedPassword);
+            var generatedPassword = GenericUtils.StringGenerator();
+            userData.updated = GenericUtils.GetDateTime();
+            userData.password = TokenService.HashPassword(GenericUtils.GenerateSha256String(generatedPassword));
+            dataContext.users.Update(userData);
+            dataContext.SaveChanges();
+            _ = Notifications.SendEmail(userData.email, ConstValues.NTF_TITLE_PASSWORD, generatedPassword);
+
             return Ok();
         }
 
@@ -104,13 +125,13 @@ namespace escout.Controllers.Authentication
 
         private bool CheckEmailExist(string email)
         {
-            var check = context.users.FirstOrDefault(u => u.email == email);
+            var check = dataContext.users.FirstOrDefault(u => u.email == email);
             return check != null;
         }
 
         private bool CheckUsernameExist(string username)
         {
-            var check = context.users.FirstOrDefault(u => u.username == username);
+            var check = dataContext.users.FirstOrDefault(u => u.username == username);
             return check != null;
         }
     }

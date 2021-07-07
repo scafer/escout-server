@@ -1,5 +1,5 @@
 ﻿using escout.Controllers.GenericObjects;
-using escout.Models;
+using escout.Models.Database;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,6 +19,7 @@ namespace escout.Controllers.Tests
         {
             context = TestUtils.GetMockContext();
             controller = new ImageController(context);
+            controller.ControllerContext.HttpContext = TestUtils.SetUserContext(context, 0);
         }
 
         [TestCleanup]

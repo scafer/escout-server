@@ -1,4 +1,4 @@
-﻿using escout.Models;
+﻿using escout.Models.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

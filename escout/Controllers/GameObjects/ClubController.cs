@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +17,10 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class ClubController : ControllerBase
     {
-        private readonly DataContext context;
-        public ClubController(DataContext context)
+        private readonly DataContext dataContext;
+        public ClubController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -28,13 +28,15 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Club>> CreateClub(List<Club> club)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
-            club.ToList().ForEach(c => c.created = Utils.GetDateTime());
-            club.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            context.clubs.AddRange(club);
-            context.SaveChanges();
+            club.ToList().ForEach(c => c.created = GenericUtils.GetDateTime());
+            club.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
+            dataContext.clubs.AddRange(club);
+            dataContext.SaveChanges();
             return club;
         }
 
@@ -44,17 +46,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateClub(Club club)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                club.updated = Utils.GetDateTime();
-                context.clubs.Update(club);
-                context.SaveChanges();
+                club.updated = GenericUtils.GetDateTime();
+                dataContext.clubs.Update(club);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
@@ -63,17 +70,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteClub(int id)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                var club = context.clubs.FirstOrDefault(c => c.id == id);
-                context.clubs.Remove(club);
-                context.SaveChanges();
+                var club = dataContext.clubs.FirstOrDefault(c => c.id == id);
+                dataContext.clubs.Remove(club);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -81,7 +93,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Club> GetClub(int id)
         {
-            return context.clubs.FirstOrDefault(c => c.id == id);
+            var club = dataContext.clubs.FirstOrDefault(c => c.id == id);
+            club.displayoptions = GetClubDisplayOptions(club);
+            return club;
         }
 
         [HttpGet]
@@ -94,17 +108,40 @@ namespace escout.Controllers.GameObjects
                 List<Club> clubs;
 
                 if (string.IsNullOrEmpty(query))
-                    clubs = context.clubs.ToList();
+                {
+                    clubs = dataContext.clubs.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM clubs WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    clubs = context.clubs.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY, "clubs", criteria.fieldName, criteria.condition, criteria.value);
+                    clubs = dataContext.clubs.FromSqlRaw(q).ToList();
+                }
+
+                foreach (var club in clubs)
+                {
+                    club.displayoptions = GetClubDisplayOptions(club);
                 }
 
                 return clubs;
             }
-            catch { return new NotFoundResult(); }
+            catch
+            {
+                return new NotFoundResult();
+            }
+        }
+
+        private Dictionary<string, string> GetClubDisplayOptions(Club club)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (club.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == club.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            return displayOptions;
         }
     }
 }

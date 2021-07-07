@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +16,10 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class CompetitionController : ControllerBase
     {
-        private readonly DataContext context;
-        public CompetitionController(DataContext context)
+        private readonly DataContext dataContext;
+        public CompetitionController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -27,13 +27,15 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Competition>> CreateCompetition(List<Competition> competition)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
-            competition.ToList().ForEach(c => c.created = Utils.GetDateTime());
-            competition.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            context.competitions.AddRange(competition);
-            context.SaveChanges();
+            competition.ToList().ForEach(c => c.created = GenericUtils.GetDateTime());
+            competition.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
+            dataContext.competitions.AddRange(competition);
+            dataContext.SaveChanges();
             return competition;
         }
 
@@ -43,17 +45,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetition(Competition competition)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                competition.updated = Utils.GetDateTime();
-                context.competitions.Update(competition);
-                context.SaveChanges();
+                competition.updated = GenericUtils.GetDateTime();
+                dataContext.competitions.Update(competition);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -62,17 +69,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetition(int id)
         {
-            if (User.GetUser(context).accessLevel >= 3)
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
                 return Forbid();
+            }
 
             try
             {
-                var competition = context.competitions.FirstOrDefault(c => c.id == id);
-                context.competitions.Remove(competition);
-                context.SaveChanges();
+                var competition = dataContext.competitions.FirstOrDefault(c => c.id == id);
+                dataContext.competitions.Remove(competition);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -80,7 +92,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Competition> GetCompetition(int id)
         {
-            return context.competitions.FirstOrDefault(c => c.id == id);
+            var competition = dataContext.competitions.FirstOrDefault(c => c.id == id);
+            competition.displayoptions = GetCompetitionDisplayOptions(competition);
+            return competition;
         }
 
         [HttpGet]
@@ -93,12 +107,19 @@ namespace escout.Controllers.GameObjects
                 List<Competition> competitions;
 
                 if (string.IsNullOrEmpty(query))
-                    competitions = context.competitions.ToList();
+                {
+                    competitions = dataContext.competitions.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM competitions WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    competitions = context.competitions.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY, "competitions", criteria.fieldName, criteria.condition, criteria.value);
+                    competitions = dataContext.competitions.FromSqlRaw(q).ToList();
+                }
+
+                foreach(var competition in competitions)
+                {
+                    competition.displayoptions = GetCompetitionDisplayOptions(competition);
                 }
 
                 return competitions;
@@ -111,10 +132,15 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> CreateCompetitionBoard(List<CompetitionBoard> competitionBoard)
         {
-            competitionBoard.ToList().ForEach(c => c.created = Utils.GetDateTime());
-            competitionBoard.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            context.competitionBoards.AddRange(competitionBoard);
-            context.SaveChanges();
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
+                return Forbid();
+            }
+
+            competitionBoard.ToList().ForEach(c => c.created = GenericUtils.GetDateTime());
+            competitionBoard.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
+            dataContext.competitionBoards.AddRange(competitionBoard);
+            dataContext.SaveChanges();
             return competitionBoard;
         }
 
@@ -124,14 +150,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateCompetitionBoard(CompetitionBoard competitionBoard)
         {
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
+                return Forbid();
+            }
+
             try
             {
-                competitionBoard.updated = Utils.GetDateTime();
-                context.competitionBoards.Update(competitionBoard);
-                context.SaveChanges();
+                competitionBoard.updated = GenericUtils.GetDateTime();
+                dataContext.competitionBoards.Update(competitionBoard);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -140,14 +174,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCompetitionBoard(int id)
         {
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
+                return Forbid();
+            }
+
             try
             {
-                var competitionBoard = context.competitionBoards.FirstOrDefault(c => c.id == id);
-                context.competitionBoards.Remove(competitionBoard);
-                context.SaveChanges();
+                var competitionBoard = dataContext.competitionBoards.FirstOrDefault(c => c.id == id);
+                dataContext.competitionBoards.Remove(competitionBoard);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -155,7 +197,47 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
-            return context.competitionBoards.Where(c => c.competitionId == id).ToList();
+            var competitionBoard = dataContext.competitionBoards.Where(c => c.competitionId == id).ToList();
+
+            foreach (var entry in competitionBoard)
+            {
+                entry.displayoptions = GetCompetitionBoardDisplayOptions(entry);
+            }
+
+            return competitionBoard;
+        }
+
+        private Dictionary<string, string> GetCompetitionDisplayOptions(Competition competition)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (competition.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == competition.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            if (competition.sportId != 0)
+            {
+                var sportName = dataContext.sports.FirstOrDefault(a => a.id == competition.sportId).name;
+                displayOptions.Add("sportName", sportName);
+            }
+
+            return displayOptions;
+        }
+
+        private Dictionary<string, string> GetCompetitionBoardDisplayOptions(CompetitionBoard competitionBoard)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (competitionBoard.clubId != 0)
+            {
+                var clubName = dataContext.clubs.FirstOrDefault(a => a.id == competitionBoard.clubId).name;
+                displayOptions.Add("clubName", clubName);
+
+            }
+
+            return displayOptions;
         }
     }
 }

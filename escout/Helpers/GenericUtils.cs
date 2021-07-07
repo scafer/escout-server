@@ -5,11 +5,11 @@ using System.Text;
 
 namespace escout.Helpers
 {
-    public static class Utils
+    public static class GenericUtils
     {
         public static string StringGenerator()
         {
-            Random random = new Random();
+            var random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, 10)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
@@ -23,7 +23,9 @@ namespace escout.Helpers
             var result = hash.ComputeHash(enc.GetBytes(inputString));
 
             foreach (var b in result)
+            {
                 sb.Append(b.ToString("x2"));
+            }
 
             return sb.ToString();
         }
@@ -35,22 +37,24 @@ namespace escout.Helpers
 
         public static double StdDev(int[] values)
         {
-            double mean = 0.0;
-            double sum = 0.0;
-            double stdDev = 0.0;
-            int n = 0;
+            var mean = 0.0;
+            var sum = 0.0;
+            var stdDev = 0.0;
+            var n = 0;
 
             try
             {
                 foreach (double val in values)
                 {
                     n++;
-                    double delta = val - mean;
+                    var delta = val - mean;
                     mean += delta / n;
                     sum += delta * (val - mean);
                 }
                 if (1 < n)
+                {
                     stdDev = Math.Sqrt(sum / (n - 1));
+                }
             }
             catch (Exception ex)
             {
@@ -62,12 +66,12 @@ namespace escout.Helpers
 
         public static double Median(int[] numbers)
         {
-            double median = 0.0;
+            var median = 0.0;
 
             try
             {
-                int numberCount = numbers.Count();
-                int halfIndex = numbers.Count() / 2;
+                var numberCount = numbers.Length;
+                var halfIndex = numbers.Length / 2;
                 var sortedNumbers = numbers.OrderBy(n => n);
 
                 if ((numberCount % 2) == 0)

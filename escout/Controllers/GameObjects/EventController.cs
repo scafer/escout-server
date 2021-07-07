@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +16,10 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class EventController : ControllerBase
     {
-        private readonly DataContext context;
-        public EventController(DataContext context)
+        private readonly DataContext dataContext;
+        public EventController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -27,13 +27,15 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Event>> CreateEvent(List<Event> e)
         {
-            if (!User.GetUser(context).accessLevel.Equals(0))
+            if (User.GetUser(dataContext).accessLevel != ConstValues.AL_ADMINISTRATOR)
+            {
                 return Forbid();
+            }
 
-            e.ToList().ForEach(c => c.created = Utils.GetDateTime());
-            e.ToList().ForEach(c => c.updated = Utils.GetDateTime());
-            context.events.AddRange(e);
-            context.SaveChanges();
+            e.ToList().ForEach(c => c.created = GenericUtils.GetDateTime());
+            e.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
+            dataContext.events.AddRange(e);
+            dataContext.SaveChanges();
             return e;
         }
 
@@ -43,14 +45,16 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateEvent(Event e)
         {
-            if (!User.GetUser(context).accessLevel.Equals(0))
+            if (User.GetUser(dataContext).accessLevel != ConstValues.AL_ADMINISTRATOR)
+            {
                 return Forbid();
+            }
 
             try
             {
-                e.updated = Utils.GetDateTime();
-                context.events.Update(e);
-                context.SaveChanges();
+                e.updated = GenericUtils.GetDateTime();
+                dataContext.events.Update(e);
+                dataContext.SaveChanges();
                 return Ok();
             }
             catch { return BadRequest(); }
@@ -62,17 +66,22 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteEvent(int id)
         {
-            if (!User.GetUser(context).accessLevel.Equals(0))
+            if (User.GetUser(dataContext).accessLevel != ConstValues.AL_ADMINISTRATOR)
+            {
                 return Forbid();
+            }
 
             try
             {
-                var evt = context.events.FirstOrDefault(e => e.id == id);
-                context.events.Remove(evt);
-                context.SaveChanges();
+                var evt = dataContext.events.FirstOrDefault(e => e.id == id);
+                dataContext.events.Remove(evt);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -80,7 +89,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Event> GetEvent(int id)
         {
-            return context.events.FirstOrDefault(e => e.id == id);
+            var evt = dataContext.events.FirstOrDefault(e => e.id == id);
+            evt.displayoptions = GetEventDisplayOptions(evt);
+            return evt;
         }
 
         [HttpGet]
@@ -93,17 +104,46 @@ namespace escout.Controllers.GameObjects
                 List<Event> events;
 
                 if (string.IsNullOrEmpty(query))
-                    events = context.events.ToList();
+                {
+                    events = dataContext.events.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM events WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    events = context.events.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY, "events", criteria.fieldName, criteria.condition, criteria.value);
+                    events = dataContext.events.FromSqlRaw(q).ToList();
+                }
+
+                foreach (var evt in events)
+                {
+                    evt.displayoptions = GetEventDisplayOptions(evt);
                 }
 
                 return events;
             }
-            catch { return new NotFoundResult(); }
+            catch
+            {
+                return new NotFoundResult();
+            }
+        }
+
+        private Dictionary<string, string> GetEventDisplayOptions(Event evt)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (evt.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == evt.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            if (evt.sportId != 0)
+            {
+                var sportName = dataContext.sports.FirstOrDefault(a => a.id == evt.sportId).name;
+                displayOptions.Add("sportName", sportName);
+            }
+
+            return displayOptions;
         }
     }
 }

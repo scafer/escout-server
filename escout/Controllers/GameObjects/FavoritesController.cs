@@ -1,4 +1,5 @@
-﻿using escout.Models;
+﻿using escout.Helpers;
+using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +16,10 @@ namespace escout.Controllers.GameObjects
     [Route("api/v1/game-object")]
     public class FavoritesController : ControllerBase
     {
-        private readonly DataContext context;
-        public FavoritesController(DataContext context)
+        private readonly DataContext dataContext;
+        public FavoritesController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -29,44 +30,47 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                favorite.userId = User.GetUser(context).id;
+                favorite.userId = User.GetUser(dataContext).id;
 
-                if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null && favorite.athleteId != null)
+                if (dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId) != null && favorite.athleteId != null)
                 {
-                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);
-                    context.favorites.Remove(f);
-                    context.SaveChanges();
+                    var f = dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.athleteId == favorite.athleteId);
+                    dataContext.favorites.Remove(f);
+                    dataContext.SaveChanges();
                     return Ok();
                 }
-                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null && favorite.clubId != null)
+                else if (dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId) != null && favorite.clubId != null)
                 {
-                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId);
-                    context.favorites.Remove(f);
-                    context.SaveChanges();
+                    var f = dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.clubId == favorite.clubId);
+                    dataContext.favorites.Remove(f);
+                    dataContext.SaveChanges();
                     return Ok();
                 }
-                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null && favorite.competitionId != null)
+                else if (dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId) != null && favorite.competitionId != null)
                 {
-                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId);
-                    context.favorites.Remove(f);
-                    context.SaveChanges();
+                    var f = dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.competitionId == favorite.competitionId);
+                    dataContext.favorites.Remove(f);
+                    dataContext.SaveChanges();
                     return Ok();
                 }
-                else if (context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null && favorite.gameId != null)
+                else if (dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId) != null && favorite.gameId != null)
                 {
-                    var f = context.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId);
-                    context.favorites.Remove(f);
-                    context.SaveChanges();
+                    var f = dataContext.favorites.FirstOrDefault(a => a.userId == favorite.userId && a.gameId == favorite.gameId);
+                    dataContext.favorites.Remove(f);
+                    dataContext.SaveChanges();
                     return Ok();
                 }
                 else
                 {
-                    context.favorites.Add(favorite);
-                    context.SaveChanges();
+                    dataContext.favorites.Add(favorite);
+                    dataContext.SaveChanges();
                 }
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -80,12 +84,14 @@ namespace escout.Controllers.GameObjects
                 List<Favorite> favorites;
 
                 if (string.IsNullOrEmpty(query))
-                    favorites = context.favorites.ToList();
+                {
+                    favorites = dataContext.favorites.ToList();
+                }
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM favorites WHERE " + "userId=" + User.GetUser(context).id + " AND " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
-                    favorites = context.favorites.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY_WITH_USER_ID, "favorites", User.GetUser(dataContext).id, criteria.fieldName, criteria.condition, criteria.value);
+                    favorites = dataContext.favorites.FromSqlRaw(q).ToList();
                 }
 
                 return favorites;
@@ -104,11 +110,11 @@ namespace escout.Controllers.GameObjects
                 List<Favorite> favorites;
 
                 if (string.IsNullOrEmpty(query))
-                    favorites = context.favorites.ToList();
+                    favorites = dataContext.favorites.ToList();
                 else
                 {
-                    var q = string.Format("SELECT * FROM favorites WHERE \"userId\"=" + User.GetUser(context).id + " AND \"" + query + "\" IS NOT NULL;");
-                    favorites = context.favorites.FromSqlRaw(q).ToList();
+                    var q = string.Format(ConstValues.QUERY_NOT_NULL, "favorites", User.GetUser(dataContext).id, query);
+                    favorites = dataContext.favorites.FromSqlRaw(q).ToList();
                 }
 
                 return favorites;

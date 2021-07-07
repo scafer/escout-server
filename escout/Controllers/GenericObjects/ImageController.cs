@@ -1,5 +1,6 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
+using escout.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,10 @@ namespace escout.Controllers.GenericObjects
     [Route("api/v1/generic-object")]
     public class ImageController : ControllerBase
     {
-        private readonly DataContext context;
-        public ImageController(DataContext context)
+        private readonly DataContext dataContext;
+        public ImageController(DataContext dataContext)
         {
-            this.context = context;
+            this.dataContext = dataContext;
         }
 
         [HttpPost]
@@ -24,10 +25,10 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Image>> CreateImage(List<Image> image)
         {
-            image.ToList().ForEach(i => i.created = Utils.GetDateTime());
-            image.ToList().ForEach(i => i.updated = Utils.GetDateTime());
-            context.images.AddRange(image);
-            context.SaveChanges();
+            image.ToList().ForEach(i => i.created = GenericUtils.GetDateTime());
+            image.ToList().ForEach(i => i.updated = GenericUtils.GetDateTime());
+            dataContext.images.AddRange(image);
+            dataContext.SaveChanges();
             return image;
         }
 
@@ -37,14 +38,22 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateImage(Image image)
         {
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
+                return Forbid();
+            }
+
             try
             {
-                image.updated = Utils.GetDateTime();
-                context.images.Update(image);
-                context.SaveChanges();
+                image.updated = GenericUtils.GetDateTime();
+                dataContext.images.Update(image);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -53,14 +62,22 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult DeleteImage(int id)
         {
+            if (User.GetUser(dataContext).accessLevel >= ConstValues.AL_USER)
+            {
+                return Forbid();
+            }
+
             try
             {
-                var image = context.images.FirstOrDefault(i => i.id == id);
-                context.images.Remove(image);
-                context.SaveChanges();
+                var image = dataContext.images.FirstOrDefault(i => i.id == id);
+                dataContext.images.Remove(image);
+                dataContext.SaveChanges();
                 return Ok();
             }
-            catch { return BadRequest(); }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -68,7 +85,7 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Image> GetImage(int id)
         {
-            return context.images.FirstOrDefault(i => i.id == id);
+            return dataContext.images.FirstOrDefault(i => i.id == id);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;

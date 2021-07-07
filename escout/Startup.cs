@@ -1,5 +1,5 @@
 using escout.Helpers;
-using escout.Models;
+using escout.Models.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;

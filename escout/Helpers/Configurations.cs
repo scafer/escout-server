@@ -17,14 +17,14 @@ namespace escout.Helpers
 
         public static string GetAppSettings(string key)
         {
-            var dictionary = Configurations.GetAppSettings().Build().GetSection("AppSettings").Get<Dictionary<string, string>>();
+            var dictionary = GetAppSettings().Build().GetSection("AppSettings").Get<Dictionary<string, string>>();
             var value = dictionary.GetValueOrDefault(key, "");
             return value;
         }
 
         public static string GetNpgsqlConnectionString()
         {
-            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "postgres://postgres:password@localhost:5432/postgres";
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL") ?? ConstValues.DEFAULT_DATABASE_URL;
             var databaseUri = new Uri(databaseUrl);
             var userInfo = databaseUri.UserInfo.Split(':');
 
@@ -35,7 +35,7 @@ namespace escout.Helpers
                 Username = userInfo[0],
                 Password = userInfo[1],
                 Database = databaseUri.LocalPath.TrimStart('/'),
-                SslMode = SslMode.Require,
+                SslMode = SslMode.Prefer,
                 TrustServerCertificate = true
             };
             return builder.ToString();

@@ -90,7 +90,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Game> GetGame(int id)
         {
-            return dataContext.games.FirstOrDefault(g => g.id == id);
+            var game = dataContext.games.FirstOrDefault(g => g.id == id);
+            game.displayoptions = GetGameDisplayOptions(game);
+            return game;
         }
 
         [HttpGet]
@@ -110,8 +112,13 @@ namespace escout.Controllers.GameObjects
                 else
                 {
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                    var q = string.Format("SELECT * FROM games WHERE " + criteria.fieldName + " " + criteria.condition + " '" + criteria.value + "';");
+                    var q = string.Format(ConstValues.QUERY, "games", criteria.fieldName, criteria.condition, criteria.value);
                     games = dataContext.games.FromSqlRaw(q).ToList();
+                }
+
+                foreach (var game in games)
+                {
+                    game.displayoptions = GetGameDisplayOptions(game);
                 }
 
                 return games;
@@ -178,7 +185,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<GameEvent> GetGameEvent(int id)
         {
-            return dataContext.gameEvents.FirstOrDefault(g => g.id == id);
+            var gameEvent = dataContext.gameEvents.FirstOrDefault(g => g.id == id);
+            gameEvent.displayoptions = GetGameEventDisplayOptions(gameEvent);
+            return gameEvent;
         }
 
         [HttpGet]
@@ -186,7 +195,14 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> GetGameEvents(int gameId)
         {
-            return dataContext.gameEvents.Where(g => g.gameId == gameId).ToList();
+            var gameEvents = dataContext.gameEvents.Where(g => g.gameId == gameId).ToList();
+
+            foreach(var gameEvent in gameEvents)
+            {
+                gameEvent.displayoptions = GetGameEventDisplayOptions(gameEvent);
+            }
+
+            return gameEvents;
         }
 
         [HttpPost]
@@ -366,6 +382,68 @@ namespace escout.Controllers.GameObjects
             gameData.gameEvents = dataContext.gameEvents.Where(t => t.gameId == gameId).ToList();
 
             return gameData;
+        }
+
+        private Dictionary<string, string> GetGameDisplayOptions(Game game)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (game.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == game.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            if (game.competitionId != null)
+            {
+                var competitionName = dataContext.competitions.FirstOrDefault(a => a.id == game.competitionId).name;
+                displayOptions.Add("competitionName", competitionName);
+            }
+
+            if (game.userId != 0)
+            {
+                var userName = dataContext.users.FirstOrDefault(a => a.id == game.userId).username;
+                displayOptions.Add("userName", userName);
+            }
+
+            if (game.homeId != 0)
+            {
+                var homeName = dataContext.clubs.FirstOrDefault(a => a.id == game.homeId).name;
+                displayOptions.Add("homeName", homeName);
+            }
+
+            if (game.visitorId != 0)
+            {
+                var visitorName = dataContext.clubs.FirstOrDefault(a => a.id == game.visitorId).name;
+                displayOptions.Add("visitorName", visitorName);
+            }
+
+            return displayOptions;
+        }
+
+        private Dictionary<string, string> GetGameEventDisplayOptions(GameEvent gameEvent)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (gameEvent.athleteId != null)
+            {
+                var athleteName = dataContext.athletes.FirstOrDefault(a => a.id == gameEvent.athleteId).name;
+                displayOptions.Add("athleteName", athleteName);
+            }
+
+            if (gameEvent.clubId != null)
+            {
+                var clubName = dataContext.athletes.FirstOrDefault(a => a.id == gameEvent.clubId).name;
+                displayOptions.Add("clubName", clubName);
+            }
+
+            if (gameEvent.eventId != 0)
+            {
+                var eventName = dataContext.events.FirstOrDefault(a => a.id == gameEvent.eventId).name;
+                displayOptions.Add("eventName", eventName);
+            }
+
+            return displayOptions;
         }
     }
 }

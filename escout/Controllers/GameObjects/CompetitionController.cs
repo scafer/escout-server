@@ -92,7 +92,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Competition> GetCompetition(int id)
         {
-            return dataContext.competitions.FirstOrDefault(c => c.id == id);
+            var competition = dataContext.competitions.FirstOrDefault(c => c.id == id);
+            competition.displayoptions = GetCompetitionDisplayOptions(competition);
+            return competition;
         }
 
         [HttpGet]
@@ -113,6 +115,11 @@ namespace escout.Controllers.GameObjects
                     var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
                     var q = string.Format(ConstValues.QUERY, "competitions", criteria.fieldName, criteria.condition, criteria.value);
                     competitions = dataContext.competitions.FromSqlRaw(q).ToList();
+                }
+
+                foreach(var competition in competitions)
+                {
+                    competition.displayoptions = GetCompetitionDisplayOptions(competition);
                 }
 
                 return competitions;
@@ -190,7 +197,47 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<CompetitionBoard>> GetCompetitionBoard(int id)
         {
-            return dataContext.competitionBoards.Where(c => c.competitionId == id).ToList();
+            var competitionBoard = dataContext.competitionBoards.Where(c => c.competitionId == id).ToList();
+
+            foreach (var entry in competitionBoard)
+            {
+                entry.displayoptions = GetCompetitionBoardDisplayOptions(entry);
+            }
+
+            return competitionBoard;
+        }
+
+        private Dictionary<string, string> GetCompetitionDisplayOptions(Competition competition)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (competition.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == competition.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            if (competition.sportId != 0)
+            {
+                var sportName = dataContext.sports.FirstOrDefault(a => a.id == competition.sportId).name;
+                displayOptions.Add("sportName", sportName);
+            }
+
+            return displayOptions;
+        }
+
+        private Dictionary<string, string> GetCompetitionBoardDisplayOptions(CompetitionBoard competitionBoard)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (competitionBoard.clubId != 0)
+            {
+                var clubName = dataContext.clubs.FirstOrDefault(a => a.id == competitionBoard.clubId).name;
+                displayOptions.Add("clubName", clubName);
+
+            }
+
+            return displayOptions;
         }
     }
 }

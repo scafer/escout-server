@@ -93,7 +93,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Club> GetClub(int id)
         {
-            return dataContext.clubs.FirstOrDefault(c => c.id == id);
+            var club = dataContext.clubs.FirstOrDefault(c => c.id == id);
+            club.displayoptions = GetClubDisplayOptions(club);
+            return club;
         }
 
         [HttpGet]
@@ -116,12 +118,30 @@ namespace escout.Controllers.GameObjects
                     clubs = dataContext.clubs.FromSqlRaw(q).ToList();
                 }
 
+                foreach (var club in clubs)
+                {
+                    club.displayoptions = GetClubDisplayOptions(club);
+                }
+
                 return clubs;
             }
             catch
             {
                 return new NotFoundResult();
             }
+        }
+
+        private Dictionary<string, string> GetClubDisplayOptions(Club club)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (club.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == club.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            return displayOptions;
         }
     }
 }

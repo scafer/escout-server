@@ -96,7 +96,9 @@ namespace escout.Controllers.GenericObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<User> GetUser()
         {
-            return User.GetUser(dataContext);
+            var user = User.GetUser(dataContext);
+            user.displayoptions = GetUserDisplayOptions(user);
+            return user;
         }
 
         [HttpGet]
@@ -108,17 +110,45 @@ namespace escout.Controllers.GenericObjects
             {
                 if (string.IsNullOrEmpty(query))
                 {
-                    return dataContext.users.ToList();
+                    var allUsers = dataContext.users.ToList();
+
+                    foreach (var user in allUsers)
+                    {
+                        user.displayoptions = GetUserDisplayOptions(user);
+                    }
+
+                    return allUsers;
                 }
 
                 var criteria = JsonConvert.DeserializeObject<FilterCriteria>(query);
-                var q = string.Format(ConstValues.QUERY, criteria.fieldName, criteria.condition, criteria.value);
-                return dataContext.users.FromSqlRaw(q).ToList();
+                var q = string.Format(ConstValues.QUERY, "users", criteria.fieldName, criteria.condition, criteria.value);
+                var filteredUsers = dataContext.users.FromSqlRaw(q).ToList();
+
+                foreach (var user in filteredUsers)
+                {
+                    user.displayoptions = GetUserDisplayOptions(user);
+                }
+
+                return filteredUsers;
             }
             else
             {
                 return new UnauthorizedResult();
             }
+        }
+
+
+        private Dictionary<string, string> GetUserDisplayOptions(User user)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (user.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == user.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            return displayOptions;
         }
     }
 }

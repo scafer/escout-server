@@ -92,7 +92,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Sport> GetSport(int id)
         {
-            return dataContext.sports.FirstOrDefault(s => s.id == id);
+            var sport = dataContext.sports.FirstOrDefault(s => s.id == id);
+            sport.displayoptions = GetSportDisplayOptions(sport);
+            return sport;
         }
 
         [HttpGet]
@@ -115,12 +117,31 @@ namespace escout.Controllers.GameObjects
                     sports = dataContext.sports.FromSqlRaw(q).ToList();
                 }
 
+                foreach (var sport in sports)
+                {
+                    sport.displayoptions = GetSportDisplayOptions(sport);
+                }
+
                 return sports;
             }
             catch
             {
                 return new NotFoundResult();
             }
+        }
+
+
+        private Dictionary<string, string> GetSportDisplayOptions(Sport sport)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (sport.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == sport.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            return displayOptions;
         }
     }
 }

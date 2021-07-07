@@ -89,7 +89,9 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Event> GetEvent(int id)
         {
-            return dataContext.events.FirstOrDefault(e => e.id == id);
+            var evt = dataContext.events.FirstOrDefault(e => e.id == id);
+            evt.displayoptions = GetEventDisplayOptions(evt);
+            return evt;
         }
 
         [HttpGet]
@@ -112,12 +114,36 @@ namespace escout.Controllers.GameObjects
                     events = dataContext.events.FromSqlRaw(q).ToList();
                 }
 
+                foreach (var evt in events)
+                {
+                    evt.displayoptions = GetEventDisplayOptions(evt);
+                }
+
                 return events;
             }
             catch
             {
                 return new NotFoundResult();
             }
+        }
+
+        private Dictionary<string, string> GetEventDisplayOptions(Event evt)
+        {
+            var displayOptions = new Dictionary<string, string>();
+
+            if (evt.imageId != null)
+            {
+                var imageUrl = dataContext.images.FirstOrDefault(a => a.id == evt.imageId).imageUrl;
+                displayOptions.Add("imageUrl", imageUrl);
+            }
+
+            if (evt.sportId != 0)
+            {
+                var sportName = dataContext.sports.FirstOrDefault(a => a.id == evt.sportId).name;
+                displayOptions.Add("sportName", sportName);
+            }
+
+            return displayOptions;
         }
     }
 }

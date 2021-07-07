@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace escout.Models.Database
 {
@@ -36,6 +38,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class Athlete
@@ -58,6 +63,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class Club
@@ -76,6 +84,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class ClubAthlete
@@ -104,6 +115,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class CompetitionBoard
@@ -122,6 +136,9 @@ namespace escout.Models.Database
         public int competitionId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class Event
@@ -134,6 +151,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class GameEvent
@@ -150,6 +170,9 @@ namespace escout.Models.Database
         public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class GameAthlete
@@ -181,6 +204,9 @@ namespace escout.Models.Database
         public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class GameUser
@@ -200,6 +226,9 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayoptions { get; set; }
     }
 
     public class Image

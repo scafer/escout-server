@@ -40,7 +40,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Athlete
@@ -65,7 +65,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Club
@@ -86,7 +86,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class ClubAthlete
@@ -117,7 +117,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class CompetitionBoard
@@ -138,7 +138,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Event
@@ -153,7 +153,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class GameEvent
@@ -172,7 +172,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class GameAthlete
@@ -206,7 +206,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class GameUser
@@ -228,7 +228,7 @@ namespace escout.Models.Database
         public string updated { get; set; }
 
         [NotMapped]
-        public Dictionary<string, string> displayoptions { get; set; }
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Image

@@ -90,7 +90,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Event> GetEvent(int id)
         {
             var evt = dataContext.events.FirstOrDefault(e => e.id == id);
-            evt.displayoptions = GetEventDisplayOptions(evt);
+            evt.displayOptions = GetEventDisplayOptions(evt);
             return evt;
         }
 
@@ -116,7 +116,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var evt in events)
                 {
-                    evt.displayoptions = GetEventDisplayOptions(evt);
+                    evt.displayOptions = GetEventDisplayOptions(evt);
                 }
 
                 return events;

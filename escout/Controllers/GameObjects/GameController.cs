@@ -91,7 +91,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Game> GetGame(int id)
         {
             var game = dataContext.games.FirstOrDefault(g => g.id == id);
-            game.displayoptions = GetGameDisplayOptions(game);
+            game.displayOptions = GetGameDisplayOptions(game);
             return game;
         }
 
@@ -118,7 +118,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var game in games)
                 {
-                    game.displayoptions = GetGameDisplayOptions(game);
+                    game.displayOptions = GetGameDisplayOptions(game);
                 }
 
                 return games;
@@ -186,7 +186,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<GameEvent> GetGameEvent(int id)
         {
             var gameEvent = dataContext.gameEvents.FirstOrDefault(g => g.id == id);
-            gameEvent.displayoptions = GetGameEventDisplayOptions(gameEvent);
+            gameEvent.displayOptions = GetGameEventDisplayOptions(gameEvent);
             return gameEvent;
         }
 
@@ -199,7 +199,7 @@ namespace escout.Controllers.GameObjects
 
             foreach(var gameEvent in gameEvents)
             {
-                gameEvent.displayoptions = GetGameEventDisplayOptions(gameEvent);
+                gameEvent.displayOptions = GetGameEventDisplayOptions(gameEvent);
             }
 
             return gameEvents;

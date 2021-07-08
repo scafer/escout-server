@@ -93,7 +93,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Competition> GetCompetition(int id)
         {
             var competition = dataContext.competitions.FirstOrDefault(c => c.id == id);
-            competition.displayoptions = GetCompetitionDisplayOptions(competition);
+            competition.displayOptions = GetCompetitionDisplayOptions(competition);
             return competition;
         }
 
@@ -119,7 +119,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach(var competition in competitions)
                 {
-                    competition.displayoptions = GetCompetitionDisplayOptions(competition);
+                    competition.displayOptions = GetCompetitionDisplayOptions(competition);
                 }
 
                 return competitions;
@@ -201,7 +201,7 @@ namespace escout.Controllers.GameObjects
 
             foreach (var entry in competitionBoard)
             {
-                entry.displayoptions = GetCompetitionBoardDisplayOptions(entry);
+                entry.displayOptions = GetCompetitionBoardDisplayOptions(entry);
             }
 
             return competitionBoard;

@@ -97,7 +97,7 @@ namespace escout.Controllers.GenericObjects
         public ActionResult<User> GetUser()
         {
             var user = User.GetUser(dataContext);
-            user.displayoptions = GetUserDisplayOptions(user);
+            user.displayOptions = GetUserDisplayOptions(user);
             return user;
         }
 
@@ -114,7 +114,7 @@ namespace escout.Controllers.GenericObjects
 
                     foreach (var user in allUsers)
                     {
-                        user.displayoptions = GetUserDisplayOptions(user);
+                        user.displayOptions = GetUserDisplayOptions(user);
                     }
 
                     return allUsers;
@@ -126,7 +126,7 @@ namespace escout.Controllers.GenericObjects
 
                 foreach (var user in filteredUsers)
                 {
-                    user.displayoptions = GetUserDisplayOptions(user);
+                    user.displayOptions = GetUserDisplayOptions(user);
                 }
 
                 return filteredUsers;

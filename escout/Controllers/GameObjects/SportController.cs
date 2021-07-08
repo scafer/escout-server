@@ -93,7 +93,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Sport> GetSport(int id)
         {
             var sport = dataContext.sports.FirstOrDefault(s => s.id == id);
-            sport.displayoptions = GetSportDisplayOptions(sport);
+            sport.displayOptions = GetSportDisplayOptions(sport);
             return sport;
         }
 
@@ -119,7 +119,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var sport in sports)
                 {
-                    sport.displayoptions = GetSportDisplayOptions(sport);
+                    sport.displayOptions = GetSportDisplayOptions(sport);
                 }
 
                 return sports;

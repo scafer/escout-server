@@ -94,7 +94,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Club> GetClub(int id)
         {
             var club = dataContext.clubs.FirstOrDefault(c => c.id == id);
-            club.displayoptions = GetClubDisplayOptions(club);
+            club.displayOptions = GetClubDisplayOptions(club);
             return club;
         }
 
@@ -120,7 +120,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var club in clubs)
                 {
-                    club.displayoptions = GetClubDisplayOptions(club);
+                    club.displayOptions = GetClubDisplayOptions(club);
                 }
 
                 return clubs;

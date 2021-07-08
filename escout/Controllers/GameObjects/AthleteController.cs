@@ -102,7 +102,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Athlete> GetAthlete(int id)
         {
             var athlete = dataContext.athletes.FirstOrDefault(a => a.id == id);
-            athlete.displayoptions = GetAthleteDisplayOptions(athlete);
+            athlete.displayOptions = GetAthleteDisplayOptions(athlete);
             return athlete;
         }
 
@@ -129,7 +129,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var athlete in athletes)
                 {
-                    athlete.displayoptions = GetAthleteDisplayOptions(athlete);
+                    athlete.displayOptions = GetAthleteDisplayOptions(athlete);
                 }
 
                 return athletes;

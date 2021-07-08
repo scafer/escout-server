@@ -408,14 +408,27 @@ namespace escout.Controllers.GameObjects
 
             if (game.homeId != 0)
             {
-                var homeName = dataContext.clubs.FirstOrDefault(a => a.id == game.homeId).name;
-                displayOptions.Add("homeName", homeName);
+                var homeClub = dataContext.clubs.FirstOrDefault(a => a.id == game.homeId);
+                displayOptions.Add("homeName", homeClub.name);
+
+                if (homeClub.imageId != null)
+                {
+                    var imageUrl = dataContext.images.FirstOrDefault(a => a.id == homeClub.imageId).imageUrl;
+                    displayOptions.Add("homeImageUrl", imageUrl);
+                }
+
             }
 
             if (game.visitorId != 0)
             {
-                var visitorName = dataContext.clubs.FirstOrDefault(a => a.id == game.visitorId).name;
-                displayOptions.Add("visitorName", visitorName);
+                var visitorClub = dataContext.clubs.FirstOrDefault(a => a.id == game.visitorId);
+                displayOptions.Add("visitorName", visitorClub.name);
+
+                if (visitorClub.imageId != null)
+                {
+                    var imageUrl = dataContext.images.FirstOrDefault(a => a.id == visitorClub.imageId).imageUrl;
+                    displayOptions.Add("visitorImageUrl", imageUrl);
+                }
             }
 
             return displayOptions;

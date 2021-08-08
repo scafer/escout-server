@@ -24,8 +24,8 @@
 
         //Queries
         public const string QUERY = "SELECT * FROM {0} WHERE {1} {2} '{3}';";
-        public const string QUERY_NOT_NULL = "SELECT * FROM {0} WHERE userId={1} AND \"{2}\" IS NOT NULL;";
-        public const string QUERY_WITH_USER_ID = "SELECT * FROM {0} WHERE userId={1} AND {2} {3} '{4}';";
+        public const string QUERY_NOT_NULL = "SELECT * FROM {0} WHERE \"userId\"={1} AND \"{2}\" IS NOT NULL;";
+        public const string QUERY_WITH_USER_ID = "SELECT * FROM {0} WHERE \"userId\"={1} AND {2} {3} '{4}';";
 
         //Other
         public const string DEFAULT_DATABASE_URL = "postgres://postgres:password@localhost:5432/postgres";

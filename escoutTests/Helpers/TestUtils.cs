@@ -1,7 +1,7 @@
-﻿using escout.Models.Database;
+﻿using System.Security.Claims;
+using escout.Models.Database;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace escoutTests.Resources
 {

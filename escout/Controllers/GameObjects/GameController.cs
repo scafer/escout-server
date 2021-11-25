@@ -1,4 +1,7 @@
-﻿using escout.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using escout.Helpers;
 using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -6,9 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace escout.Controllers.GameObjects
 {
@@ -198,7 +198,7 @@ namespace escout.Controllers.GameObjects
         {
             var gameEvents = dataContext.gameEvents.Where(g => g.gameId == gameId).ToList();
 
-            foreach(var gameEvent in gameEvents)
+            foreach (var gameEvent in gameEvents)
             {
                 gameEvent.displayOptions = GetGameEventDisplayOptions(gameEvent);
             }
@@ -390,7 +390,7 @@ namespace escout.Controllers.GameObjects
         private void UpdateGameStatus()
         {
             var games = dataContext.games.Where(g => g.status == 0 || g.status == 1).ToList();
-             foreach (var game in games)
+            foreach (var game in games)
             {
                 game.status = GetGameStatus(game);
                 dataContext.games.Update(game);
@@ -402,11 +402,12 @@ namespace escout.Controllers.GameObjects
         {
             string actualTime = GenericUtils.GetDateTime();
 
-            if(DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
+            if (DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
             {
                 return 2;
             }
-            else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0)){
+            else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0))
+            {
                 return 1;
             }
             else

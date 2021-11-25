@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Configuration;
-using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace escout.Helpers
 {

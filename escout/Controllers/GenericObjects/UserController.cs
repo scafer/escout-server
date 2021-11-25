@@ -1,4 +1,6 @@
-﻿using escout.Helpers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using escout.Helpers;
 using escout.Models.Database;
 using escout.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -6,8 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace escout.Controllers.GenericObjects
 {

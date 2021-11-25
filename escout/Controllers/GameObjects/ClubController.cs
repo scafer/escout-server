@@ -138,7 +138,7 @@ namespace escout.Controllers.GameObjects
             if (club.imageId != null)
             {
                 var imageUrl = dataContext.images.FirstOrDefault(a => a.id == club.imageId).imageUrl;
-                displayOptions.Add("imageUrl", imageUrl);
+                displayOptions.Add(ConstValues.DO_IMAGE_URL, imageUrl);
             }
 
             return displayOptions;

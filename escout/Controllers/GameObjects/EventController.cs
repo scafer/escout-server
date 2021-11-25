@@ -134,13 +134,13 @@ namespace escout.Controllers.GameObjects
             if (evt.imageId != null)
             {
                 var imageUrl = dataContext.images.FirstOrDefault(a => a.id == evt.imageId).imageUrl;
-                displayOptions.Add("imageUrl", imageUrl);
+                displayOptions.Add(ConstValues.DO_IMAGE_URL, imageUrl);
             }
 
             if (evt.sportId != 0)
             {
                 var sportName = dataContext.sports.FirstOrDefault(a => a.id == evt.sportId).name;
-                displayOptions.Add("sportName", sportName);
+                displayOptions.Add(ConstValues.DO_SPORT_NAME, sportName);
             }
 
             return displayOptions;

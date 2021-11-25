@@ -147,13 +147,13 @@ namespace escout.Controllers.GameObjects
             if (athlete.clubId != null)
             {
                 var clubName = dataContext.clubs.FirstOrDefault(a => a.id == athlete.clubId).name;
-                displayOptions.Add("clubName", clubName);
+                displayOptions.Add(ConstValues.DO_CLUB_NAME, clubName);
             }
 
             if (athlete.imageId != null)
             {
                 var imageUrl = dataContext.images.FirstOrDefault(a => a.id == athlete.imageId).imageUrl;
-                displayOptions.Add("imageUrl", imageUrl);
+                displayOptions.Add(ConstValues.DO_IMAGE_URL, imageUrl);
             }
 
             return displayOptions;

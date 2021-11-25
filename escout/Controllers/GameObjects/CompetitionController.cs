@@ -214,13 +214,13 @@ namespace escout.Controllers.GameObjects
             if (competition.imageId != null)
             {
                 var imageUrl = dataContext.images.FirstOrDefault(a => a.id == competition.imageId).imageUrl;
-                displayOptions.Add("imageUrl", imageUrl);
+                displayOptions.Add(ConstValues.DO_IMAGE_URL, imageUrl);
             }
 
             if (competition.sportId != 0)
             {
                 var sportName = dataContext.sports.FirstOrDefault(a => a.id == competition.sportId).name;
-                displayOptions.Add("sportName", sportName);
+                displayOptions.Add(ConstValues.DO_SPORT_NAME, sportName);
             }
 
             return displayOptions;
@@ -233,7 +233,7 @@ namespace escout.Controllers.GameObjects
             if (competitionBoard.clubId != 0)
             {
                 var clubName = dataContext.clubs.FirstOrDefault(a => a.id == competitionBoard.clubId).name;
-                displayOptions.Add("clubName", clubName);
+                displayOptions.Add(ConstValues.DO_CLUB_NAME, clubName);
 
             }
 

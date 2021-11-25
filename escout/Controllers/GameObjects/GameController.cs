@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -365,6 +366,7 @@ namespace escout.Controllers.GameObjects
         {
             var gameData = new GameData();
             gameData.game = dataContext.games.FirstOrDefault(g => g.id == gameId);
+            gameData.game.status = GetGameStatus(gameData.game);
             gameData.clubs = dataContext.clubs.Where(t => t.id == gameData.game.homeId || t.id == gameData.game.visitorId).ToList();
             gameData.athletes = dataContext.athletes.Where(t => t.clubId == gameData.game.homeId || t.clubId == gameData.game.visitorId).ToList();
 
@@ -381,7 +383,36 @@ namespace escout.Controllers.GameObjects
             gameData.events = dataContext.events.Where(t => t.sportId == gameData.sport.id).ToList();
             gameData.gameEvents = dataContext.gameEvents.Where(t => t.gameId == gameId).ToList();
 
+            UpdateGameStatus();
             return gameData;
+        }
+
+        private void UpdateGameStatus()
+        {
+            var games = dataContext.games.Where(g => g.status == 0 || g.status == 1).ToList();
+             foreach (var game in games)
+            {
+                game.status = GetGameStatus(game);
+                dataContext.games.Update(game);
+                dataContext.SaveChanges();
+            }
+        }
+
+        private int GetGameStatus(Game game)
+        {
+            string actualTime = GenericUtils.GetDateTime();
+
+            if(DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
+            {
+                return 2;
+            }
+            else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0)){
+                return 1;
+            }
+            else
+            {
+                return game.status;
+            }
         }
 
         private Dictionary<string, string> GetGameDisplayOptions(Game game)
@@ -391,30 +422,30 @@ namespace escout.Controllers.GameObjects
             if (game.imageId != null)
             {
                 var imageUrl = dataContext.images.FirstOrDefault(a => a.id == game.imageId).imageUrl;
-                displayOptions.Add("imageUrl", imageUrl);
+                displayOptions.Add(ConstValues.DO_IMAGE_URL, imageUrl);
             }
 
             if (game.competitionId != null)
             {
                 var competitionName = dataContext.competitions.FirstOrDefault(a => a.id == game.competitionId).name;
-                displayOptions.Add("competitionName", competitionName);
+                displayOptions.Add(ConstValues.DO_COMPETITION_NAME, competitionName);
             }
 
             if (game.userId != 0)
             {
                 var userName = dataContext.users.FirstOrDefault(a => a.id == game.userId).username;
-                displayOptions.Add("userName", userName);
+                displayOptions.Add(ConstValues.DO_USER_NAME, userName);
             }
 
             if (game.homeId != 0)
             {
                 var homeClub = dataContext.clubs.FirstOrDefault(a => a.id == game.homeId);
-                displayOptions.Add("homeName", homeClub.name);
+                displayOptions.Add(ConstValues.DO_HOME_CLUB_NAME, homeClub.name);
 
                 if (homeClub.imageId != null)
                 {
                     var imageUrl = dataContext.images.FirstOrDefault(a => a.id == homeClub.imageId).imageUrl;
-                    displayOptions.Add("homeImageUrl", imageUrl);
+                    displayOptions.Add(ConstValues.DO_HOME_IMAGE_URL, imageUrl);
                 }
 
             }
@@ -422,12 +453,12 @@ namespace escout.Controllers.GameObjects
             if (game.visitorId != 0)
             {
                 var visitorClub = dataContext.clubs.FirstOrDefault(a => a.id == game.visitorId);
-                displayOptions.Add("visitorName", visitorClub.name);
+                displayOptions.Add(ConstValues.DO_VISITOR_CLUB_NAME, visitorClub.name);
 
                 if (visitorClub.imageId != null)
                 {
                     var imageUrl = dataContext.images.FirstOrDefault(a => a.id == visitorClub.imageId).imageUrl;
-                    displayOptions.Add("visitorImageUrl", imageUrl);
+                    displayOptions.Add(ConstValues.DO_VISITOR_IMAGE_URL, imageUrl);
                 }
             }
 
@@ -441,19 +472,19 @@ namespace escout.Controllers.GameObjects
             if (gameEvent.athleteId != null)
             {
                 var athleteName = dataContext.athletes.FirstOrDefault(a => a.id == gameEvent.athleteId).name;
-                displayOptions.Add("athleteName", athleteName);
+                displayOptions.Add(ConstValues.DO_ATHLETE_NAME, athleteName);
             }
 
             if (gameEvent.clubId != null)
             {
                 var clubName = dataContext.athletes.FirstOrDefault(a => a.id == gameEvent.clubId).name;
-                displayOptions.Add("clubName", clubName);
+                displayOptions.Add(ConstValues.DO_CLUB_NAME, clubName);
             }
 
             if (gameEvent.eventId != 0)
             {
                 var eventName = dataContext.events.FirstOrDefault(a => a.id == gameEvent.eventId).name;
-                displayOptions.Add("eventName", eventName);
+                displayOptions.Add(ConstValues.DO_EVENT_NAME, eventName);
             }
 
             return displayOptions;

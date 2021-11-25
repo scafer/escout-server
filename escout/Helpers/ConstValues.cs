@@ -22,6 +22,19 @@
         public const string NTF_BODY_NEW_ACCOUNT = "Welcome to eScout {0}";
         public const string NTF_BODY_PASSWORD_RESET = "Your new eScout password: {0}";
 
+        //Display Options
+        public const string DO_USER_NAME = "userName";
+        public const string DO_IMAGE_URL = "imageUrl";
+        public const string DO_CLUB_NAME = "clubName";
+        public const string DO_SPORT_NAME = "sportName";
+        public const string DO_EVENT_NAME = "eventName";
+        public const string DO_ATHLETE_NAME = "athleteName";
+        public const string DO_COMPETITION_NAME = "competitionName";
+        public const string DO_HOME_CLUB_NAME = "homeName";
+        public const string DO_VISITOR_CLUB_NAME = "visitorName";
+        public const string DO_HOME_IMAGE_URL = "homeImageUrl";
+        public const string DO_VISITOR_IMAGE_URL = "visitorImageUrl";
+
         //Queries
         public const string QUERY = "SELECT * FROM {0} WHERE {1} {2} '{3}';";
         public const string QUERY_NOT_NULL = "SELECT * FROM {0} WHERE \"userId\"={1} AND \"{2}\" IS NOT NULL;";

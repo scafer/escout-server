@@ -29,13 +29,16 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<Game>> CreateGame(List<Game> game)
         {
-            if (User.GetUser(dataContext).accessLevel >= 3)
+            var user = User.GetUser(dataContext);
+
+            if (user.accessLevel >= 3)
             {
                 return Forbid();
             }
 
             game.ToList().ForEach(g => g.created = GenericUtils.GetDateTime());
             game.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
+            game.ToList().ForEach(g => g.userId = user.id);
             dataContext.games.AddRange(game);
             dataContext.SaveChanges();
             return game;
@@ -400,20 +403,28 @@ namespace escout.Controllers.GameObjects
 
         private int GetGameStatus(Game game)
         {
-            string actualTime = GenericUtils.GetDateTime();
+            try
+            {
+                string actualTime = GenericUtils.GetDateTime();
 
-            if (DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
-            {
-                return 2;
+                if (DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
+                {
+                    return 2;
+                }
+                else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0))
+                {
+                    return 1;
+                }
+                else
+                {
+                    return game.status;
+                }
             }
-            else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0))
+            catch(Exception ex)
             {
-                return 1;
+                Console.Write(ex);
             }
-            else
-            {
-                return game.status;
-            }
+            return game.status;
         }
 
         private Dictionary<string, string> GetGameDisplayOptions(Game game)

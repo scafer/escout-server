@@ -13,7 +13,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "athletes" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar UNIQUE,
+  "key" varchar,
   "name" varchar,
   "fullname" varchar,
   "birthDate" varchar,
@@ -34,7 +34,7 @@ CREATE TABLE "athletes" (
 
 CREATE TABLE "clubs" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar UNIQUE,
+  "key" varchar,
   "name" varchar,
   "fullname" varchar,
   "country" varchar,
@@ -66,7 +66,7 @@ CREATE TABLE "clubAthletes" (
 
 CREATE TABLE "competitions" (
   "id" SERIAL PRIMARY KEY,
-  "key" varchar UNIQUE,
+  "key" varchar,
   "name" varchar,
   "edition" varchar,
   "sportId" int,

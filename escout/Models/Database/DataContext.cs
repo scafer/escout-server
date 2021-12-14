@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace escout.Models.Database
@@ -38,7 +39,10 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
-
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
     }
@@ -63,6 +67,10 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -84,6 +92,10 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -100,9 +112,14 @@ namespace escout.Models.Database
         public string endDate { get; set; }
         public string position { get; set; }
         public int positionKey { get; set; }
-        public string data { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Competition
@@ -115,6 +132,10 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -136,6 +157,10 @@ namespace escout.Models.Database
         public int competitionId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -151,6 +176,10 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -170,6 +199,10 @@ namespace escout.Models.Database
         public int userId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -183,6 +216,13 @@ namespace escout.Models.Database
         public int athleteId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Game
@@ -205,6 +245,11 @@ namespace escout.Models.Database
         public string created { get; set; }
         public string updated { get; set; }
 
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
     }
@@ -217,6 +262,13 @@ namespace escout.Models.Database
         public int athleteId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Sport
@@ -226,6 +278,11 @@ namespace escout.Models.Database
         public int? imageId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
 
         [NotMapped]
         public Dictionary<string, string> displayOptions { get; set; }
@@ -239,6 +296,13 @@ namespace escout.Models.Database
         public string description { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 
     public class Favorite
@@ -251,5 +315,12 @@ namespace escout.Models.Database
         public int? gameId { get; set; }
         public string created { get; set; }
         public string updated { get; set; }
+        [JsonIgnore]
+        public string dataMap { get; set; }
+        [NotMapped]
+        public Dictionary<string, string> data { get; set; }
+
+        [NotMapped]
+        public Dictionary<string, string> displayOptions { get; set; }
     }
 }

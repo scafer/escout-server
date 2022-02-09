@@ -428,7 +428,7 @@ namespace escout.Controllers.GameObjects
                     return game.status;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.Write(ex);
             }

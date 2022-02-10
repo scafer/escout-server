@@ -95,6 +95,7 @@ namespace escout.Controllers.GameObjects
         public ActionResult<Game> GetGame(int id)
         {
             var game = dataContext.games.FirstOrDefault(g => g.id == id);
+            game.status = GetGameStatus(game);
             game.displayOptions = GetGameDisplayOptions(game);
             return game;
         }
@@ -122,6 +123,7 @@ namespace escout.Controllers.GameObjects
 
                 foreach (var game in games)
                 {
+                    game.status = GetGameStatus(game);
                     game.displayOptions = GetGameDisplayOptions(game);
                 }
 
@@ -405,22 +407,28 @@ namespace escout.Controllers.GameObjects
         {
             try
             {
-                string actualTime = GenericUtils.GetDateTime();
+                var actualTime = DateTime.Parse(GenericUtils.GetDateTime());
+                var gameStart = DateTime.Parse(game.timeStart);
+                var gameEnd = DateTime.Parse(game.timeEnd);
 
-                if (DateTime.Parse(game.timeEnd).CompareTo(actualTime) >= 0)
+                if (DateTime.Compare(actualTime, gameStart) < 0)
                 {
-                    return 2;
+                    return ConstValues.GS_PENDING;
                 }
-                else if ((DateTime.Parse(game.timeStart).CompareTo(actualTime)) >= 0 && (DateTime.Parse(game.timeEnd).CompareTo(actualTime) <= 0))
+                else if (DateTime.Compare(actualTime, gameEnd) > 0)
                 {
-                    return 1;
+                    return ConstValues.GS_FINISHED;
+                }
+                else if ((DateTime.Compare(actualTime, gameStart) >= 0) && (DateTime.Compare(actualTime, gameEnd) <= 0))
+                {
+                    return ConstValues.GS_ACTIVE;
                 }
                 else
                 {
                     return game.status;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.Write(ex);
             }

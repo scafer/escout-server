@@ -7,6 +7,7 @@ CREATE TABLE "users" (
   "notifications" int,
   "status" int DEFAULT 0,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -28,6 +29,7 @@ CREATE TABLE "athletes" (
   "status" varchar,
   "clubId" int,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -45,6 +47,7 @@ CREATE TABLE "clubs" (
   "address" varchar,
   "homepage" varchar,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -59,7 +62,7 @@ CREATE TABLE "clubAthletes" (
   "endDate" varchar,
   "position" varchar,
   "positionKey" int DEFAULT 0,
-  "data" varchar,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -71,6 +74,7 @@ CREATE TABLE "competitions" (
   "edition" varchar,
   "sportId" int,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -88,6 +92,7 @@ CREATE TABLE "competitionBoards" (
   "points" int DEFAULT 0,
   "clubId" int,
   "competitionId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -99,6 +104,7 @@ CREATE TABLE "events" (
   "description" varchar,
   "sportId" int,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -114,6 +120,7 @@ CREATE TABLE "gameEvents" (
   "athleteId" int,
   "clubId" int,
   "userId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -123,6 +130,7 @@ CREATE TABLE "gameAthletes" (
   "status" int DEFAULT 0,
   "gameId" int,
   "athleteId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -143,6 +151,7 @@ CREATE TABLE "games" (
   "competitionId" int,
   "imageId" int,
   "userId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -152,6 +161,7 @@ CREATE TABLE "gameUsers" (
   "userId" int,
   "gameId" int,
   "athleteId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -160,6 +170,7 @@ CREATE TABLE "sports" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar UNIQUE,
   "imageId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -169,6 +180,7 @@ CREATE TABLE "images" (
   "imageUrl" varchar UNIQUE,
   "tags" varchar,
   "description" varchar,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );
@@ -180,6 +192,7 @@ CREATE TABLE "favorites" (
   "clubId" int,
   "competitionId" int,
   "gameId" int,
+  "dataMap" varchar,
   "created" varchar,
   "updated" varchar
 );

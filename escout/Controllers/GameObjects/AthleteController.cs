@@ -40,7 +40,7 @@ namespace escout.Controllers.GameObjects
                 athletes.ToList().ForEach(a => a.updated = GenericUtils.GetDateTime());
                 dataContext.athletes.AddRange(athletes);
                 dataContext.SaveChanges();
-                return athletes;
+                return athletes.OrderBy(x => x.id).ToList();
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace escout.Controllers.GameObjects
                     athlete.displayOptions = GetAthleteDisplayOptions(athlete);
                 }
 
-                return athletes;
+                return athletes.OrderBy(x => x.id).ToList();
             }
             catch
             {

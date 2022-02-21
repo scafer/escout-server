@@ -36,7 +36,7 @@ namespace escout.Controllers.GameObjects
             sport.ToList().ForEach(s => s.updated = GenericUtils.GetDateTime());
             dataContext.sports.AddRange(sport);
             dataContext.SaveChanges();
-            return sport;
+            return sport.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -122,7 +122,7 @@ namespace escout.Controllers.GameObjects
                     sport.displayOptions = GetSportDisplayOptions(sport);
                 }
 
-                return sports;
+                return sports.OrderBy(x => x.id).ToList();
             }
             catch
             {

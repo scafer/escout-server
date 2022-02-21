@@ -36,7 +36,7 @@ namespace escout.Controllers.GameObjects
             e.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
             dataContext.events.AddRange(e);
             dataContext.SaveChanges();
-            return e;
+            return e.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -119,7 +119,7 @@ namespace escout.Controllers.GameObjects
                     evt.displayOptions = GetEventDisplayOptions(evt);
                 }
 
-                return events;
+                return events.OrderBy(x => x.id).ToList();
             }
             catch
             {

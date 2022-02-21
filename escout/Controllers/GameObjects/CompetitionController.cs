@@ -36,7 +36,7 @@ namespace escout.Controllers.GameObjects
             competition.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
             dataContext.competitions.AddRange(competition);
             dataContext.SaveChanges();
-            return competition;
+            return competition.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -122,7 +122,7 @@ namespace escout.Controllers.GameObjects
                     competition.displayOptions = GetCompetitionDisplayOptions(competition);
                 }
 
-                return competitions;
+                return competitions.OrderBy(x => x.id).ToList();
             }
             catch { return new NotFoundResult(); }
         }

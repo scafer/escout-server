@@ -41,7 +41,7 @@ namespace escout.Controllers.GameObjects
             game.ToList().ForEach(g => g.userId = user.id);
             dataContext.games.AddRange(game);
             dataContext.SaveChanges();
-            return game;
+            return game.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -127,7 +127,7 @@ namespace escout.Controllers.GameObjects
                     game.displayOptions = GetGameDisplayOptions(game);
                 }
 
-                return games;
+                return games.OrderBy(x => x.id).ToList();
             }
             catch
             {
@@ -208,7 +208,7 @@ namespace escout.Controllers.GameObjects
                 gameEvent.displayOptions = GetGameEventDisplayOptions(gameEvent);
             }
 
-            return gameEvents;
+            return gameEvents.OrderBy(x => x.id).ToList();
         }
 
         [HttpPost]
@@ -220,7 +220,7 @@ namespace escout.Controllers.GameObjects
             gameAthlete.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
             dataContext.gameAthletes.AddRange(gameAthlete);
             dataContext.SaveChanges();
-            return gameAthlete;
+            return gameAthlete.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -266,7 +266,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameAthlete>> GetGameAthletes(int gameId)
         {
-            return dataContext.gameAthletes.Where(g => g.gameId == gameId).ToList();
+            return dataContext.gameAthletes.Where(g => g.gameId == gameId).OrderBy(x => x.id).ToList();
         }
 
         [HttpGet]
@@ -290,7 +290,7 @@ namespace escout.Controllers.GameObjects
                     gamesUsers = dataContext.gameUsers.FromSqlRaw(q).ToList();
                 }
 
-                return gamesUsers;
+                return gamesUsers.OrderBy(x => x.id).ToList();
             }
             catch
             {
@@ -316,7 +316,7 @@ namespace escout.Controllers.GameObjects
             gameUsers.ToList().ForEach(g => g.updated = GenericUtils.GetDateTime());
             dataContext.gameUsers.AddRange(gameUsers);
             dataContext.SaveChanges();
-            return gameUsers;
+            return gameUsers.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -361,7 +361,7 @@ namespace escout.Controllers.GameObjects
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<GameEvent>> AthleteGameEvents(int athleteId, int gameId)
         {
-            return dataContext.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).ToList();
+            return dataContext.gameEvents.Where(g => g.athleteId == athleteId && g.gameId == gameId).OrderBy(x => x.id).ToList();
         }
 
         [HttpGet]

@@ -94,7 +94,7 @@ namespace escout.Controllers.GameObjects
                     favorites = dataContext.favorites.FromSqlRaw(q).ToList();
                 }
 
-                return favorites;
+                return favorites.OrderBy(x => x.id).ToList();
             }
             catch { return new NotFoundResult(); }
         }
@@ -117,7 +117,7 @@ namespace escout.Controllers.GameObjects
                     favorites = dataContext.favorites.FromSqlRaw(q).ToList();
                 }
 
-                return favorites;
+                return favorites.OrderBy(x => x.id).ToList();
             }
             catch { return new NotFoundResult(); }
         }

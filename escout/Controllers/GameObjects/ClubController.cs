@@ -37,7 +37,7 @@ namespace escout.Controllers.GameObjects
             club.ToList().ForEach(c => c.updated = GenericUtils.GetDateTime());
             dataContext.clubs.AddRange(club);
             dataContext.SaveChanges();
-            return club;
+            return club.OrderBy(x => x.id).ToList();
         }
 
         [HttpPut]
@@ -123,7 +123,7 @@ namespace escout.Controllers.GameObjects
                     club.displayOptions = GetClubDisplayOptions(club);
                 }
 
-                return clubs;
+                return clubs.OrderBy(x => x.id).ToList();
             }
             catch
             {

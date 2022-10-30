@@ -1,6 +1,6 @@
 -- Insert Sports
 
-INSERT INTO "sports" ("id", "name", "imageId") VALUES (1, 'Soccer', NULL);
+INSERT INTO "sports" ("name", "imageId") VALUES ('Soccer', NULL);
 
 -- Insert Soccer Events
 

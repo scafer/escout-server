@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
+using System;
+using System.Threading.Tasks;
 
 namespace escout.Helpers
 {

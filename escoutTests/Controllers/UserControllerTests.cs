@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using escout.Controllers.GenericObjects;
+﻿using escout.Controllers.GenericObjects;
 using escout.Models.Database;
 using escoutTests.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace escout.Controllers.Tests
 {

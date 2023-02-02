@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <UserSecretsId>131349d2-7a64-45c8-adce-02e23dd7992e</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>.</DockerfileContext>
+        <RootNamespace>escout</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0"/>
+        <PackageReference Include="Sendgrid" Version="9.28.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Controllers\GameObjects\"/>
+        <Folder Include="Controllers\GenericObjects\"/>
+        <Folder Include="Controllers\Authentication\"/>
+        <Folder Include="Controllers\GameStatistics\"/>
+        <Folder Include="Models\Database\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\appsettings.Development.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\appsettings.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\escout.deps.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\escout.runtimeconfig.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\escoutTests.deps.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\escoutTests.runtimeconfig.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\obj\escoutTests.csproj.nuget.dgspec.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\obj\project.assets.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\obj\project.packagespec.json"/>
+        <_ContentIncludedByDefault Remove="unitTests\obj\project.assets.json"/>
+        <_ContentIncludedByDefault Remove="unitTests\obj\project.packagespec.json"/>
+        <_ContentIncludedByDefault Remove="unitTests\obj\unitTests.csproj.nuget.dgspec.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\unitTests.deps.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\bin\Debug\net6.0\unitTests.runtimeconfig.json"/>
+        <_ContentIncludedByDefault Remove="escoutTests\obj\unitTests.csproj.nuget.dgspec.json"/>
+        <_ContentIncludedByDefault Remove="Tests\obj\project.assets.json"/>
+        <_ContentIncludedByDefault Remove="Tests\obj\project.packagespec.json"/>
+        <_ContentIncludedByDefault Remove="Tests\obj\Tests.csproj.nuget.dgspec.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Tests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="Tests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Tests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Remove="Tests\**"/>
+    </ItemGroup>
+</Project>

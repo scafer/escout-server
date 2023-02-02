@@ -18,11 +18,9 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Install dependencies
-      working-directory: escout/
       run: dotnet restore
     - name: Build
-      working-directory: escout/
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      working-directory: escoutTests/
+      working-directory: Tests/
       run: dotnet test --no-restore --verbosity normal

@@ -352,4 +352,9 @@ MigrationBackup/
 # Sonarqube files (static code analysis)
 .sonarqube/
 sonarqube.bat
+
+# IDEA
+/.idea/
+
+# Other
 .DS_Store

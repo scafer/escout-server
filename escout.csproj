@@ -15,7 +15,7 @@
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.34.0"/>
         <PackageReference Include="Sendgrid" Version="9.28.1"/>
     </ItemGroup>
 

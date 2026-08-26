@@ -29,8 +29,7 @@ public class Startup
 
         services.AddDbContext<DataContext>(x => x.UseNpgsql(Configurations.GetNpgsqlConnectionString()));
 
-        var settings = Configurations.GetAppSettings().Build().GetSection("JwtSettings").Get<JwtSettings>();
-        var key = Encoding.ASCII.GetBytes(settings.SigningKey);
+        var key = Encoding.ASCII.GetBytes(Configurations.GetJwtSigningKey());
         services.AddAuthentication(c =>
             {
                 c.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -45,4 +45,11 @@ public static class Configurations
     {
         return Environment.GetEnvironmentVariable("DEFAULT_USER_ACCESS_LEVEL") ?? "3";
     }
+
+    public static string GetJwtSigningKey()
+    {
+        return Environment.GetEnvironmentVariable("JWT_SIGNING_KEY")
+               ?? throw new InvalidOperationException(
+                   "JWT_SIGNING_KEY environment variable is not set.");
+    }
 }

@@ -26,6 +26,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
       - DEFAULT_USER_ACCESS_LEVEL=2
+      - JWT_SIGNING_KEY=FUm7RI1U4RNJdHCEG9Hf9679rPaHzh6Q2aH1tdPjx-5vCmDPSEZeOgk86YxNC_B0eRUf0Fj89ho6d0dUKXAlEQ
     build:
       context: ../
       dockerfile: ./Dockerfile

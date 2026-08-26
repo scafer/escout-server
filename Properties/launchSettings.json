@@ -14,7 +14,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/postgres"
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/postgres",
+        "JWT_SIGNING_KEY": "FUm7RI1U4RNJdHCEG9Hf9679rPaHzh6Q2aH1tdPjx-5vCmDPSEZeOgk86YxNC_B0eRUf0Fj89ho6d0dUKXAlEQ"
       }
     },
     "escout": {
@@ -22,7 +23,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/postgres"
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5432/postgres",
+        "JWT_SIGNING_KEY": "FUm7RI1U4RNJdHCEG9Hf9679rPaHzh6Q2aH1tdPjx-5vCmDPSEZeOgk86YxNC_B0eRUf0Fj89ho6d0dUKXAlEQ"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -34,7 +36,8 @@
       "useSSL": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATABASE_URL": "postgres://postgres:postgres@host.docker.internal:5432/postgres"
+        "DATABASE_URL": "postgres://postgres:postgres@host.docker.internal:5432/postgres",
+        "JWT_SIGNING_KEY": "FUm7RI1U4RNJdHCEG9Hf9679rPaHzh6Q2aH1tdPjx-5vCmDPSEZeOgk86YxNC_B0eRUf0Fj89ho6d0dUKXAlEQ"
       }
     }
   }

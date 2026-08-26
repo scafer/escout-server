@@ -16,7 +16,7 @@ public class TokenService : BaseService
     {
         var settings = Configurations.GetAppSettings().Build().GetSection("JwtSettings").Get<JwtSettings>();
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(settings.SigningKey);
+        var key = Encoding.ASCII.GetBytes(Configurations.GetJwtSigningKey());
         var expirationTime = DateTime.UtcNow.AddMinutes(settings.ValidForMinutes);
 
         var tokenDescriptor = new SecurityTokenDescriptor

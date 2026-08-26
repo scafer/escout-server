@@ -10,7 +10,6 @@ public class JwtSettings
 {
     public string Audience { get; set; }
     public string Issuer { get; set; }
-    public string SigningKey { get; set; }
     public int ValidForMinutes { get; set; }
     public int RefreshTokenValidForMinutes { get; set; }
 }

@@ -23,4 +23,6 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       working-directory: Tests/
+      env:
+        JWT_SIGNING_KEY: ${{ secrets.JWT_SIGNING_KEY }}
       run: dotnet test --no-restore --verbosity normal
